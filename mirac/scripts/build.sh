@@ -17,7 +17,6 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/logger.c
 	$PROJECT_DIR/source/mirac/utils.c
 	$PROJECT_DIR/source/mirac/utf8.c
-	$PROJECT_DIR/source/mirac/token.c
 	$PROJECT_DIR/source/mirac/lexer.c
 	$PROJECT_DIR/source/mirac/parser.c
 	$PROJECT_DIR/source/main.c

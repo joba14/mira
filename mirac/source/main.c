@@ -15,7 +15,6 @@
 #include <mirac/version.h>
 #include <mirac/debug.h>
 #include <mirac/logger.h>
-#include <mirac/token.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
 

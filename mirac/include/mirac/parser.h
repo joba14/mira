@@ -15,6 +15,39 @@
 
 #include <mirac/lexer.h>
 
+typedef enum
+{
+	mirac_global_type_function = 0,
+	mirac_global_type_memory,
+	mirac_global_type_string
+} mirac_global_type_e;
+
+typedef struct
+{
+	void* dummy;
+} mirac_global_function_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_global_memory_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_global_string_s;
+
+typedef struct
+{
+	mirac_global_type_e type;
+
+	union
+	{
+		mirac_global_function_s function;
+		mirac_global_string_s string;
+	};
+} mirac_global_s;
+
 void mirac_parser_parse(
 	mirac_lexer_s* const lexer);
 
