@@ -24,7 +24,6 @@ typedef struct
 {
 	FILE* file;
 	mirac_location_s location;
-	mirac_token_s token;
 
 	struct
 	{
@@ -77,12 +76,5 @@ mirac_token_type_e mirac_lexer_lex(
  */
 bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type);
-
-/**
- * @brief Cache a token back to the lexer.
- */
-void mirac_lexer_unlex(
-	mirac_lexer_s* const lexer,
-	const mirac_token_s* const token);
 
 #endif
