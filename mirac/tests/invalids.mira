@@ -1,15 +1,18 @@
 
 // comment1
 
-w"hello"
+-1 world
+
+ident
+w "hello"
 "hello"c
 "hello" w
-"hello"w
+"hello" waaa
 8
-1 - world
+1 -1 world
 1 world
 1i64 world
-1world
+1 world
 // comment2
 
 world
