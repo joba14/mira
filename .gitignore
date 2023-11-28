@@ -1,0 +1,4 @@
+
+# Visual Studio Code local configs
+.vscode/*
+!.vscode/*.code-snippets
