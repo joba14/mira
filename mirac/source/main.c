@@ -27,12 +27,14 @@
 #include <unistd.h>
 #include <getopt.h>
 
+// TODO: add supported architectures
 static const char* const g_usage_banner =
 	"usage: %s [options] <files...>\n"
 	"\n"
 	"options:\n"
 	"    -h, --help                 print the help message\n"
 	"    -v, --version              print version and exit\n"
+	"    -a, --arch <target>        set the architecture for the output\n"
 	"    -e, --entry <symbol>       set the entry symbol\n"
 	"    -o, --output <path>        set output file name\n"
 	"\n"
@@ -45,6 +47,7 @@ static void usage(
 static int32_t parse_command_line(
 	const int32_t argc,
 	const char** const argv,
+	const char** const arch,
 	const char** const entry,
 	const char** const output);
 
@@ -55,11 +58,19 @@ int32_t main(
 	const int32_t argc,
 	const char** const argv)
 {
+	const char* arch = NULL;
 	const char* entry = "main";
 	const char* output = NULL;
 
-	const int32_t options_index = parse_command_line(argc, argv, &entry, &output);
+	const int32_t options_index = parse_command_line(argc, argv, &arch, &entry, &output);
 	if (options_index <= 0) { return options_index; }
+
+	// TODO: check provided architecture
+	if (NULL == arch)
+	{
+		mirac_logger_error("no architecture was provided -- see '--help'.");
+		return -1;
+	}
 
 	const char** const source_files = argv + (uint64_t)options_index;
 	const uint64_t source_files_count = (uint64_t)argc - (uint64_t)options_index;
@@ -108,10 +119,12 @@ static void usage(
 static int32_t parse_command_line(
 	const int32_t argc,
 	const char** const argv,
+	const char** const arch,
 	const char** const entry,
 	const char** const output)
 {
 	mirac_debug_assert(argv != NULL);
+	mirac_debug_assert(arch != NULL);
 	mirac_debug_assert(entry != NULL);
 	mirac_debug_assert(output != NULL);
 
@@ -120,13 +133,14 @@ static int32_t parse_command_line(
 	{
 		{ "help", no_argument, 0, 'h' },
 		{ "version", no_argument, 0, 'v' },
+		{ "arch", required_argument, 0, 'a' },
 		{ "entry", required_argument, 0, 'e' },
 		{ "output", required_argument, 0, 'o' },
 		{ 0, 0, 0, 0 }
 	};
 
 	int32_t opt = -1;
-	while ((opt = (int32_t)getopt_long(argc, (char* const *)argv, "hve:o:", options, NULL)) != -1)
+	while ((opt = (int32_t)getopt_long(argc, (char* const *)argv, "hva:e:o:", options, NULL)) != -1)
 	{
 		switch (opt)
 		{
@@ -140,6 +154,11 @@ static int32_t parse_command_line(
 			{
 				mirac_logger_log("%s " mirac_version_fmt, argv[0], mirac_version_arg);
 				return 0;
+			} break;
+
+			case 'a':
+			{
+				*arch = (const char*)optarg;
 			} break;
 
 			case 'e':
