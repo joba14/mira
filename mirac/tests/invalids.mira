@@ -1,5 +1,14 @@
 
 // comment1
+
+w"hello"
+"hello"c
+"hello" w
+"hello"w
+8
+1 - world
+1 world
+1i64 world
 1world
 // comment2
 
@@ -8,9 +17,7 @@ _world
 _1world
 
 @world
-%world
 $world
 world
 
-$
-10f63
+$10f63
