@@ -1,0 +1,26 @@
+
+{
+	"name": "mira-syntax-highlighting",
+	"displayName": "mira-syntax-highlighting",
+	"description": "just a simple syntax highlighter for mira",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.71.0"
+	},
+	"categories": [
+		"Programming Languages"
+	],
+	"contributes": {
+		"languages": [{
+			"id": "mira",
+			"aliases": ["mira"],
+			"extensions": ["mira"],
+			"configuration": "./language-configuration.json"
+		}],
+		"grammars": [{
+			"language": "mira",
+			"scopeName": "source.mira",
+			"path": "./syntaxes/mira.tmLanguage.json"
+		}]
+	}
+}

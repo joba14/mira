@@ -1,0 +1,87 @@
+
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "mira",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#globalKeywords"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#intrinsics"
+		},
+		{
+			"include": "#specifiers"
+		},
+		{
+			"include": "#numerics"
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [{
+				"name": "comment.line.double-slash",
+				"match": "\/\\*.+?\\*\/|\/\/.*(?=[\n\r])"
+			}]
+		},
+		"globalKeywords": {
+			"patterns": [{
+				"name": "entity.name.tag",
+				"match": "\\b(inl|func|req|ret|mem|as)\\b"
+			}]
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.mira",
+				"match": "\\b(if|elif|else|loop|brk|let|do|end)\\b"
+			}]
+		},
+		"intrinsics": {
+			"patterns": [{
+				"name": "variable.name",
+				"match": "\\b(dup|drop|swap|over|rot|eq|neq|ls|gt|gteq|lseq|add|sub|mul|div|mod|land|lor|lxor|lnot|band|bor|bxor|bnot|shl|shr|ld8|ld16|ld32|ld64|st8|st16|st32|st64|sys)\\b"
+			}]
+		},
+		"specifiers": {
+			"patterns": [{
+				"name": "entity.name.type",
+				"match": "\\b(u16|u32|u64|u8|i16|i32|i64|i8|f32|f64|ptr)\\b"
+			}]
+		},
+		"numerics": {
+			"patterns": [{
+				"name": "constant.numeric",
+				"match": "\\b([-+]\\d+|\\d+)\\b"
+			}]
+		},
+		"functions": {
+			"patterns": [{
+				"name": "entity.name.function",
+				"match": "\\w+|\\w+\\s+"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.mira",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.mira",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.mira"
+}
