@@ -39,7 +39,6 @@ lxor
 mem
 mod
 mul
-mut
 neq
 over
 ret
