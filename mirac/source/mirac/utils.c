@@ -95,6 +95,16 @@ int32_t mirac_utils_strcmp(
 	return strcmp((const char*)left, (const char*)right);
 }
 
+int32_t mirac_utils_strncmp(
+	const char* const left,
+	const char* const right,
+	const uint64_t length)
+{
+	mirac_debug_assert(left != NULL);
+	mirac_debug_assert(right != NULL);
+	return strncmp((const char*)left, (const char*)right, (size_t)length);
+}
+
 char* mirac_utils_strchr(
 	const char* const string,
 	const int32_t c)
