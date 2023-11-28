@@ -17,6 +17,7 @@
 #include <mirac/logger.h>
 #include <mirac/token.h>
 #include <mirac/lexer.h>
+#include <mirac/parser.h>
 
 #include <stddef.h>
 #include <string.h>
@@ -93,15 +94,8 @@ int32_t main(
 		if (!source_file) { continue; }
 
 		mirac_lexer_s lexer = mirac_lexer_from_parts(
-			source_file_path, source_file
-		);
-
-		mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(&lexer, &token)))
-		{
-			mirac_logger_log("%s", mirac_token_to_string(&token));
-			mirac_token_destroy(&token);
-		}
+			source_file_path, source_file);
+		mirac_parser_parse(&lexer);
 
 		(void)fclose(source_file);
 	}
