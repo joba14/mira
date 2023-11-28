@@ -63,7 +63,6 @@ static const char* const g_token_type_to_string_map[] =
 	[mirac_token_type_keyword_mem] = "mem",
 	[mirac_token_type_keyword_mod] = "mod",
 	[mirac_token_type_keyword_mul] = "mul",
-	[mirac_token_type_keyword_mut] = "mut",
 	[mirac_token_type_keyword_neq] = "neq",
 	[mirac_token_type_keyword_over] = "over",
 	[mirac_token_type_keyword_req] = "req",
