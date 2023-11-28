@@ -38,13 +38,13 @@
 		"globalKeywords": {
 			"patterns": [{
 				"name": "entity.name.tag",
-				"match": "\\b(inl|func|req|ret|mem|as)\\b"
+				"match": "\\b(func|req|ret|mem|as)\\b"
 			}]
 		},
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.mira",
-				"match": "\\b(if|elif|else|loop|brk|let|do|end)\\b"
+				"match": "\\b(if|elif|else|loop|let|do|end)\\b"
 			}]
 		},
 		"intrinsics": {

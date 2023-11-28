@@ -26,7 +26,6 @@ typedef enum
 	mirac_token_type_keyword_band,				// band
 	mirac_token_type_keyword_bnot,				// bnot
 	mirac_token_type_keyword_bor,				// bor
-	mirac_token_type_keyword_brk,				// brk
 	mirac_token_type_keyword_bxor,				// bxor
 	mirac_token_type_keyword_div,				// div
 	mirac_token_type_keyword_do,				// do
@@ -46,7 +45,6 @@ typedef enum
 	mirac_token_type_keyword_i64,				// i64
 	mirac_token_type_keyword_i8,				// i8
 	mirac_token_type_keyword_if,				// if
-	mirac_token_type_keyword_inl,				// inl
 	mirac_token_type_keyword_land,				// land
 	mirac_token_type_keyword_ld16,				// ld16
 	mirac_token_type_keyword_ld32,				// ld32

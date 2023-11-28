@@ -1,5 +1,5 @@
 
-inl func is-odd?
+func is-odd?
 	req i64
 	ret i8
 do

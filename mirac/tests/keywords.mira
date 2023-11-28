@@ -3,7 +3,6 @@ as
 band
 bnot
 bor
-brk
 bxor
 div
 do
@@ -23,7 +22,6 @@ i32
 i64
 i8
 if
-inl
 land
 ld16
 ld32
