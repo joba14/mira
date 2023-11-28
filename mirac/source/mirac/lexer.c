@@ -177,8 +177,8 @@ mirac_token_type_e mirac_lexer_lex(
 				char invalid[4];
 				const uint8_t length = mirac_utf8_encode(invalid, utf8char);
 				log_lexer_error_and_exit(token->location, "invalid token encountered: `%.*s`",
-					(signed int)length, invalid
-				);
+					(signed int)length, invalid);
+				return mirac_token_type_none;
 			} break;
 		}
 	}
@@ -210,6 +210,7 @@ mirac_token_type_e mirac_lexer_lex(
 		return lex_identifier_or_keyword(lexer, token);
 	}
 
+	// Invalid token
 	char invalid[4];
 	const uint8_t length = mirac_utf8_encode(invalid, utf8char);
 	log_lexer_error_and_exit(token->location, "invalid token encountered: `%.*s`",
@@ -365,13 +366,15 @@ static bool is_symbol_first_of_identifier_or_keyword(
 	mirac_debug_assert(utf8char != mirac_utf8_invalid);
 	return (utf8char <= 0x7F) && (
 		isalpha(utf8char) ||
-		'_' == utf8char ||
-		'?' == utf8char ||
-		'!' == utf8char ||
-		',' == utf8char ||
-		'.' == utf8char ||
-		'$' == utf8char ||
-		'@' == utf8char
+		('_' == utf8char) ||
+		('?' == utf8char) ||
+		('!' == utf8char) ||
+		(',' == utf8char) ||
+		('.' == utf8char) ||
+		('$' == utf8char) ||
+		('@' == utf8char) ||
+		('<' == utf8char) ||
+		('>' == utf8char)
 	);
 }
 
@@ -381,22 +384,22 @@ static bool is_symbol_not_first_of_identifier_or_keyword(
 	mirac_debug_assert(utf8char != mirac_utf8_invalid);
 	return (utf8char <= 0x7F) && (
 		isalnum(utf8char) ||
-		'_' == utf8char ||
-		'?' == utf8char ||
-		'!' == utf8char ||
-		',' == utf8char ||
-		'.' == utf8char ||
-		'$' == utf8char ||
-		'@' == utf8char ||
-		'-' == utf8char ||
-		'(' == utf8char ||
-		')' == utf8char ||
-		'[' == utf8char ||
-		']' == utf8char ||
-		'{' == utf8char ||
-		'}' == utf8char ||
-		'<' == utf8char ||
-		'>' == utf8char
+		('_' == utf8char) ||
+		('?' == utf8char) ||
+		('!' == utf8char) ||
+		(',' == utf8char) ||
+		('.' == utf8char) ||
+		('$' == utf8char) ||
+		('@' == utf8char) ||
+		('<' == utf8char) ||
+		('>' == utf8char) ||
+		('-' == utf8char) ||
+		('(' == utf8char) ||
+		(')' == utf8char) ||
+		('[' == utf8char) ||
+		(']' == utf8char) ||
+		('{' == utf8char) ||
+		('}' == utf8char)
 	);
 }
 
