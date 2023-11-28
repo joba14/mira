@@ -101,7 +101,6 @@ mirac_lexer_s mirac_lexer_from_parts(
 
 	mirac_lexer_s lexer;
 	lexer.file = file;
-	lexer.token.type = mirac_token_type_none;
 	lexer.location.file = file_path;
 	lexer.location.line = 1;
 	lexer.location.column = 0;
@@ -129,20 +128,22 @@ mirac_token_type_e mirac_lexer_lex(
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
 
-	if (lexer->token.type != mirac_token_type_none)
-	{
-		*token = lexer->token;
-		lexer->token.type = mirac_token_type_none;
-		return token->type;
-	}
-
 	utf8char_t utf8char = get_utf8char(lexer, &token->location);
 
 	if (mirac_utf8_invalid == utf8char)
 	{
-		lexer->token = mirac_token_from_parts(mirac_token_type_eof, lexer->location);
-		*token = lexer->token;
-		return token->type;
+		return mirac_token_type_eof;
+	}
+
+	// Skipping white spaces
+	while (utf8char != mirac_utf8_invalid)
+	{
+		if (!is_symbol_a_white_space(utf8char))
+		{
+			break;
+		}
+
+		utf8char = next_utf8char(lexer, NULL, false);
 	}
 
 	// Single and multiline Comments
@@ -220,16 +221,6 @@ bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type)
 {
 	return mirac_token_type_none == type || mirac_token_type_eof == type;
-}
-
-void mirac_lexer_unlex(
-	mirac_lexer_s* const lexer,
-	const mirac_token_s* const token)
-{
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(token != NULL);
-	mirac_debug_assert(token->type != mirac_token_type_none);
-	lexer->token = *token;
 }
 
 static void update_location(
@@ -397,7 +388,15 @@ static bool is_symbol_not_first_of_identifier_or_keyword(
 		'.' == utf8char ||
 		'$' == utf8char ||
 		'@' == utf8char ||
-		'-' == utf8char
+		'-' == utf8char ||
+		'(' == utf8char ||
+		')' == utf8char ||
+		'[' == utf8char ||
+		']' == utf8char ||
+		'{' == utf8char ||
+		'}' == utf8char ||
+		'<' == utf8char ||
+		'>' == utf8char
 	);
 }
 
@@ -440,6 +439,14 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	token->type = mirac_token_type_from_string(lexer->buffer.data);
 	token->ident.data = mirac_utils_strndup(lexer->buffer.data, lexer->buffer.length);
 	token->ident.length = lexer->buffer.length;
+
+	if (!is_symbol_a_white_space(utf8char))
+	{
+		log_lexer_error_and_exit(
+			lexer->location, "invalid symbol `%c` following identifier `%.*s`.",
+			(char)utf8char, (signed int)token->ident.length, token->ident.data
+		);
+	}
 
 	clear_buffer(lexer);
 	return token->type;
@@ -537,7 +544,7 @@ static bool lex_numeric_literal_token(
 
 		if (is_symbol_first_of_numeric_literal(utf8char))
 		{
-			log_lexer_error_and_exit(token->location, "leading zero in base 10 literal.");
+			log_lexer_error_and_exit(token->location, "leading zero in base 10 numeric literal.");
 		}
 
 		if ('b' == utf8char)
@@ -660,10 +667,17 @@ end:
 		push_utf8char(lexer, utf8char, true);
 		push_utf8char(lexer, last, true);
 	}
-	else if (utf8char != mirac_utf8_invalid)
+	else if (utf8char != mirac_utf8_invalid && !is_symbol_a_white_space(utf8char))
 	{
+		log_lexer_error_and_exit(lexer->location, "invalid symbol `%c` after numeric literal.", (char)utf8char);
+
 want_int:
 		push_utf8char(lexer, utf8char, true);
+	}
+
+	if (sign_symbol != 0 && lexer->buffer.length < 3)
+	{
+		log_lexer_error_and_exit(lexer->location, "missing the numeric literal.");
 	}
 
 	lexer->require_int = false;
@@ -682,27 +696,28 @@ want_int:
 	static const struct
 	{
 		const char suffix[4];
+		uint8_t suffix_length;
 		kind_e kind;
 		mirac_token_type_e type;
 	} literals[] =
 	{
-		{ "i8",  kind_signed,   mirac_token_type_literal_i8  },
-		{ "i16", kind_signed,   mirac_token_type_literal_i16 },
-		{ "i32", kind_signed,   mirac_token_type_literal_i32 },
-		{ "i64", kind_signed,   mirac_token_type_literal_i64 },
-		{ "u8",  kind_unsigned, mirac_token_type_literal_u8  },
-		{ "u16", kind_unsigned, mirac_token_type_literal_u16 },
-		{ "u32", kind_unsigned, mirac_token_type_literal_u32 },
-		{ "u64", kind_unsigned, mirac_token_type_literal_u64 },
-		{ "f32", kind_float,    mirac_token_type_literal_f32 },
-		{ "f64", kind_float,    mirac_token_type_literal_f64 }
+		{ "i8",  2, kind_signed,   mirac_token_type_literal_i8  },
+		{ "i16", 3, kind_signed,   mirac_token_type_literal_i16 },
+		{ "i32", 3, kind_signed,   mirac_token_type_literal_i32 },
+		{ "i64", 3, kind_signed,   mirac_token_type_literal_i64 },
+		{ "u8",  2, kind_unsigned, mirac_token_type_literal_u8  },
+		{ "u16", 3, kind_unsigned, mirac_token_type_literal_u16 },
+		{ "u32", 3, kind_unsigned, mirac_token_type_literal_u32 },
+		{ "u64", 3, kind_unsigned, mirac_token_type_literal_u64 },
+		{ "f32", 3, kind_float,    mirac_token_type_literal_f32 },
+		{ "f64", 3, kind_float,    mirac_token_type_literal_f64 }
 	};
 
 	if (suffix_start)
 	{
 		for (uint8_t index = 0; index < (sizeof(literals) / sizeof(literals[0])); ++index)
 		{
-			if (!mirac_utils_strcmp(literals[index].suffix, lexer->buffer.data + suffix_start))
+			if (!mirac_utils_strncmp(literals[index].suffix, lexer->buffer.data + suffix_start, literals[index].suffix_length))
 			{
 				token->type = literals[index].type;
 				kind = literals[index].kind;
@@ -713,7 +728,7 @@ want_int:
 		if (kind_unknown == kind)
 		{
 			log_lexer_error_and_exit(
-				token->location, "invalid suffix '%s'.", lexer->buffer.data + suffix_start
+				token->location, "invalid suffix `%s`.", lexer->buffer.data + suffix_start
 			);
 		}
 	}
@@ -992,13 +1007,20 @@ static mirac_token_type_e lex_string_literal_token(
 			char* const string = mirac_utils_malloc((lexer->buffer.length + 1) * sizeof(char));
 			mirac_utils_memcpy(string, lexer->buffer.data, lexer->buffer.length);
 
-			if (next_utf8char(lexer, NULL, true) == 'c')
+			utf8char_t suffix = next_utf8char(lexer, NULL, true);
+			if ('c' == suffix)
 			{
 				token->type = mirac_token_type_literal_cstr;
+				suffix = next_utf8char(lexer, NULL, true);
 			}
 			else
 			{
 				token->type = mirac_token_type_literal_str;
+			}
+
+			if (!is_symbol_a_white_space(suffix))
+			{
+				log_lexer_error_and_exit(lexer->location, "invalid suffix `%c` after string literal.", (char)suffix);
 			}
 
 			token->str.data = string;
