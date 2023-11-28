@@ -1,7 +1,18 @@
 
+inl func is-odd?
+	req i64
+	ret i8
+do
+	let num do
+		num mod 0 eq
+	end
+end
+
 func main
 	req i64
 	ret i64
 do
-	dup add
+	let num do
+		num is-odd? as i64
+	end
 end

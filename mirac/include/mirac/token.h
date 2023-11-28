@@ -22,12 +22,12 @@
 typedef enum
 {
 	mirac_token_type_keyword_add,				// add
+	mirac_token_type_keyword_as,				// as
 	mirac_token_type_keyword_band,				// band
 	mirac_token_type_keyword_bnot,				// bnot
 	mirac_token_type_keyword_bor,				// bor
 	mirac_token_type_keyword_brk,				// brk
 	mirac_token_type_keyword_bxor,				// bxor
-	mirac_token_type_keyword_cast,				// cast
 	mirac_token_type_keyword_div,				// div
 	mirac_token_type_keyword_do,				// do
 	mirac_token_type_keyword_drop,				// drop
@@ -64,6 +64,7 @@ typedef enum
 	mirac_token_type_keyword_mul,				// mul
 	mirac_token_type_keyword_neq,				// neq
 	mirac_token_type_keyword_over,				// over
+	mirac_token_type_keyword_ptr,				// ptr
 	mirac_token_type_keyword_req,				// req
 	mirac_token_type_keyword_ret,				// ret
 	mirac_token_type_keyword_rot,				// rot
