@@ -38,6 +38,11 @@
 				{
 					"name": "comment.line.double-slash",
 					"match": ";*.+?\\*\/|;.*(?=[\n\r])"
+				},
+				{
+					"name": "comment.block",
+					"begin": "\\/\\*",
+					"end": "\\*\\/"
 				}
 			]
 		},
