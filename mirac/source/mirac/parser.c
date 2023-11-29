@@ -17,13 +17,22 @@
 
 #include <stddef.h>
 
-void mirac_parser_parse(
+mirac_parser_s mirac_parser_from_parts(
 	mirac_lexer_s* const lexer)
 {
 	mirac_debug_assert(lexer != NULL);
+	mirac_parser_s parser;
+	parser.lexer = lexer;
+	return parser;
+}
+
+void mirac_parser_parse(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser != NULL);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(lexer, &token)))
+	while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 	{
 		mirac_logger_log("%s", mirac_token_to_string(&token));
 
@@ -31,7 +40,7 @@ void mirac_parser_parse(
 		{
 			case mirac_token_type_keyword_func:
 			{
-				const mirac_token_type_e token_type = mirac_lexer_lex(lexer, &token);
+				const mirac_token_type_e token_type = mirac_lexer_lex(parser->lexer, &token);
 
 				if (token_type != mirac_token_type_keyword_req
 				 && token_type != mirac_token_type_keyword_ret
@@ -43,7 +52,7 @@ void mirac_parser_parse(
 
 			case mirac_token_type_keyword_req:
 			{
-				while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(lexer, &token)))
+				while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 				{
 					if (token.type != mirac_token_type_keyword_i8 &&
 						token.type != mirac_token_type_keyword_i16 &&
@@ -69,7 +78,7 @@ void mirac_parser_parse(
 
 			case mirac_token_type_keyword_ret:
 			{
-				while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(lexer, &token)))
+				while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 				{
 					if (token.type != mirac_token_type_keyword_i8 &&
 						token.type != mirac_token_type_keyword_i16 &&
