@@ -143,6 +143,7 @@ typedef struct
 {
 	mirac_token_type_e type;
 	mirac_location_s location;
+	uint64_t index;
 
 	union
 	{
@@ -201,6 +202,7 @@ typedef struct
 {
 	FILE* file;
 	mirac_location_s location;
+	uint64_t tokens_count;
 
 	struct
 	{
