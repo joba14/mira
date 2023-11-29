@@ -94,9 +94,75 @@ static const char* const g_token_type_to_string_map[] =
 	[mirac_token_type_keyword_u8] = "u8"
 };
 
+#define log_lexer_error_and_exit(_location, _format, ...)                      \
+	do {                                                                       \
+		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
+			(_location).file, (_location).line, (_location).column);           \
+		mirac_logger_error(_format, ## __VA_ARGS__);                          \
+		exit(-1);                                                              \
+	} while (0)
+
 static int32_t compare_keyword_tokens(
 	const void* const left,
 	const void* const right);
+
+static void update_location(
+	mirac_location_s* const location,
+	const utf8char_t utf8char);
+
+static void append_buffer(
+	mirac_lexer_s* const lexer,
+	const char* const buffer,
+	const uint64_t size);
+
+static utf8char_t next_utf8char(
+	mirac_lexer_s* const lexer,
+	mirac_location_s* const location,
+	const bool buffer);
+
+static bool is_symbol_a_white_space(
+	const utf8char_t utf8char);
+
+static utf8char_t get_utf8char(
+	mirac_lexer_s* const lexer,
+	mirac_location_s* const location);
+
+static void clear_buffer(
+	mirac_lexer_s* const lexer);
+
+static void consume_buffer(
+	mirac_lexer_s* const lexer,
+	const uint64_t length);
+
+static void push_utf8char(
+	mirac_lexer_s* const lexer,
+	const utf8char_t utf8char,
+	const bool buffer);
+
+static bool is_symbol_first_of_identifier_or_keyword(
+	const utf8char_t utf8char);
+
+static bool is_symbol_not_first_of_identifier_or_keyword(
+	const utf8char_t utf8char);
+
+static bool is_symbol_first_of_numeric_literal(
+	const utf8char_t utf8char);
+
+static mirac_token_type_e lex_identifier_or_keyword(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
+
+static bool lex_numeric_literal_token(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
+
+static uint8_t lex_possible_rune(
+	mirac_lexer_s* const lexer,
+	char* const rune);
+
+static mirac_token_type_e lex_string_literal_token(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
 
 mirac_token_type_e mirac_token_type_from_string(
 	const char* const string)
@@ -111,9 +177,9 @@ mirac_token_type_e mirac_token_type_from_string(
 }
 
 const char* mirac_token_type_to_string(
-	const mirac_token_type_e type)
+	const mirac_token_type_e token_type)
 {
-	switch (type)
+	switch (token_type)
 	{
 		case mirac_token_type_literal_i8:
 		{
@@ -192,8 +258,8 @@ const char* mirac_token_type_to_string(
 
 		default:
 		{
-			mirac_debug_assert(type < (sizeof(g_token_type_to_string_map) / sizeof(g_token_type_to_string_map[0])));
-			const char* const stringified_type = (const char* const)g_token_type_to_string_map[type];
+			mirac_debug_assert(token_type < (sizeof(g_token_type_to_string_map) / sizeof(g_token_type_to_string_map[0])));
+			const char* const stringified_type = (const char* const)g_token_type_to_string_map[token_type];
 			mirac_debug_assert(stringified_type != NULL);
 			return stringified_type;
 		} break;
@@ -201,7 +267,7 @@ const char* mirac_token_type_to_string(
 }
 
 mirac_token_s mirac_token_from_parts(
-	const mirac_token_type_e type,
+	const mirac_token_type_e token_type,
 	const mirac_location_s location)
 {
 	mirac_token_s token;
@@ -209,20 +275,20 @@ mirac_token_s mirac_token_from_parts(
 		(void* const)&token, 0, sizeof(mirac_token_s)
 	);
 
-	token.type = type;
+	token.type = token_type;
 	token.location = location;
 	return token;
 }
 
 mirac_token_s mirac_token_from_type(
-	const mirac_token_type_e type)
+	const mirac_token_type_e token_type)
 {
 	mirac_token_s token;
 	mirac_utils_memset(
 		(void* const)&token, 0, sizeof(mirac_token_s)
 	);
 
-	token.type = type;
+	token.type = token_type;
 	return token;
 }
 
@@ -330,81 +396,6 @@ const char* mirac_token_to_string(
 	token_string_buffer[written] = 0;
 	return token_string_buffer;
 }
-
-static int32_t compare_keyword_tokens(
-	const void* const left,
-	const void* const right)
-{
-	return mirac_utils_strcmp(
-		*(const char**)left, *(const char**)right
-	);
-}
-
-#define log_lexer_error_and_exit(_location, _format, ...)                      \
-	do {                                                                       \
-		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
-			(_location).file, (_location).line, (_location).column);           \
-		mirac_logger_error(_format, ## __VA_ARGS__);                          \
-		exit(-1);                                                              \
-	} while (0)
-
-static void update_location(
-	mirac_location_s* const location,
-	const utf8char_t utf8char);
-
-static void append_buffer(
-	mirac_lexer_s* const lexer,
-	const char* const buffer,
-	const uint64_t size);
-
-static utf8char_t next_utf8char(
-	mirac_lexer_s* const lexer,
-	mirac_location_s* const location,
-	const bool buffer);
-
-static bool is_symbol_a_white_space(
-	const utf8char_t utf8char);
-
-static utf8char_t get_utf8char(
-	mirac_lexer_s* const lexer,
-	mirac_location_s* const location);
-
-static void clear_buffer(
-	mirac_lexer_s* const lexer);
-
-static void consume_buffer(
-	mirac_lexer_s* const lexer,
-	const uint64_t length);
-
-static void push_utf8char(
-	mirac_lexer_s* const lexer,
-	const utf8char_t utf8char,
-	const bool buffer);
-
-static bool is_symbol_first_of_identifier_or_keyword(
-	const utf8char_t utf8char);
-
-static bool is_symbol_not_first_of_identifier_or_keyword(
-	const utf8char_t utf8char);
-
-static bool is_symbol_first_of_numeric_literal(
-	const utf8char_t utf8char);
-
-static mirac_token_type_e lex_identifier_or_keyword(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
-
-static bool lex_numeric_literal_token(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
-
-static uint8_t lex_possible_rune(
-	mirac_lexer_s* const lexer,
-	char* const rune);
-
-static mirac_token_type_e lex_string_literal_token(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
 
 mirac_lexer_s mirac_lexer_from_parts(
 	const char* const file_path,
@@ -559,6 +550,15 @@ void mirac_lexer_unlex(
 	// TODO: make this not an assert ~~~~~~~~~~~~~~~~~~~~~~~~~~~~v?
 	mirac_debug_assert(mirac_token_type_none == lexer->token.type);
 	lexer->token = *token;
+}
+
+static int32_t compare_keyword_tokens(
+	const void* const left,
+	const void* const right)
+{
+	return mirac_utils_strcmp(
+		*(const char**)left, *(const char**)right
+	);
 }
 
 static void update_location(

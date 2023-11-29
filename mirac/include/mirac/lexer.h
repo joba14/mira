@@ -136,7 +136,7 @@ mirac_token_type_e mirac_token_type_from_string(
  * @brief Stringify token type.
  */
 const char* mirac_token_type_to_string(
-	const mirac_token_type_e type);
+	const mirac_token_type_e token_type);
 
 typedef struct
 {
@@ -170,7 +170,7 @@ typedef struct
  * @note All the other fields will be set to 0.
  */
 mirac_token_s mirac_token_from_parts(
-	const mirac_token_type_e type,
+	const mirac_token_type_e token_type,
 	const mirac_location_s location);
 
 /**
@@ -179,7 +179,7 @@ mirac_token_s mirac_token_from_parts(
  * @note All the other fields will be set to 0.
  */
 mirac_token_s mirac_token_from_type(
-	const mirac_token_type_e type);
+	const mirac_token_type_e token_type);
 
 /**
  * @brief Destroy token and free all its resources.
