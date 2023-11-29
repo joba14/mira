@@ -81,9 +81,9 @@ int32_t main(
 		return -1;
 	}
 
-	for (uint64_t index = 0; index < source_files_count; ++index)
+	for (uint64_t source_file_index = 0; source_file_index < source_files_count; ++source_file_index)
 	{
-		const char* const source_file_path = source_files[index];
+		const char* const source_file_path = source_files[source_file_index];
 		mirac_debug_assert(source_file_path != NULL);
 
 		const uint64_t source_file_path_length = strlen(source_file_path);
@@ -94,7 +94,14 @@ int32_t main(
 
 		mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
 		mirac_parser_s parser = mirac_parser_from_parts(&lexer);
-		mirac_parser_parse(&parser);
+		mirac_globals_vector_s globals = mirac_parser_parse(&parser);
+
+		for (uint64_t global_index = 0; global_index < globals.count; ++global_index)
+		{
+			mirac_logger_debug("[%lu] %s\n", global_index,
+				mirac_global_to_string(&globals.data[global_index])
+			);
+		}
 
 		(void)fclose(source_file);
 	}

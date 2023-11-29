@@ -1,0 +1,6 @@
+
+inl func main req i64 ret i64 do
+	loop 1 do
+		69 print
+	end
+end

@@ -17,6 +17,170 @@
 
 #include <stddef.h>
 
+mirac_implement_vector_type(mirac_tokens_vector, mirac_token_s);
+mirac_implement_vector_type(mirac_globals_vector, mirac_global_s);
+
+#define log_parser_error_and_exit(_location, _format, ...)                     \
+	do {                                                                       \
+		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
+			(_location).file, (_location).line, (_location).column);           \
+		mirac_logger_error(_format, ## __VA_ARGS__);                           \
+		exit(-1);                                                              \
+	} while (0)
+
+static mirac_global_function_s try_parse_function(
+	mirac_parser_s* const parser);
+
+static mirac_global_memory_s try_parse_memory(
+	mirac_parser_s* const parser);
+
+static mirac_global_string_s try_parse_string(
+	mirac_parser_s* const parser);
+
+const char* mirac_global_type_to_string(
+	const mirac_global_type_e global_type)
+{
+	switch (global_type)
+	{
+		case mirac_global_type_function:
+		{
+			return "function";
+		} break;
+
+		case mirac_global_type_memory:
+		{
+			return "memory";
+		} break;
+
+		case mirac_global_type_string:
+		{
+			return "string";
+		} break;
+
+		default:
+		{
+			mirac_debug_assert(0);
+			return NULL;
+		} break;
+	}
+}
+
+const char* mirac_global_to_string(
+	const mirac_global_s* const global)
+{
+	mirac_debug_assert(global != NULL);
+	#define global_string_buffer_capacity 4096
+	static char global_string_buffer[global_string_buffer_capacity + 1];
+	global_string_buffer[0] = 0;
+
+	uint64_t written = (uint64_t)snprintf(
+		global_string_buffer, global_string_buffer_capacity,
+		"Global[type='%s'", mirac_global_type_to_string(global->type)
+	);
+
+	switch (global->type)
+	{
+		case mirac_global_type_function:
+		{
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"\n    ident: '%s'\n", mirac_token_to_string(&global->function.identifier)
+			);
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"    req (%lu):\n", global->function.req_tokens.count
+			);
+
+			for (uint64_t index = 0; index < global->function.req_tokens.count; ++index)
+			{
+				written += (uint64_t)snprintf(
+					global_string_buffer + written, global_string_buffer_capacity - written,
+					"        [%lu]: '%s'\n", index, mirac_token_to_string(&global->function.req_tokens.data[index])
+				);
+			}
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"    ret (%lu):\n", global->function.ret_tokens.count
+			);
+
+			for (uint64_t index = 0; index < global->function.ret_tokens.count; ++index)
+			{
+				written += (uint64_t)snprintf(
+					global_string_buffer + written, global_string_buffer_capacity - written,
+					"        [%lu]: '%s'\n", index, mirac_token_to_string(&global->function.ret_tokens.data[index])
+				);
+			}
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"    body (%lu):\n", global->function.body_tokens.count
+			);
+
+			for (uint64_t index = 0; index < global->function.body_tokens.count; ++index)
+			{
+				written += (uint64_t)snprintf(
+					global_string_buffer + written, global_string_buffer_capacity - written,
+					"        [%lu]: '%s'\n", index, mirac_token_to_string(&global->function.body_tokens.data[index])
+				);
+			}
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"    inlined: %s\n", (global->function.is_inlined ? "yes" : "no")
+			);
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"    entry: %s\n", (global->function.is_entry ? "yes" : "no")
+			);
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written, "]"
+			);
+		} break;
+
+		case mirac_global_type_memory:
+		{
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"\n    ident: '%s'\n", mirac_token_to_string(&global->memory.identifier)
+			);
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"    capacity: '%s'\n", mirac_token_to_string(&global->memory.capacity)
+			);
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written, "]"
+			);
+		} break;
+
+		case mirac_global_type_string:
+		{
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written,
+				"\n    literal: '%s'\n", mirac_token_to_string(&global->string.literal)
+			);
+
+			written += (uint64_t)snprintf(
+				global_string_buffer + written, global_string_buffer_capacity - written, "]"
+			);
+		} break;
+
+		default:
+		{
+			mirac_debug_assert(0);
+			return NULL;
+		} break;
+	}
+
+	global_string_buffer[written] = 0;
+	return global_string_buffer;
+}
+
 mirac_parser_s mirac_parser_from_parts(
 	mirac_lexer_s* const lexer)
 {
@@ -26,172 +190,282 @@ mirac_parser_s mirac_parser_from_parts(
 	return parser;
 }
 
-void mirac_parser_parse(
+mirac_globals_vector_s mirac_parser_parse(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(parser->lexer != NULL);
 
+	mirac_globals_vector_s globals = mirac_globals_vector_from_parts(4);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+
 	while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 	{
-		mirac_logger_log("%s", mirac_token_to_string(&token));
-
 		switch (token.type)
 		{
+			case mirac_token_type_keyword_inl:
 			case mirac_token_type_keyword_func:
 			{
-				const mirac_token_type_e token_type = mirac_lexer_lex(parser->lexer, &token);
-
-				if (token_type != mirac_token_type_keyword_req
-				 && token_type != mirac_token_type_keyword_ret
-				 && token_type != mirac_token_type_identifier)
-				{
-					mirac_logger_panic("invalid token after func!");
-				}
-			} break;
-
-			case mirac_token_type_keyword_req:
-			{
-				while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
-				{
-					if (token.type != mirac_token_type_keyword_i8 &&
-						token.type != mirac_token_type_keyword_i16 &&
-						token.type != mirac_token_type_keyword_i32 &&
-						token.type != mirac_token_type_keyword_i64 &&
-						token.type != mirac_token_type_keyword_u8 &&
-						token.type != mirac_token_type_keyword_u16 &&
-						token.type != mirac_token_type_keyword_u32 &&
-						token.type != mirac_token_type_keyword_u64 &&
-						token.type != mirac_token_type_keyword_f32 &&
-						token.type != mirac_token_type_keyword_f64 &&
-						token.type != mirac_token_type_keyword_ptr)
-					{
-						mirac_logger_panic("invalid token after req!");
-					}
-					else if (token.type != mirac_token_type_keyword_ret ||
-							 token.type != mirac_token_type_keyword_do)
-					{
-						break;
-					}
-				}
-			} break;
-
-			case mirac_token_type_keyword_ret:
-			{
-				while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
-				{
-					if (token.type != mirac_token_type_keyword_i8 &&
-						token.type != mirac_token_type_keyword_i16 &&
-						token.type != mirac_token_type_keyword_i32 &&
-						token.type != mirac_token_type_keyword_i64 &&
-						token.type != mirac_token_type_keyword_u8 &&
-						token.type != mirac_token_type_keyword_u16 &&
-						token.type != mirac_token_type_keyword_u32 &&
-						token.type != mirac_token_type_keyword_u64 &&
-						token.type != mirac_token_type_keyword_f32 &&
-						token.type != mirac_token_type_keyword_f64 &&
-						token.type != mirac_token_type_keyword_ptr)
-					{
-						mirac_logger_panic("invalid token after req!");
-					}
-					else if (token.type != mirac_token_type_keyword_do)
-					{
-						break;
-					}
-				}
+				mirac_lexer_unlex(parser->lexer, &token);
+				const mirac_global_function_s function = try_parse_function(parser);
+				const mirac_global_s global = { .type = mirac_global_type_function, .function = function };
+				mirac_globals_vector_append(&globals, &global);
 			} break;
 
 			case mirac_token_type_keyword_mem:
 			{
+				mirac_lexer_unlex(parser->lexer, &token);
+				const mirac_global_memory_s memory = try_parse_memory(parser);
+				const mirac_global_s global = { .type = mirac_global_type_memory, .memory = memory };
+				mirac_globals_vector_append(&globals, &global);
 			} break;
 
-			case mirac_token_type_keyword_if:
-			{
-			} break;
-
-			case mirac_token_type_keyword_elif:
-			{
-			} break;
-
-			case mirac_token_type_keyword_else:
-			{
-			} break;
-
-			case mirac_token_type_keyword_loop:
-			{
-			} break;
-
-			case mirac_token_type_keyword_let:
-			{
-			} break;
-
-			case mirac_token_type_keyword_as:
-			{
-			} break;
-
-			// mirac_token_type_keyword_i8
-			// mirac_token_type_keyword_i16
-			// mirac_token_type_keyword_i32
-			// mirac_token_type_keyword_i64
-			// mirac_token_type_keyword_u8
-			// mirac_token_type_keyword_u16
-			// mirac_token_type_keyword_u32
-			// mirac_token_type_keyword_u64
-			// mirac_token_type_keyword_f32
-			// mirac_token_type_keyword_f64
-			// mirac_token_type_keyword_ptr
-
-			case mirac_token_type_keyword_add:
-			case mirac_token_type_keyword_sub:
-			case mirac_token_type_keyword_mul:
-			case mirac_token_type_keyword_div:
-			case mirac_token_type_keyword_mod:
-			case mirac_token_type_keyword_eq:
-			case mirac_token_type_keyword_neq:
-			case mirac_token_type_keyword_gt:
-			case mirac_token_type_keyword_ls:
-			case mirac_token_type_keyword_gteq:
-			case mirac_token_type_keyword_lseq:
-			case mirac_token_type_keyword_land:
-			case mirac_token_type_keyword_lnot:
-			case mirac_token_type_keyword_lor:
-			case mirac_token_type_keyword_lxor:
-			case mirac_token_type_keyword_band:
-			case mirac_token_type_keyword_bnot:
-			case mirac_token_type_keyword_bor:
-			case mirac_token_type_keyword_bxor:
-			case mirac_token_type_keyword_shl:
-			case mirac_token_type_keyword_shr:
-			case mirac_token_type_keyword_dup:
-			case mirac_token_type_keyword_drop:
-			case mirac_token_type_keyword_swap:
-			case mirac_token_type_keyword_over:
-			case mirac_token_type_keyword_rot:
-			case mirac_token_type_keyword_ld8:
-			case mirac_token_type_keyword_ld16:
-			case mirac_token_type_keyword_ld32:
-			case mirac_token_type_keyword_ld64:
-			case mirac_token_type_keyword_st8:
-			case mirac_token_type_keyword_st16:
-			case mirac_token_type_keyword_st32:
-			case mirac_token_type_keyword_st64:
-			case mirac_token_type_keyword_sys1:
-			case mirac_token_type_keyword_sys2:
-			case mirac_token_type_keyword_sys3:
-			case mirac_token_type_keyword_sys4:
-			case mirac_token_type_keyword_sys5:
-			case mirac_token_type_keyword_sys6:
-			{
-			} break;
-
-			// mirac_token_type_keyword_do
-			// mirac_token_type_keyword_end
+			// NOTE: The string literals should only be found in globals, and
+			//       therefore, they are not check for here.
 
 			default:
 			{
+				log_parser_error_and_exit(token.location,
+					"invalid global token '%.*s' encountered.",
+					(signed int)token.source.length, token.source.data
+				);
 			} break;
 		}
-
-		(void)getchar();
 	}
+
+	return globals;
+}
+
+static mirac_global_function_s try_parse_function(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(parser->lexer != NULL);
+
+	mirac_global_function_s function = {0};
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+
+	if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
+	{
+		// TODO: assert?
+	}
+
+	if (mirac_token_type_keyword_inl == token.type)
+	{
+		function.is_inlined = true;
+
+		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
+		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
+		{
+			log_parser_error_and_exit(token.location,
+				"missing keyword 'func' after '%.*s' keyword.",
+				(signed int)token.source.length, token.source.data
+			);
+		}
+		else
+		{
+			token = temp_token;
+		}
+	}
+
+	if (token.type != mirac_token_type_keyword_func)
+	{
+		log_parser_error_and_exit(token.location,
+			"expected 'func' keyword after 'inl' keyword, but found token '%.*s'.",
+			(signed int)token.source.length, token.source.data
+		);
+	}
+	else
+	{
+		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
+		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
+		{
+			log_parser_error_and_exit(token.location,
+				"missing identifier token after '%.*s' keyword.",
+				(signed int)token.source.length, token.source.data
+			);
+		}
+		else
+		{
+			token = temp_token;
+		}
+	}
+
+	if (token.type != mirac_token_type_identifier)
+	{
+		log_parser_error_and_exit(token.location,
+			"expected identifier token after 'func' keyword, but found token '%.*s'.",
+			(signed int)token.source.length, token.source.data
+		);
+	}
+	else
+	{
+		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
+		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
+		{
+			log_parser_error_and_exit(token.location,
+				"missing type specifiers or/and function body after '%.*s' token.",
+				(signed int)token.source.length, token.source.data
+			);
+		}
+		else
+		{
+			token = temp_token;
+		}
+	}
+
+	if (mirac_token_type_keyword_req == token.type)
+	{
+		function.req_tokens = mirac_tokens_vector_from_parts(4);
+
+		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
+		{
+			if (mirac_token_type_keyword_i8 == token.type ||
+				mirac_token_type_keyword_i16 == token.type ||
+				mirac_token_type_keyword_i32 == token.type ||
+				mirac_token_type_keyword_i64 == token.type ||
+				mirac_token_type_keyword_u8 == token.type ||
+				mirac_token_type_keyword_u16 == token.type ||
+				mirac_token_type_keyword_u32 == token.type ||
+				mirac_token_type_keyword_u64 == token.type ||
+				mirac_token_type_keyword_f32 == token.type ||
+				mirac_token_type_keyword_f64 == token.type ||
+				mirac_token_type_keyword_ptr == token.type)
+			{
+				mirac_tokens_vector_append(&function.req_tokens, &token);
+			}
+			else if (mirac_token_type_keyword_ret == token.type ||
+					 mirac_token_type_keyword_do == token.type)
+			{
+				if (function.req_tokens.count <= 0)
+				{
+					log_parser_error_and_exit(token.location,
+						"no type specifiers we found after 'req' keyword."
+					);
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				log_parser_error_and_exit(token.location,
+					"invalid token `%.*s` encountered instead of a type, 'ret', or 'do' keywords.",
+					(signed int)token.source.length, token.source.data
+				);
+			}
+		}
+	}
+
+	if (mirac_token_type_keyword_ret == token.type)
+	{
+		function.ret_tokens = mirac_tokens_vector_from_parts(4);
+
+		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
+		{
+			if (mirac_token_type_keyword_i8 == token.type ||
+				mirac_token_type_keyword_i16 == token.type ||
+				mirac_token_type_keyword_i32 == token.type ||
+				mirac_token_type_keyword_i64 == token.type ||
+				mirac_token_type_keyword_u8 == token.type ||
+				mirac_token_type_keyword_u16 == token.type ||
+				mirac_token_type_keyword_u32 == token.type ||
+				mirac_token_type_keyword_u64 == token.type ||
+				mirac_token_type_keyword_f32 == token.type ||
+				mirac_token_type_keyword_f64 == token.type ||
+				mirac_token_type_keyword_ptr == token.type)
+			{
+				mirac_tokens_vector_append(&function.ret_tokens, &token);
+			}
+			else if (mirac_token_type_keyword_do == token.type)
+			{
+				if (function.ret_tokens.count <= 0)
+				{
+					log_parser_error_and_exit(token.location,
+						"no type specifiers we found after 'ret' keyword."
+					);
+				}
+				else
+				{
+					break;
+				}
+			}
+			else
+			{
+				log_parser_error_and_exit(token.location,
+					"invalid token `%.*s` encountered instead of a type, or 'do' keyword.",
+					(signed int)token.source.length, token.source.data
+				);
+			}
+		}
+	}
+
+	if (mirac_token_type_keyword_do != token.type)
+	{
+		log_parser_error_and_exit(token.location,
+			"expected 'do' keyword after type specifiers or function identifier, but found token '%.*s'.",
+			(signed int)token.source.length, token.source.data
+		);
+	}
+	else
+	{
+		function.body_tokens = mirac_tokens_vector_from_parts(4);
+		int64_t scopes_counter = 1;
+
+		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
+		{
+			if (mirac_token_type_keyword_do == token.type)
+			{
+				++scopes_counter;
+			}
+			else if (mirac_token_type_keyword_end == token.type)
+			{
+				--scopes_counter;
+			}
+
+			mirac_tokens_vector_append(&function.body_tokens, &token);
+
+			if (scopes_counter <= 0)
+			{
+				break;
+			}
+		}
+
+		if (scopes_counter != 0)
+		{
+			mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
+			if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
+			{
+				log_parser_error_and_exit(token.location,
+					"unclosed scope (too many 'do' keywords) encountered."
+				);
+			}
+			else
+			{
+				token = temp_token;
+			}
+		}
+	}
+
+	return function;
+}
+
+static mirac_global_memory_s try_parse_memory(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(parser->lexer != NULL);
+
+	(void)try_parse_string(parser);
+	return (mirac_global_memory_s) {0};
+}
+
+static mirac_global_string_s try_parse_string(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(parser->lexer != NULL);
+
+	return (mirac_global_string_s) {0};
 }
