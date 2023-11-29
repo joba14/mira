@@ -120,7 +120,6 @@ typedef enum
 	mirac_token_type_literal_cstr,
 
 	mirac_token_type_identifier,
-	mirac_token_type_invalid,
 
 	// Magic tokens
 	mirac_token_type_eof,
@@ -203,6 +202,7 @@ typedef struct
 	FILE* file;
 	mirac_location_s location;
 	uint64_t tokens_count;
+	mirac_token_s token;
 
 	struct
 	{
@@ -255,5 +255,9 @@ mirac_token_type_e mirac_lexer_lex(
  */
 bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type);
+
+void mirac_lexer_unlex(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
 
 #endif

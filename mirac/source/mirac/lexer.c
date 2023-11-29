@@ -180,11 +180,6 @@ const char* mirac_token_type_to_string(
 			return "identifier";
 		} break;
 
-		case mirac_token_type_invalid:
-		{
-			return "invalid";
-		} break;
-
 		case mirac_token_type_eof:
 		{
 			return "eof";
@@ -424,6 +419,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 	lexer.location.line = 1;
 	lexer.location.column = 0;
 	lexer.tokens_count = 0;
+	lexer.token = mirac_token_from_type(mirac_token_type_none);
 
 	lexer.buffer.capacity = 256;
 	lexer.buffer.data = mirac_utils_malloc(lexer.buffer.capacity * sizeof(char));
@@ -448,6 +444,13 @@ mirac_token_type_e mirac_lexer_lex(
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
 
+	if (lexer->token.type != mirac_token_type_none)
+	{
+		*token = lexer->token;
+		lexer->token = mirac_token_from_type(mirac_token_type_none);
+		return token->type;
+	}
+
 	utf8char_t utf8char = get_utf8char(lexer, &token->location);
 
 	if (mirac_utf8_invalid == utf8char)
@@ -455,57 +458,54 @@ mirac_token_type_e mirac_lexer_lex(
 		return mirac_token_type_eof;
 	}
 
-	// Skipping white spaces
-	while (utf8char != mirac_utf8_invalid)
-	{
-		if (!is_symbol_a_white_space(utf8char))
-		{
-			break;
-		}
-
-		utf8char = next_utf8char(lexer, NULL, false);
-	}
-
 	// Single and multi line comments
-	if ('/' == utf8char)
+	switch (utf8char)
 	{
-		switch ((utf8char = next_utf8char(lexer, NULL, false)))
+		case '/':
 		{
-			case '/':
+			switch ((utf8char = next_utf8char(lexer, NULL, false)))
 			{
-				while ((utf8char = next_utf8char(lexer, NULL, false)) != mirac_utf8_invalid && utf8char != '\n');
-				return mirac_lexer_lex(lexer, token);
-			} break;
-
-			case '*':
-			{
-				utf8char_t last_utf8char = utf8char;
-				utf8char = next_utf8char(lexer, NULL, false);
-
-				while (last_utf8char != mirac_utf8_invalid && utf8char != mirac_utf8_invalid
-					&& (last_utf8char != '*' || utf8char != '/'))
+				case '/':
 				{
-					last_utf8char = utf8char;
+					while ((utf8char = next_utf8char(lexer, NULL, false)) != mirac_utf8_invalid && utf8char != '\n');
+					return mirac_lexer_lex(lexer, token);
+				} break;
+
+				case '*':
+				{
+					utf8char_t last_utf8char = utf8char;
 					utf8char = next_utf8char(lexer, NULL, false);
-				}
 
-				return mirac_lexer_lex(lexer, token);
-			} break;
+					while (last_utf8char != mirac_utf8_invalid && utf8char != mirac_utf8_invalid
+						&& (last_utf8char != '*' || utf8char != '/'))
+					{
+						last_utf8char = utf8char;
+						utf8char = next_utf8char(lexer, NULL, false);
+					}
 
-			default:
-			{
-				char invalid[4];
-				const uint8_t length = mirac_utf8_encode(invalid, utf8char);
-				log_lexer_error_and_exit(lexer->location, "invalid token '%.*s' encountered near comment.",
-					(signed int)length, invalid);
-				return mirac_token_type_none;
-			} break;
-		}
-	}
-	else if (';' == utf8char)
-	{
-		while ((utf8char = next_utf8char(lexer, NULL, false)) != mirac_utf8_invalid && utf8char != '\n');
-		return mirac_lexer_lex(lexer, token);
+					return mirac_lexer_lex(lexer, token);
+				} break;
+
+				default:
+				{
+					char invalid[4];
+					const uint8_t length = mirac_utf8_encode(invalid, utf8char);
+					log_lexer_error_and_exit(lexer->location, "invalid token '%.*s' encountered near comment.",
+						(signed int)length, invalid);
+					return mirac_token_type_none;
+				} break;
+			}
+		} break;
+
+		case ';':
+		{
+			while ((utf8char = next_utf8char(lexer, NULL, false)) != mirac_utf8_invalid && utf8char != '\n');
+			return mirac_lexer_lex(lexer, token);
+		} break;
+
+		default:
+		{
+		} break;
 	}
 
 	// String literals
@@ -547,6 +547,18 @@ bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type)
 {
 	return mirac_token_type_none == type || mirac_token_type_eof == type;
+}
+
+void mirac_lexer_unlex(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token)
+{
+	mirac_debug_assert(lexer != NULL);
+	mirac_debug_assert(token != NULL);
+
+	// TODO: make this not an assert ~~~~~~~~~~~~~~~~~~~~~~~~~~~~v?
+	mirac_debug_assert(mirac_token_type_none == lexer->token.type);
+	lexer->token = *token;
 }
 
 static void update_location(
