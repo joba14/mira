@@ -500,6 +500,11 @@ mirac_token_type_e mirac_lexer_lex(
 			} break;
 		}
 	}
+	else if (';' == utf8char)
+	{
+		while ((utf8char = next_utf8char(lexer, NULL, false)) != mirac_utf8_invalid && utf8char != '\n');
+		return mirac_lexer_lex(lexer, token);
+	}
 
 	// String literals
 	if ('\"' == utf8char)

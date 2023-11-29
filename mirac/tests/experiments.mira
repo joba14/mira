@@ -1,4 +1,5 @@
 
+// Check if number is odd
 inl func is-odd?
 	req i64
 	ret i8
@@ -8,11 +9,15 @@ do
 	end
 end
 
+/* aaaa
+	Entry of the program
+*/
 func main
 	req i64
 	ret i64
 do
 	let num do
+		; Call the is-odd? function
 		num is-odd? as i64
 	end
 end
