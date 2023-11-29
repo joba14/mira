@@ -464,7 +464,7 @@ mirac_token_type_e mirac_lexer_lex(
 		utf8char = next_utf8char(lexer, NULL, false);
 	}
 
-	// Single and multiline Comments
+	// Single and multi line comments
 	if ('/' == utf8char)
 	{
 		switch ((utf8char = next_utf8char(lexer, NULL, false)))
@@ -494,7 +494,7 @@ mirac_token_type_e mirac_lexer_lex(
 			{
 				char invalid[4];
 				const uint8_t length = mirac_utf8_encode(invalid, utf8char);
-				log_lexer_error_and_exit(token->location, "invalid token encountered: `%.*s`",
+				log_lexer_error_and_exit(token->location, "invalid token `%.*s` encountered near comment.",
 					(signed int)length, invalid);
 				return mirac_token_type_none;
 			} break;
@@ -536,7 +536,7 @@ mirac_token_type_e mirac_lexer_lex(
 	// Invalid token
 	char invalid[4];
 	const uint8_t length = mirac_utf8_encode(invalid, utf8char);
-	log_lexer_error_and_exit(token->location, "invalid token encountered: `%.*s`",
+	log_lexer_error_and_exit(token->location, "invalid token `%.*s` encountered.",
 		(signed int)length, invalid);
 	return mirac_token_type_none;
 }
@@ -769,7 +769,7 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	if (!is_symbol_a_white_space(utf8char))
 	{
 		log_lexer_error_and_exit(
-			lexer->location, "invalid symbol `%c` following identifier `%.*s`.",
+			lexer->location, "invalid (non-white-space) symbol `%c` encountered after the identifier `%.*s`.",
 			(char)utf8char, (signed int)token->ident.length, token->ident.data
 		);
 	}
@@ -870,14 +870,14 @@ static bool lex_numeric_literal_token(
 
 		if (is_symbol_first_of_numeric_literal(utf8char))
 		{
-			log_lexer_error_and_exit(token->location, "leading zero in base 10 numeric literal.");
+			log_lexer_error_and_exit(token->location, "leading zero encountered in base 10 numeric literal.");
 		}
 
 		if ('b' == utf8char)
 		{
 			if (sign_symbol != 0)
 			{
-				log_lexer_error_and_exit(token->location, "sign symbol `%c` before binary notation is not allowed.", (char)sign_symbol);
+				log_lexer_error_and_exit(token->location, "sign symbol `%c` before binary notation literal is not allowed.", (char)sign_symbol);
 			}
 
 			state = base_bin | 1 << flag_dig;
@@ -887,7 +887,7 @@ static bool lex_numeric_literal_token(
 		{
 			if (sign_symbol != 0)
 			{
-				log_lexer_error_and_exit(token->location, "sign symbol `%c` before octal notation is not allowed.", (char)sign_symbol);
+				log_lexer_error_and_exit(token->location, "sign symbol `%c` before octal notation literal is not allowed.", (char)sign_symbol);
 			}
 
 			state = base_oct | 1 << flag_dig;
@@ -897,7 +897,7 @@ static bool lex_numeric_literal_token(
 		{
 			if (sign_symbol != 0)
 			{
-				log_lexer_error_and_exit(token->location, "sign symbol `%c` before hexadecimal notation is not allowed.", (char)sign_symbol);
+				log_lexer_error_and_exit(token->location, "sign symbol `%c` before hexadecimal notation literal is not allowed.", (char)sign_symbol);
 			}
 
 			state = base_hex | 1 << flag_dig;
@@ -976,7 +976,7 @@ static bool lex_numeric_literal_token(
 
 		if (state & 1 << flag_flt && lexer->require_int)
 		{
-			log_lexer_error_and_exit(token->location, "expected integer literal.");
+			log_lexer_error_and_exit(token->location, "expected numeric integer, but encountered floating point literal.");
 		}
 
 		last = utf8char;
@@ -995,7 +995,7 @@ end:
 	}
 	else if (utf8char != mirac_utf8_invalid && !is_symbol_a_white_space(utf8char))
 	{
-		log_lexer_error_and_exit(lexer->location, "invalid symbol `%c` after numeric literal.", (char)utf8char);
+		log_lexer_error_and_exit(lexer->location, "invalid symbol `%c` encountered after a numeric literal.", (char)utf8char);
 
 want_int:
 		push_utf8char(lexer, utf8char, true);
@@ -1003,7 +1003,7 @@ want_int:
 
 	if (sign_symbol != 0 && lexer->buffer.length < 3)
 	{
-		log_lexer_error_and_exit(lexer->location, "missing the numeric literal.");
+		log_lexer_error_and_exit(lexer->location, "missing the numeric literal after sign symbol `%c`.", (char)sign_symbol);
 	}
 
 	lexer->require_int = false;
@@ -1054,7 +1054,7 @@ want_int:
 		if (kind_unknown == kind)
 		{
 			log_lexer_error_and_exit(
-				token->location, "invalid suffix `%s`.", lexer->buffer.data + suffix_start
+				token->location, "invalid suffix `%s` encountered.", lexer->buffer.data + suffix_start
 			);
 		}
 	}
@@ -1095,7 +1095,7 @@ want_int:
 
 	if (ERANGE == errno)
 	{
-		log_lexer_error_and_exit(token->location, "numeric literal overflow.");
+		log_lexer_error_and_exit(token->location, "numeric literal overflow encountered.");
 	}
 
 	if (kind_iconst == kind && token->uval > (uint64_t)INT64_MAX)
@@ -1218,7 +1218,7 @@ static uint8_t lex_possible_rune(
 
 					if (*end_pointer != '\0')
 					{
-						log_lexer_error_and_exit(location, "invalid hex literal.");
+						log_lexer_error_and_exit(location, "invalid hex literal encountered.");
 					}
 
 					rune[0] = (char)utf8char;
@@ -1237,7 +1237,7 @@ static uint8_t lex_possible_rune(
 
 					if (*end_pointer != '\0')
 					{
-						log_lexer_error_and_exit(location, "invalid hex literal.");
+						log_lexer_error_and_exit(location, "invalid hex literal encountered.");
 					}
 
 					return mirac_utf8_encode(rune, utf8char);
@@ -1259,7 +1259,7 @@ static uint8_t lex_possible_rune(
 
 					if (*end_pointer != '\0')
 					{
-						log_lexer_error_and_exit(location, "invalid hex literal.");
+						log_lexer_error_and_exit(location, "invalid hex literal encountered.");
 					}
 
 					return mirac_utf8_encode(rune, utf8char);
@@ -1267,12 +1267,12 @@ static uint8_t lex_possible_rune(
 
 				case mirac_utf8_invalid:
 				{
-					log_lexer_error_and_exit(lexer->location, "unexpected end of file.");
+					log_lexer_error_and_exit(lexer->location, "unexpected end of file encountered.");
 				} break;
 
 				default:
 				{
-					log_lexer_error_and_exit(location, "invalid escape '\\%c'.", (char)utf8char);
+					log_lexer_error_and_exit(location, "invalid escape '\\%c' encountered.", (char)utf8char);
 				} break;
 			}
 
@@ -1314,7 +1314,7 @@ static mirac_token_type_e lex_string_literal_token(
 			{
 				if (utf8char == mirac_utf8_invalid)
 				{
-					log_lexer_error_and_exit(lexer->location, "unexpected end of file.");
+					log_lexer_error_and_exit(lexer->location, "unexpected end of file encountered.");
 				}
 
 				push_utf8char(lexer, utf8char, false);
@@ -1346,7 +1346,7 @@ static mirac_token_type_e lex_string_literal_token(
 
 			if (!is_symbol_a_white_space(suffix))
 			{
-				log_lexer_error_and_exit(lexer->location, "invalid suffix `%c` after string literal.", (char)suffix);
+				log_lexer_error_and_exit(lexer->location, "invalid suffix `%c` encountered after a string literal.", (char)suffix);
 			}
 
 			token->str.data = string;
