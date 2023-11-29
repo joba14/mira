@@ -98,7 +98,7 @@ static const char* const g_token_type_to_string_map[] =
 	do {                                                                       \
 		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
 			(_location).file, (_location).line, (_location).column);           \
-		mirac_logger_error(_format, ## __VA_ARGS__);                          \
+		mirac_logger_error(_format, ## __VA_ARGS__);                           \
 		exit(-1);                                                              \
 	} while (0)
 
@@ -296,26 +296,8 @@ void mirac_token_destroy(
 	mirac_token_s* const token)
 {
 	mirac_debug_assert(token != NULL);
-
-	switch (token->type)
-	{
-		case mirac_token_type_literal_str:
-		{
-			mirac_utils_free(token->str.data);
-		} break;
-
-		case mirac_token_type_identifier:
-		{
-			mirac_utils_free(token->ident.data);
-		} break;
-	
-		default:
-		{
-		} break;
-	}
-
-	mirac_utils_memset(
-		(void* const)token, 0, sizeof(mirac_token_s));
+	mirac_utils_free(token->source.data);
+	mirac_utils_memset((void* const)token, 0, sizeof(mirac_token_s));
 	token->type = mirac_token_type_none;
 }
 
@@ -329,10 +311,11 @@ const char* mirac_token_to_string(
 
 	uint64_t written = (uint64_t)snprintf(
 		token_string_buffer, token_string_buffer_capacity,
-		"Token[type='%s', location='" mirac_location_fmt "', index='%lu'",
+		"Token[type='%s', location='" mirac_location_fmt "', index='%lu', source='%.*s'",
 		mirac_token_type_to_string(token->type),
 		mirac_location_arg(token->location),
-		token->index
+		token->index,
+		(signed int)token->source.length, token->source.data
 	);
 
 	switch (token->type)
@@ -776,16 +759,26 @@ static mirac_token_type_e lex_identifier_or_keyword(
 		}
 	}
 
-	token->type = mirac_token_type_from_string(lexer->buffer.data);
-	token->ident.data = mirac_utils_strndup(lexer->buffer.data, lexer->buffer.length);
-	token->ident.length = lexer->buffer.length;
-
 	if (!is_symbol_a_white_space(utf8char))
 	{
 		log_lexer_error_and_exit(
 			lexer->location, "invalid (non-white-space) symbol '%c' encountered after the identifier '%.*s'.",
 			(char)utf8char, (signed int)token->ident.length, token->ident.data
 		);
+	}
+
+	const uint64_t keyword_or_identifier_length = lexer->buffer.length;
+	char* const keyword_or_identifier = mirac_utils_strndup(lexer->buffer.data, keyword_or_identifier_length);
+
+	token->source.data = keyword_or_identifier;
+	token->source.length = keyword_or_identifier_length;
+
+	token->type = mirac_token_type_from_string(lexer->buffer.data);
+
+	if (mirac_token_type_identifier == token->type)
+	{
+		token->ident.data = keyword_or_identifier;
+		token->ident.length = keyword_or_identifier_length;
 	}
 
 	token->index = lexer->tokens_count;
@@ -1087,6 +1080,13 @@ want_int:
 			log_lexer_error_and_exit(token->location, "unexpected decimal point in integer literal");
 		}
 
+		const uint64_t float_literal_length = lexer->buffer.length - 1;
+		char* const float_literal = mirac_utils_malloc((float_literal_length + 1) * sizeof(char));
+		mirac_utils_memcpy(float_literal, lexer->buffer.data, float_literal_length);
+
+		token->source.data = float_literal;
+		token->source.length = float_literal_length;
+
 		token->fval = strtod(lexer->buffer.data, NULL);
 
 		token->index = lexer->tokens_count;
@@ -1136,6 +1136,13 @@ want_int:
 			token->ival *= -1;
 		}
 	}
+
+	const uint64_t integer_literal_length = lexer->buffer.length - 1;
+	char* const integer_literal = mirac_utils_malloc((integer_literal_length + 1) * sizeof(char));
+	mirac_utils_memcpy(integer_literal, lexer->buffer.data, integer_literal_length);
+
+	token->source.data = integer_literal;
+	token->source.length = integer_literal_length;
 
 	token->index = lexer->tokens_count;
 	lexer->tokens_count++;
@@ -1354,8 +1361,9 @@ static mirac_token_type_e lex_string_literal_token(
 				}
 			}
 
-			char* const string = mirac_utils_malloc((lexer->buffer.length + 1) * sizeof(char));
-			mirac_utils_memcpy(string, lexer->buffer.data, lexer->buffer.length);
+			const uint64_t string_length = lexer->buffer.length;
+			char* const string = mirac_utils_malloc((string_length + 1) * sizeof(char));
+			mirac_utils_memcpy(string, lexer->buffer.data, string_length);
 
 			utf8char_t suffix = next_utf8char(lexer, NULL, true);
 			if ('c' == suffix)
@@ -1373,8 +1381,11 @@ static mirac_token_type_e lex_string_literal_token(
 				log_lexer_error_and_exit(lexer->location, "invalid suffix '%c' encountered after a string literal.", (char)suffix);
 			}
 
+			token->source.data = string;
+			token->source.length = string_length;
+
 			token->str.data = string;
-			token->str.length = lexer->buffer.length;
+			token->str.length = string_length;
 
 			token->index = lexer->tokens_count;
 			lexer->tokens_count++;

@@ -162,6 +162,12 @@ typedef struct
 			uint64_t length;
 		} ident;
 	};
+
+	struct
+	{
+		char* data;
+		uint64_t length;
+	} source;
 } mirac_token_s;
 
 /**
