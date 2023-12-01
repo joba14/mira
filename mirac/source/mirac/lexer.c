@@ -768,7 +768,8 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	}
 
 	const uint64_t keyword_or_identifier_length = lexer->buffer.length;
-	char* const keyword_or_identifier = mirac_utils_strndup(lexer->buffer.data, keyword_or_identifier_length);
+	char* const keyword_or_identifier = mirac_utils_malloc((keyword_or_identifier_length + 1) * sizeof(char));
+	mirac_utils_memcpy(keyword_or_identifier, lexer->buffer.data, keyword_or_identifier_length);
 
 	token->source.data = keyword_or_identifier;
 	token->source.length = keyword_or_identifier_length;
