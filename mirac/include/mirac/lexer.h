@@ -216,6 +216,10 @@ bool mirac_token_is_signed_integer_literal(
 bool mirac_token_is_unsigned_integer_literal(
 	mirac_token_s* const token);
 
+// TODO: document:
+bool mirac_token_is_string_literal(
+	mirac_token_s* const token);
+
 /**
  * @brief Print the token to the stdout.
  */

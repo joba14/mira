@@ -372,6 +372,16 @@ bool mirac_token_is_unsigned_integer_literal(
 	);
 }
 
+bool mirac_token_is_string_literal(
+	mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	return (
+		mirac_token_type_literal_str == token->type ||
+		mirac_token_type_literal_cstr == token->type
+	);
+}
+
 void mirac_token_print(
 	const mirac_token_s* const token)
 {
@@ -419,12 +429,27 @@ void mirac_token_print(
 		{
 			(void)printf(", value='%.*s']", (signed int)token->as_ident.length, token->as_ident.data);
 		} break;
-	
+
 		default:
 		{
-			(void)printf("]");
 		} break;
 	}
+
+	if (token->prev_ref != NULL)
+	{
+		(void)printf(", prev_ref='TokenRef[type='%s', index='%lu']'",
+			mirac_token_type_to_string(token->prev_ref->type), token->prev_ref->index
+		);
+	}
+
+	if (token->next_ref != NULL)
+	{
+		(void)printf(", next_ref='TokenRef[type='%s', index='%lu']'",
+			mirac_token_type_to_string(token->next_ref->type), token->next_ref->index
+		);
+	}
+
+	(void)printf("]\n");
 }
 
 mirac_lexer_s mirac_lexer_from_parts(

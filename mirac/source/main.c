@@ -17,6 +17,7 @@
 #include <mirac/config.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
+#include <mirac/checker.h>
 
 #include <stddef.h>
 #include <string.h>
@@ -65,8 +66,12 @@ int32_t main(
 
 		for (uint64_t global_index = 0; global_index < unit.globals.count; ++global_index)
 		{
-			mirac_logger_debug("[%lu] ", global_index);
 			mirac_global_print(&unit.globals.data[global_index]);
+		}
+
+		for (uint64_t string_index = 0; string_index < unit.strings.count; ++string_index)
+		{
+			mirac_token_print(&unit.strings.data[string_index]);
 		}
 
 		(void)fclose(source_file);

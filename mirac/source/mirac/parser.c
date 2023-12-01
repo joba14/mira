@@ -74,49 +74,44 @@ void mirac_global_print(
 	{
 		case mirac_global_type_function:
 		{
-			(void)printf("\n    ident: '");
-				mirac_token_print(&global->as_function.identifier);
-			(void)printf("'\n");
+			(void)printf("\n    ident: ");
+			mirac_token_print(&global->as_function.identifier);
 
 			(void)printf("    req (%lu):\n", global->as_function.req_tokens.count);
 
 			for (uint64_t index = 0; index < global->as_function.req_tokens.count; ++index)
 			{
-				(void)printf("        [%lu]: '", index);
+				(void)printf("        [%lu]: ", index);
 				mirac_token_print(&global->as_function.req_tokens.data[index]);
-				(void)printf("'\n");
 			}
 
 			(void)printf("    ret (%lu):\n", global->as_function.ret_tokens.count);
 
 			for (uint64_t index = 0; index < global->as_function.ret_tokens.count; ++index)
 			{
-				(void)printf("        [%lu]: '", index);
+				(void)printf("        [%lu]: ", index);
 				mirac_token_print(&global->as_function.ret_tokens.data[index]);
-				(void)printf("'\n");
 			}
 
 			(void)printf("    body (%lu):\n", global->as_function.body_tokens.count);
 
 			for (uint64_t index = 0; index < global->as_function.body_tokens.count; ++index)
 			{
-				(void)printf("        [%lu]: '", index);
+				(void)printf("        [%lu]: ", index);
 				mirac_token_print(&global->as_function.body_tokens.data[index]);
-				(void)printf("'\n");
 			}
 
 			(void)printf("    inlined: %s\n", (global->as_function.is_inlined ? "yes" : "no"));
-			(void)printf("    entry: %s\n]", (global->as_function.is_entry ? "yes" : "no"));
+			(void)printf("    entry: %s\n]\n", (global->as_function.is_entry ? "yes" : "no"));
 		} break;
 
 		case mirac_global_type_memory:
 		{
-			(void)printf("\n    ident: '");
+			(void)printf("\n    ident: ");
 			mirac_token_print(&global->as_memory.identifier);
-			(void)printf("'\n");
-			(void)printf("    capacity: '");
+			(void)printf("    capacity: ");
 			mirac_token_print(&global->as_memory.capacity);
-			(void)printf("'\n]");
+			(void)printf("]\n");
 		} break;
 
 		default:
@@ -252,7 +247,7 @@ static mirac_global_function_s try_parse_function(
 		if (function.is_entry && function.is_inlined)
 		{
 			log_parser_error_and_exit(token.location,
-				"entry function `%.*s` cannot be inlined.",
+				"entry function '%.*s' cannot be inlined.",
 				(signed int)function.identifier.as_ident.length, function.identifier.as_ident.data
 			);
 		}
@@ -298,7 +293,7 @@ static mirac_global_function_s try_parse_function(
 			else
 			{
 				log_parser_error_and_exit(token.location,
-					"invalid token `%.*s` encountered instead of a type, 'ret', or 'do' keywords.",
+					"invalid token '%.*s' encountered instead of a type, 'ret', or 'do' keywords.",
 					(signed int)token.source.length, token.source.data
 				);
 			}
@@ -331,7 +326,7 @@ static mirac_global_function_s try_parse_function(
 			else
 			{
 				log_parser_error_and_exit(token.location,
-					"invalid token `%.*s` encountered instead of a type, or 'do' keyword.",
+					"invalid token '%.*s' encountered instead of a type, or 'do' keyword.",
 					(signed int)token.source.length, token.source.data
 				);
 			}
@@ -366,11 +361,8 @@ static mirac_global_function_s try_parse_function(
 				} break;
 
 				case mirac_token_type_keyword_if:
-				{
-					increase_scope_counter = true;
-				} break;
-
 				case mirac_token_type_keyword_loop:
+				case mirac_token_type_keyword_let:
 				{
 					increase_scope_counter = true;
 				} break;
@@ -505,6 +497,7 @@ static void collect_string_literals(
 	mirac_unit_s* const unit)
 {
 	mirac_debug_assert(unit != NULL);
+	unit->strings = mirac_tokens_vector_from_parts(4);
 
 	for (uint64_t global_index = 0; global_index < unit->globals.count; ++global_index)
 	{
@@ -534,7 +527,25 @@ static void collect_string_literals(
 				case mirac_token_type_literal_str:
 				case mirac_token_type_literal_cstr:
 				{
-					mirac_tokens_vector_push(&unit->strings, *token);
+					bool string_literal_exists = false;
+
+					for (uint64_t string_index = 0; string_index < unit->strings.count; ++string_index)
+					{
+						mirac_token_s* const string_token = &unit->strings.data[string_index];
+						mirac_debug_assert(string_token != NULL);
+						mirac_debug_assert(mirac_token_is_string_literal(string_token));
+
+						if (mirac_utils_strncmp(string_token->as_str.data, token->as_str.data, token->as_str.length) == 0)
+						{
+							string_literal_exists = true;
+							break;
+						}
+					}
+
+					if (!string_literal_exists)
+					{
+						mirac_tokens_vector_push(&unit->strings, *token);
+					}
 				} break;
 
 				default:
@@ -579,17 +590,25 @@ static void perform_cross_reference(
 			{
 				case mirac_token_type_keyword_if:
 				case mirac_token_type_keyword_loop:
+				case mirac_token_type_keyword_let:
 				{
 					mirac_token_s* popped = NULL;
 
 					if (mirac_token_refs_vector_pop(&stack, &popped))
 					{
 						if (mirac_token_type_keyword_if == popped->type ||
-							mirac_token_type_keyword_loop == popped->type)
+							mirac_token_type_keyword_loop == popped->type ||
+							mirac_token_type_keyword_let == popped->type)
 						{
 							log_parser_error_and_exit(token->location,
-								"encounetered an invalid token LALALALA"
+								"encountered an invalid keyword '%.*s', following the '%.*s' keyword.",
+								(signed int)token->source.length, token->source.data,
+								(signed int)popped->source.length, popped->source.data
 							);
+						}
+						else
+						{
+							mirac_token_refs_vector_push(&stack, popped);
 						}
 					}
 
@@ -603,14 +622,15 @@ static void perform_cross_reference(
 					if (!mirac_token_refs_vector_pop(&stack, &popped))
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token ZAZAZAZA"
+							"'%.*s' keyword must follow 'if <condition> do <body> elif <block> end' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 
 					if (NULL == popped->prev_ref)
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token XAXAXAXA"
+							"missing 'if' or 'elif' keyword in 'if <condition> do <body> elif <condition> do <body> end' sequence."
 						);
 					}
 
@@ -625,7 +645,8 @@ static void perform_cross_reference(
 					else
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token SASASASA"
+							"'%.*s' keyword must follow 'if <condition> do <body> elif <condition> do <block> end' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 				} break;
@@ -637,14 +658,15 @@ static void perform_cross_reference(
 					if (!mirac_token_refs_vector_pop(&stack, &popped))
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token HAHAHAHA"
+							"'%.*s' keyword must follow 'if <condition> do <block>' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 
 					if (NULL == popped->prev_ref)
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token KAKAKAKA"
+							"missing 'if' keyword in 'if <condition> do <body> else <body> end' sequence."
 						);
 					}
 
@@ -658,11 +680,9 @@ static void perform_cross_reference(
 					}
 					else
 					{
-						// TODO: remove:
-						mirac_token_print(popped);
-
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token RARARARA"
+							"'%.*s' keyword must follow 'if <condition> do <block>' sequence",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 				} break;
@@ -674,13 +694,15 @@ static void perform_cross_reference(
 					if (!mirac_token_refs_vector_pop(&stack, &popped))
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token BABABABA"
+							"'%.*s' keyword must follow 'if <condition>', 'loop <condition>', or 'let <identifiers...>' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 
 					if (mirac_token_type_keyword_if == popped->type ||
 						mirac_token_type_keyword_elif == popped->type ||
-						mirac_token_type_keyword_loop == popped->type)
+						mirac_token_type_keyword_loop == popped->type ||
+						mirac_token_type_keyword_let == popped->type)
 					{
 						popped->next_ref = token;
 						token->prev_ref = popped;
@@ -689,7 +711,8 @@ static void perform_cross_reference(
 					else
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token QAQAQAQA"
+							"'%.*s' keyword must follow 'if <condition>', 'loop <condition>', or 'let <identifiers...>' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 				} break;
@@ -701,7 +724,8 @@ static void perform_cross_reference(
 					if (!mirac_token_refs_vector_pop(&stack, &popped))
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token BABABABA"
+							"'%.*s' keyword must follow 'if <condition> do <block>', 'if <condition> do <block> else <block> end', 'if <condition> do <block> elif <condition> do else <block> end', 'loop <condition> do <block>', or 'let <identifiers...> do <block> end' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 
@@ -712,7 +736,18 @@ static void perform_cross_reference(
 							popped->next_ref = token;
 							token->prev_ref = popped;
 						}
+						else if (mirac_token_type_keyword_elif == popped->prev_ref->type)
+						{
+							popped->next_ref = token;
+							token->prev_ref = popped;
+						}
 						else if (mirac_token_type_keyword_loop == popped->prev_ref->type)
+						{
+							popped->next_ref = token;
+							token->prev_ref = popped;
+							token->next_ref = popped->prev_ref;
+						}
+						else if (mirac_token_type_keyword_let == popped->prev_ref->type)
 						{
 							popped->next_ref = token;
 							token->prev_ref = popped;
@@ -721,7 +756,8 @@ static void perform_cross_reference(
 						else
 						{
 							log_parser_error_and_exit(token->location,
-								"encounetered an invalid token GAGAGAGA"
+								"encountered invalid keyword '%.*s' before the 'do' keyword!",
+								(signed int)popped->source.length, popped->source.data
 							);
 						}
 					}
@@ -733,28 +769,44 @@ static void perform_cross_reference(
 					else
 					{
 						log_parser_error_and_exit(token->location,
-							"encounetered an invalid token JAJAJAJA"
+							"'%.*s' keyword must follow 'if <condition> do <block>', 'if <condition> do <block> else <block>', 'while <condition> do <block>', or 'let <identifiers...> do <block> end' sequence.",
+							(signed int)token->source.length, token->source.data
 						);
 					}
 				} break;
 
+				case mirac_token_type_keyword_as:
+				{
+					mirac_token_refs_vector_push(&stack, token);
+				} break;
+
 				default:
 				{
+					if (mirac_token_is_type_keyword(token))
+					{
+						mirac_token_s* popped = NULL;
+
+						if (!mirac_token_refs_vector_pop(&stack, &popped))
+						{
+							log_parser_error_and_exit(token->location,
+								"'%.*s' type specifier must follow 'as' keyword in the function's body.",
+								(signed int)token->source.length, token->source.data
+							);
+						}
+					}
 				} break;
 			}
 
-			/*
-			mirac_logger_debug("Stack:");
-			mirac_logger_debug("  count=%lu", stack.count);
-			mirac_logger_debug("  capacity=%lu", stack.capacity);
-			for (uint64_t stack_index = 0; stack_index < stack.count; ++stack_index)
-			{
-				mirac_token_s* const stack_token = stack.data[stack_index];
-				mirac_logger_debug("  [%lu]: %s", stack_index, mirac_token_to_string(stack_token));
-			}
-			mirac_logger_debug("--- ");
-			getchar();
-			*/
+			// mirac_logger_debug("Stack:");
+			// mirac_logger_debug("  count=%lu", stack.count);
+			// mirac_logger_debug("  capacity=%lu", stack.capacity);
+			// for (uint64_t stack_index = 0; stack_index < stack.count; ++stack_index)
+			// {
+			// 	mirac_token_s* const stack_token = stack.data[stack_index];
+			// 	mirac_token_print(stack_token);
+			// }
+			// mirac_logger_debug("--- ");
+			// getchar();
 		}
 
 		mirac_token_refs_vector_destroy(&stack);

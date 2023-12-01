@@ -1,5 +1,10 @@
 
-func main do
+func casting do
+	as i64
+	as i64
+end
+
+func if-elif-else-blocks do
 	if 1 do
 		1 print
 	end
@@ -31,7 +36,14 @@ func main do
 	end
 end
 
-/*
+func main do
+	let a do
+		if 1 do
+			12 print
+		end
+	end
+end
+
 mem XS1 69 end
 
 // Check if number is odd
@@ -47,7 +59,7 @@ do
 		n print
 	end
 
-	if 1 if do
+	if 1 do
 		if 1 do
 			1 print
 		end
@@ -65,5 +77,5 @@ do
 		; Call the is-odd? function
 		num is-odd? as i64
 	end
+	"Hello, World!"
 end
-*/
