@@ -23,7 +23,7 @@
 // TODO: implement arenas!
 
 /* static */ int64_t g_allocations_counter = 0;
-/* static */ int64_t g_allocations_in_bytes = 0;
+/* static */ uint64_t g_allocations_in_bytes = 0;
 
 void* mirac_utils_malloc(
 	const uint64_t size)
