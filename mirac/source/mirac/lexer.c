@@ -102,38 +102,66 @@ static const char* const g_token_type_to_string_map[] =
 		exit(-1);                                                              \
 	} while (0)
 
+/**
+ * @brief Compare two keyword tokens if they are the same or not.
+ */
 static int32_t compare_keyword_tokens(
 	const void* const left,
 	const void* const right);
 
+/**
+ * @brief Update the lexer's location of the file.
+ */
 static void update_location(
 	mirac_location_s* const location,
 	const utf8char_t utf8char);
 
+/**
+ * @brief Append fetched buffer to the lexer's internal buffer.
+ */
 static void append_buffer(
 	mirac_lexer_s* const lexer,
 	const char* const buffer,
 	const uint64_t size);
 
+/**
+ * @brief Get next utf-8 symbol with symbol caching and location updating.
+ */
 static utf8char_t next_utf8char(
 	mirac_lexer_s* const lexer,
 	mirac_location_s* const location,
 	const bool buffer);
 
+/**
+ * @brief Check if utf-8 symbol is a white space symbol.
+ */
 static bool is_symbol_a_white_space(
 	const utf8char_t utf8char);
 
+/**
+ * @brief Get (read) the utf-8 symbol from the file.
+ */
 static utf8char_t get_utf8char(
 	mirac_lexer_s* const lexer,
 	mirac_location_s* const location);
 
+/**
+ * @brief Clear lexer's internal buffer.
+ */
 static void clear_buffer(
 	mirac_lexer_s* const lexer);
 
+/**
+ * @brief Consume lexer's internal buffer (by provided length).
+ */
 static void consume_buffer(
 	mirac_lexer_s* const lexer,
 	const uint64_t length);
 
+/**
+ * @brief Push utf-8 symbol into lexer's symbols cache (and buffer them if flag
+ * is set).
+ */
 static void push_utf8char(
 	mirac_lexer_s* const lexer,
 	const utf8char_t utf8char,
@@ -320,16 +348,36 @@ bool mirac_token_is_type_keyword(
 	);
 }
 
-const char* mirac_token_to_string(
+bool mirac_token_is_signed_integer_literal(
+	mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	return (
+		(mirac_token_type_keyword_i08 == token->type) ||
+		(mirac_token_type_keyword_i16 == token->type) ||
+		(mirac_token_type_keyword_i32 == token->type) ||
+		(mirac_token_type_keyword_i64 == token->type)
+	);
+}
+
+bool mirac_token_is_unsigned_integer_literal(
+	mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	return (
+		(mirac_token_type_keyword_u08 == token->type) ||
+		(mirac_token_type_keyword_u16 == token->type) ||
+		(mirac_token_type_keyword_u32 == token->type) ||
+		(mirac_token_type_keyword_u64 == token->type)
+	);
+}
+
+void mirac_token_print(
 	const mirac_token_s* const token)
 {
 	mirac_debug_assert(token != NULL);
-	#define token_string_buffer_capacity 1024
-	static char token_string_buffer[token_string_buffer_capacity + 1];
-	token_string_buffer[0] = 0;
 
-	uint64_t written = (uint64_t)snprintf(
-		token_string_buffer, token_string_buffer_capacity,
+	(void)printf(
 		"Token[type='%s', location='" mirac_location_fmt "', index='%lu', source='%.*s'",
 		mirac_token_type_to_string(token->type),
 		mirac_location_arg(token->location),
@@ -344,10 +392,7 @@ const char* mirac_token_to_string(
 		case mirac_token_type_literal_i32:
 		case mirac_token_type_literal_i64:
 		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%li']", token->ival
-			);
+			(void)printf(", value='%li']", token->as_ival);
 		} break;
 
 		case mirac_token_type_literal_u8:
@@ -355,48 +400,31 @@ const char* mirac_token_to_string(
 		case mirac_token_type_literal_u32:
 		case mirac_token_type_literal_u64:
 		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%lu']", token->uval
-			);
+			(void)printf(", value='%lu']", token->as_uval);
 		} break;
 
 		case mirac_token_type_literal_f32:
 		case mirac_token_type_literal_f64:
 		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%Lf']", token->fval
-			);
+			(void)printf(", value='%Lf']", token->as_fval);
 		} break;
 
 		case mirac_token_type_literal_str:
 		case mirac_token_type_literal_cstr:
 		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%.*s']", (signed int)token->str.length, token->str.data
-			);
+			(void)printf(", value='%.*s']", (signed int)token->as_str.length, token->as_str.data);
 		} break;
 
 		case mirac_token_type_identifier:
 		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%.*s']", (signed int)token->ident.length, token->ident.data
-			);
+			(void)printf(", value='%.*s']", (signed int)token->as_ident.length, token->as_ident.data);
 		} break;
 	
 		default:
 		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written, "]"
-			);
+			(void)printf("]");
 		} break;
 	}
-
-	token_string_buffer[written] = 0;
-	return token_string_buffer;
 }
 
 mirac_lexer_s mirac_lexer_from_parts(
@@ -781,7 +809,7 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	{
 		log_lexer_error_and_exit(
 			lexer->location, "invalid (non-white-space) symbol '%c' encountered after the identifier '%.*s'.",
-			(char)utf8char, (signed int)token->ident.length, token->ident.data
+			(char)utf8char, (signed int)token->as_ident.length, token->as_ident.data
 		);
 	}
 
@@ -796,8 +824,8 @@ static mirac_token_type_e lex_identifier_or_keyword(
 
 	if (mirac_token_type_identifier == token->type)
 	{
-		token->ident.data = keyword_or_identifier;
-		token->ident.length = keyword_or_identifier_length;
+		token->as_ident.data = keyword_or_identifier;
+		token->as_ident.length = keyword_or_identifier_length;
 	}
 
 	token->index = lexer->tokens_count;
@@ -1106,7 +1134,7 @@ want_int:
 		token->source.data = float_literal;
 		token->source.length = float_literal_length;
 
-		token->fval = strtod(lexer->buffer.data, NULL);
+		token->as_fval = strtod(lexer->buffer.data, NULL);
 
 		token->index = lexer->tokens_count;
 		lexer->tokens_count++;
@@ -1130,29 +1158,29 @@ want_int:
 	}
 
 	const uint64_t offset = (uint64_t)(10 == base ? 0 : 2) + (sign_symbol != 0 ? 1 : 0);
-	token->uval = strtoumax(lexer->buffer.data + offset, NULL, base);
-	token->uval = compute_exponent(token->uval, exponent, kind_signed == kind);
+	token->as_uval = strtoumax(lexer->buffer.data + offset, NULL, base);
+	token->as_uval = compute_exponent(token->as_uval, exponent, kind_signed == kind);
 
 	if (ERANGE == errno)
 	{
 		log_lexer_error_and_exit(token->location, "numeric literal overflow encountered.");
 	}
 
-	if (kind_iconst == kind && token->uval > (uint64_t)INT64_MAX)
+	if (kind_iconst == kind && token->as_uval > (uint64_t)INT64_MAX)
 	{
 		token->type = mirac_token_type_literal_u64;
 	}
-	else if (kind_signed == kind && (uint64_t)INT64_MIN == token->uval)
+	else if (kind_signed == kind && (uint64_t)INT64_MIN == token->as_uval)
 	{
-		token->ival = INT64_MIN;
+		token->as_ival = INT64_MIN;
 	}
 	else if (kind != kind_unsigned)
 	{
-		token->ival = (int64_t)token->uval;
+		token->as_ival = (int64_t)token->as_uval;
 
 		if ('-' == sign_symbol)
 		{
-			token->ival *= -1;
+			token->as_ival *= -1;
 		}
 	}
 
@@ -1403,8 +1431,8 @@ static mirac_token_type_e lex_string_literal_token(
 			token->source.data = string;
 			token->source.length = string_length;
 
-			token->str.data = string;
-			token->str.length = string_length;
+			token->as_str.data = string;
+			token->as_str.length = string_length;
 
 			token->index = lexer->tokens_count;
 			lexer->tokens_count++;

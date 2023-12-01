@@ -34,9 +34,13 @@
 	void _type_name ## _destroy(                                               \
 		_type_name ## _s* const vector);                                       \
 	                                                                           \
-	void _type_name ## _append(                                                \
+	void _type_name ## _push(                                                  \
 		_type_name ## _s* const vector,                                        \
-		const _element_type* const element);                                   \
+		_element_type element);                                                \
+	                                                                           \
+	bool _type_name ## _pop(                                                   \
+		_type_name ## _s* const vector,                                        \
+		_element_type* const element);                                         \
 	                                                                           \
 	void _type_name ## _shrink(                                                \
 		_type_name ## _s* const vector);                                       \
@@ -71,12 +75,11 @@
 		mirac_utils_memset(vector, 0, sizeof(_type_name ## _s));               \
 	}                                                                          \
 	                                                                           \
-	void _type_name ## _append(                                                \
+	void _type_name ## _push(                                                  \
 		_type_name ## _s* const vector,                                        \
-		const _element_type* const element)                                    \
+		_element_type element)                                                 \
 	{                                                                          \
 		mirac_debug_assert(vector != NULL);                                    \
-		mirac_debug_assert(element != NULL);                                   \
 		                                                                       \
 		if (vector->count + 1 >= vector->capacity)                             \
 		{                                                                      \
@@ -92,7 +95,23 @@
 			vector->capacity = new_capacity;                                   \
 		}                                                                      \
 		                                                                       \
-		vector->data[vector->count++] = *element;                              \
+		vector->data[vector->count++] = element;                               \
+	}                                                                          \
+	                                                                           \
+	bool _type_name ## _pop(                                                   \
+		_type_name ## _s* const vector,                                        \
+		_element_type* const element)                                          \
+	{                                                                          \
+		mirac_debug_assert(vector != NULL);                                    \
+		                                                                       \
+		if (vector->count <= 0)                                                \
+		{                                                                      \
+			return false;                                                      \
+		}                                                                      \
+		                                                                       \
+		*element = vector->data[vector->count - 1];                            \
+		vector->count--;                                                       \
+		return true;                                                           \
 	}                                                                          \
 	                                                                           \
 	void _type_name ## _shrink(                                                \

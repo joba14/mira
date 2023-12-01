@@ -138,7 +138,9 @@ mirac_token_type_e mirac_token_type_from_string(
 const char* mirac_token_type_to_string(
 	const mirac_token_type_e token_type);
 
-typedef struct
+typedef struct mirac_token_s mirac_token_s;
+
+struct mirac_token_s
 {
 	mirac_token_type_e type;
 	mirac_location_s location;
@@ -146,21 +148,21 @@ typedef struct
 
 	union
 	{
-		int64_t ival;
-		uint64_t uval;
-		long double fval;
+		int64_t as_ival;
+		uint64_t as_uval;
+		long double as_fval;
 
 		struct
 		{
 			char* data;
 			uint64_t length;
-		} str;
+		} as_str;
 
 		struct
 		{
 			char* data;
 			uint64_t length;
-		} ident;
+		} as_ident;
 	};
 
 	struct
@@ -168,7 +170,10 @@ typedef struct
 		char* data;
 		uint64_t length;
 	} source;
-} mirac_token_s;
+
+	mirac_token_s* next_ref;
+	mirac_token_s* prev_ref;
+};
 
 /**
  * @brief Create token with provided token type and location.
@@ -200,13 +205,21 @@ bool mirac_token_is_type_keyword(
 	mirac_token_s* const token);
 
 /**
- * @brief Convert token structure into a string representation and return a
- * pointer to it.
- * 
- * @warning The formatted token string is safed in the static buffer that gets
- * overwritten every time this function is called!
+ * @brief Check if token is a signd integer literal.
  */
-const char* mirac_token_to_string(
+bool mirac_token_is_signed_integer_literal(
+	mirac_token_s* const token);
+
+/**
+ * @brief Check if token is an unsignd integer literal.
+ */
+bool mirac_token_is_unsigned_integer_literal(
+	mirac_token_s* const token);
+
+/**
+ * @brief Print the token to the stdout.
+ */
+void mirac_token_print(
 	const mirac_token_s* const token);
 
 typedef struct
@@ -268,6 +281,9 @@ mirac_token_type_e mirac_lexer_lex(
 bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type);
 
+/**
+ * @brief Cache a token in the lexer.
+ */
 void mirac_lexer_unlex(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);

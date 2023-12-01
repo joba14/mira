@@ -71,7 +71,7 @@ mirac_config_s mirac_config_from_cli(
 		{ 0, 0, 0, 0 }
 	};
 
-	mirac_config_s config;
+	mirac_config_s config = {0};
 	int32_t opt = -1;
 
 	while ((opt = (int32_t)getopt_long(argc, (char* const *)argv, "hvla:e:o:", options, NULL)) != -1)

@@ -51,7 +51,6 @@ void mirac_logger_error(
 
 /**
  * @brief Log panic level formattable messages and exit with status -1.
- * 
  */
 void mirac_logger_panic(
 	const char* const format,

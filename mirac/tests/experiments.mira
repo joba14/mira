@@ -1,27 +1,69 @@
 
+func main do
+	if 1 do
+		1 print
+	end
+
+	if 1 do
+		2 print
+	else
+		3 print
+	end
+
+	if 1 do
+		4 print
+	elif 0 do
+		5 print
+	else 0
+		6 print
+	end
+
+	if 1 do
+		7 print
+	elif 0 do
+		8 print
+	elif 0 do
+		8 print
+	elif 0 do
+		10 print
+	else
+		11 print
+	end
+end
+
+/*
+mem XS1 69 end
+
 // Check if number is odd
 inl func is-odd?
 	req i64
 	ret i08
 do
-	func inner do
+	loop 1 do
 		69 print
 	end
 
-	let num do
-		num mod 0 eq
+	let n do
+		n print
+	end
+
+	if 1 if do
+		if 1 do
+			1 print
+		end
+		2 print
 	end
 end
 
-/*
-	Entry of the program
-*/
 func main
 	req i64
 	ret i64
 do
+	"Hello, World!"
+
 	let num do
 		; Call the is-odd? function
 		num is-odd? as i64
 	end
 end
+*/

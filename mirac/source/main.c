@@ -65,9 +65,8 @@ int32_t main(
 
 		for (uint64_t global_index = 0; global_index < unit.globals.count; ++global_index)
 		{
-			mirac_logger_debug("[%lu] %s\n", global_index,
-				mirac_global_to_string(&unit.globals.data[global_index])
-			);
+			mirac_logger_debug("[%lu] ", global_index);
+			mirac_global_print(&unit.globals.data[global_index]);
 		}
 
 		(void)fclose(source_file);

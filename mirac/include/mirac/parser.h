@@ -18,12 +18,12 @@
 #include <mirac/lexer.h>
 
 mirac_define_vector_type(mirac_tokens_vector, mirac_token_s);
+mirac_define_vector_type(mirac_token_refs_vector, mirac_token_s*);
 
 typedef enum
 {
 	mirac_global_type_function = 0,
-	mirac_global_type_memory,
-	mirac_global_type_string
+	mirac_global_type_memory
 } mirac_global_type_e;
 
 const char* mirac_global_type_to_string(
@@ -56,21 +56,21 @@ typedef struct
 
 	union
 	{
-		mirac_global_function_s function;
-		mirac_global_memory_s memory;
-		mirac_global_string_s string;
+		mirac_global_function_s as_function;
+		mirac_global_memory_s as_memory;
 	};
 } mirac_global_s;
+
+void mirac_global_print(
+	const mirac_global_s* const global);
 
 mirac_define_vector_type(mirac_globals_vector, mirac_global_s);
 
 typedef struct
 {
 	mirac_globals_vector_s globals;
+	mirac_tokens_vector_s strings;
 } mirac_unit_s;
-
-const char* mirac_global_to_string(
-	const mirac_global_s* const global);
 
 typedef struct
 {
