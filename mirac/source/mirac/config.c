@@ -139,7 +139,7 @@ mirac_config_s mirac_config_from_cli(
 
 		if (!valid_architecture)
 		{
-			mirac_logger_error("invalid architecture was provided -- see '--list-archs'.");
+			mirac_logger_error("invalid architecture '%s' was provided -- see '--list-archs'.", config.arch);
 			exit(-1);
 		}
 	}
