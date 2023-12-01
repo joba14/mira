@@ -47,17 +47,17 @@ static const char* const g_token_type_to_string_map[] =
 	[mirac_token_type_keyword_func] = "func",
 	[mirac_token_type_keyword_gt] = "gt",
 	[mirac_token_type_keyword_gteq] = "gteq",
+	[mirac_token_type_keyword_i08] = "i08",
 	[mirac_token_type_keyword_i16] = "i16",
 	[mirac_token_type_keyword_i32] = "i32",
 	[mirac_token_type_keyword_i64] = "i64",
-	[mirac_token_type_keyword_i8] = "i8",
 	[mirac_token_type_keyword_if] = "if",
 	[mirac_token_type_keyword_inl] = "inl",
 	[mirac_token_type_keyword_land] = "land",
+	[mirac_token_type_keyword_ld08] = "ld08",
 	[mirac_token_type_keyword_ld16] = "ld16",
 	[mirac_token_type_keyword_ld32] = "ld32",
 	[mirac_token_type_keyword_ld64] = "ld64",
-	[mirac_token_type_keyword_ld8] = "ld8",
 	[mirac_token_type_keyword_let] = "let",
 	[mirac_token_type_keyword_lnot] = "lnot",
 	[mirac_token_type_keyword_loop] = "loop",
@@ -82,16 +82,16 @@ static const char* const g_token_type_to_string_map[] =
 	[mirac_token_type_keyword_sys4] = "sys4",
 	[mirac_token_type_keyword_sys5] = "sys5",
 	[mirac_token_type_keyword_sys6] = "sys6",
+	[mirac_token_type_keyword_st08] = "st08",
 	[mirac_token_type_keyword_st16] = "st16",
 	[mirac_token_type_keyword_st32] = "st32",
 	[mirac_token_type_keyword_st64] = "st64",
-	[mirac_token_type_keyword_st8] = "st8",
 	[mirac_token_type_keyword_sub] = "sub",
 	[mirac_token_type_keyword_swap] = "swap",
+	[mirac_token_type_keyword_u08] = "u08",
 	[mirac_token_type_keyword_u16] = "u16",
 	[mirac_token_type_keyword_u32] = "u32",
-	[mirac_token_type_keyword_u64] = "u64",
-	[mirac_token_type_keyword_u8] = "u8"
+	[mirac_token_type_keyword_u64] = "u64"
 };
 
 #define log_lexer_error_and_exit(_location, _format, ...)                      \
@@ -299,6 +299,25 @@ void mirac_token_destroy(
 	mirac_utils_free(token->source.data);
 	mirac_utils_memset((void* const)token, 0, sizeof(mirac_token_s));
 	token->type = mirac_token_type_none;
+}
+
+bool mirac_token_is_type_keyword(
+	mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	return (
+		(mirac_token_type_keyword_i08 == token->type) ||
+		(mirac_token_type_keyword_i16 == token->type) ||
+		(mirac_token_type_keyword_i32 == token->type) ||
+		(mirac_token_type_keyword_i64 == token->type) ||
+		(mirac_token_type_keyword_u08 == token->type) ||
+		(mirac_token_type_keyword_u16 == token->type) ||
+		(mirac_token_type_keyword_u32 == token->type) ||
+		(mirac_token_type_keyword_u64 == token->type) ||
+		(mirac_token_type_keyword_f32 == token->type) ||
+		(mirac_token_type_keyword_f64 == token->type) ||
+		(mirac_token_type_keyword_ptr == token->type)
+	);
 }
 
 const char* mirac_token_to_string(
@@ -530,7 +549,6 @@ void mirac_lexer_unlex(
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
 
-	// TODO: make this not an assert ~~~~~~~~~~~~~~~~~~~~~~~~~~~~v?
 	mirac_debug_assert(mirac_token_type_none == lexer->token.type);
 	lexer->token = *token;
 }

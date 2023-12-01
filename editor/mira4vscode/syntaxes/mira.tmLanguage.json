@@ -61,13 +61,13 @@
 		"intrinsics": {
 			"patterns": [{
 				"name": "variable.name",
-				"match": "\\b(dup|drop|swap|over|rot|eq|neq|ls|gt|gteq|lseq|add|sub|mul|div|mod|land|lor|lxor|lnot|band|bor|bxor|bnot|shl|shr|ld8|ld16|ld32|ld64|st8|st16|st32|st64|sys)\\b"
+				"match": "\\b(dup|drop|swap|over|rot|eq|neq|ls|gt|gteq|lseq|add|sub|mul|div|mod|land|lor|lxor|lnot|band|bor|bxor|bnot|shl|shr|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys)\\b"
 			}]
 		},
 		"specifiers": {
 			"patterns": [{
 				"name": "entity.name.type",
-				"match": "\\b(u16|u32|u64|u8|i16|i32|i64|i8|f32|f64|ptr)\\b"
+				"match": "\\b(u08|u16|u32|u64|i08|i16|i32|i64|f32|f64|ptr)\\b"
 			}]
 		},
 		"numerics": {

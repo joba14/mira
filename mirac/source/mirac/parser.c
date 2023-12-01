@@ -182,21 +182,26 @@ const char* mirac_global_to_string(
 }
 
 mirac_parser_s mirac_parser_from_parts(
+	mirac_config_s* const config,
 	mirac_lexer_s* const lexer)
 {
+	mirac_debug_assert(config != NULL);
 	mirac_debug_assert(lexer != NULL);
+
 	mirac_parser_s parser;
+	parser.config = config;
 	parser.lexer = lexer;
 	return parser;
 }
 
-mirac_globals_vector_s mirac_parser_parse(
+mirac_unit_s mirac_parser_parse(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(parser->lexer != NULL);
 
-	mirac_globals_vector_s globals = mirac_globals_vector_from_parts(4);
+	mirac_unit_s unit;
+	unit.globals = mirac_globals_vector_from_parts(4);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 
 	while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
@@ -209,7 +214,7 @@ mirac_globals_vector_s mirac_parser_parse(
 				mirac_lexer_unlex(parser->lexer, &token);
 				const mirac_global_function_s function = try_parse_function(parser);
 				const mirac_global_s global = { .type = mirac_global_type_function, .function = function };
-				mirac_globals_vector_append(&globals, &global);
+				mirac_globals_vector_append(&unit.globals, &global);
 			} break;
 
 			case mirac_token_type_keyword_mem:
@@ -217,10 +222,10 @@ mirac_globals_vector_s mirac_parser_parse(
 				mirac_lexer_unlex(parser->lexer, &token);
 				const mirac_global_memory_s memory = try_parse_memory(parser);
 				const mirac_global_s global = { .type = mirac_global_type_memory, .memory = memory };
-				mirac_globals_vector_append(&globals, &global);
+				mirac_globals_vector_append(&unit.globals, &global);
 			} break;
 
-			// NOTE: The string literals should only be found in globals, and
+			// NOTE: The string literals should only be found in unit.globals, and
 			//       therefore, they are not check for here.
 
 			default:
@@ -233,7 +238,7 @@ mirac_globals_vector_s mirac_parser_parse(
 		}
 	}
 
-	return globals;
+	return unit;
 }
 
 static mirac_global_function_s try_parse_function(
@@ -300,6 +305,17 @@ static mirac_global_function_s try_parse_function(
 	}
 	else
 	{
+		function.identifier = token;
+		function.is_entry = (mirac_utils_strcmp(function.identifier.ident.data, parser->config->entry) == 0);
+
+		if (function.is_entry && function.is_inlined)
+		{
+			log_parser_error_and_exit(token.location,
+				"entry function `%.*s` cannot be inlined.",
+				(signed int)function.identifier.ident.length, function.identifier.ident.data
+			);
+		}
+
 		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
 		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
 		{
@@ -320,17 +336,7 @@ static mirac_global_function_s try_parse_function(
 
 		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 		{
-			if (mirac_token_type_keyword_i8 == token.type ||
-				mirac_token_type_keyword_i16 == token.type ||
-				mirac_token_type_keyword_i32 == token.type ||
-				mirac_token_type_keyword_i64 == token.type ||
-				mirac_token_type_keyword_u8 == token.type ||
-				mirac_token_type_keyword_u16 == token.type ||
-				mirac_token_type_keyword_u32 == token.type ||
-				mirac_token_type_keyword_u64 == token.type ||
-				mirac_token_type_keyword_f32 == token.type ||
-				mirac_token_type_keyword_f64 == token.type ||
-				mirac_token_type_keyword_ptr == token.type)
+			if (mirac_token_is_type_keyword(&token))
 			{
 				mirac_tokens_vector_append(&function.req_tokens, &token);
 			}
@@ -364,17 +370,7 @@ static mirac_global_function_s try_parse_function(
 
 		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 		{
-			if (mirac_token_type_keyword_i8 == token.type ||
-				mirac_token_type_keyword_i16 == token.type ||
-				mirac_token_type_keyword_i32 == token.type ||
-				mirac_token_type_keyword_i64 == token.type ||
-				mirac_token_type_keyword_u8 == token.type ||
-				mirac_token_type_keyword_u16 == token.type ||
-				mirac_token_type_keyword_u32 == token.type ||
-				mirac_token_type_keyword_u64 == token.type ||
-				mirac_token_type_keyword_f32 == token.type ||
-				mirac_token_type_keyword_f64 == token.type ||
-				mirac_token_type_keyword_ptr == token.type)
+			if (mirac_token_is_type_keyword(&token))
 			{
 				mirac_tokens_vector_append(&function.ret_tokens, &token);
 			}

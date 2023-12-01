@@ -1,4 +1,7 @@
 
+# Visual Studio Code Counter
+.VSCodeCounter
+
 # Visual Studio Code local configs
 .vscode/*
 !.vscode/*.code-snippets

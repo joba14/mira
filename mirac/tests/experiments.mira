@@ -2,14 +2,18 @@
 // Check if number is odd
 inl func is-odd?
 	req i64
-	ret i8
+	ret i08
 do
+	func inner do
+		69 print
+	end
+
 	let num do
 		num mod 0 eq
 	end
 end
 
-/* aaaa
+/*
 	Entry of the program
 */
 func main

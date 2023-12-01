@@ -14,6 +14,7 @@
 #define __mirac__include__mirac__parser_h__
 
 #include <mirac/vector.h>
+#include <mirac/config.h>
 #include <mirac/lexer.h>
 
 mirac_define_vector_type(mirac_tokens_vector, mirac_token_s);
@@ -63,18 +64,25 @@ typedef struct
 
 mirac_define_vector_type(mirac_globals_vector, mirac_global_s);
 
+typedef struct
+{
+	mirac_globals_vector_s globals;
+} mirac_unit_s;
+
 const char* mirac_global_to_string(
 	const mirac_global_s* const global);
 
 typedef struct
 {
+	mirac_config_s* config;
 	mirac_lexer_s* lexer;
 } mirac_parser_s;
 
 mirac_parser_s mirac_parser_from_parts(
+	mirac_config_s* const config,
 	mirac_lexer_s* const lexer);
 
-mirac_globals_vector_s mirac_parser_parse(
+mirac_unit_s mirac_parser_parse(
 	mirac_parser_s* const parser);
 
 #endif

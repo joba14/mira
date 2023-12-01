@@ -58,17 +58,17 @@ typedef enum
 	mirac_token_type_keyword_func,				// func
 	mirac_token_type_keyword_gt,				// gt
 	mirac_token_type_keyword_gteq,				// gteq
+	mirac_token_type_keyword_i08,				// i08
 	mirac_token_type_keyword_i16,				// i16
 	mirac_token_type_keyword_i32,				// i32
 	mirac_token_type_keyword_i64,				// i64
-	mirac_token_type_keyword_i8,				// i8
 	mirac_token_type_keyword_if,				// if
 	mirac_token_type_keyword_inl,				// inl
 	mirac_token_type_keyword_land,				// land
+	mirac_token_type_keyword_ld08,				// ld08
 	mirac_token_type_keyword_ld16,				// ld16
 	mirac_token_type_keyword_ld32,				// ld32
 	mirac_token_type_keyword_ld64,				// ld64
-	mirac_token_type_keyword_ld8,				// ld8
 	mirac_token_type_keyword_let,				// let
 	mirac_token_type_keyword_lnot,				// lnot
 	mirac_token_type_keyword_loop,				// loop
@@ -93,17 +93,17 @@ typedef enum
 	mirac_token_type_keyword_sys4,				// sys4
 	mirac_token_type_keyword_sys5,				// sys5
 	mirac_token_type_keyword_sys6,				// sys6
+	mirac_token_type_keyword_st08,				// st08
 	mirac_token_type_keyword_st16,				// st16
 	mirac_token_type_keyword_st32,				// st32
 	mirac_token_type_keyword_st64,				// st64
-	mirac_token_type_keyword_st8,				// st8
 	mirac_token_type_keyword_sub,				// sub
 	mirac_token_type_keyword_swap,				// swap
+	mirac_token_type_keyword_u08,				// u08
 	mirac_token_type_keyword_u16,				// u16
 	mirac_token_type_keyword_u32,				// u32
 	mirac_token_type_keyword_u64,				// u64
-	mirac_token_type_keyword_u8,				// u8
-	mirac_token_type_keywords_count = mirac_token_type_keyword_u8,
+	mirac_token_type_keywords_count = mirac_token_type_keyword_u08,
 
 	// Tokens with additional information
 	mirac_token_type_literal_i8,
@@ -191,6 +191,12 @@ mirac_token_s mirac_token_from_type(
  * @brief Destroy token and free all its resources.
  */
 void mirac_token_destroy(
+	mirac_token_s* const token);
+
+/**
+ * @brief Check if token is a type keyword.
+ */
+bool mirac_token_is_type_keyword(
 	mirac_token_s* const token);
 
 /**
