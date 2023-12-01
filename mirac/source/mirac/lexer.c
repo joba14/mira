@@ -324,7 +324,6 @@ void mirac_token_destroy(
 	mirac_token_s* const token)
 {
 	mirac_debug_assert(token != NULL);
-	mirac_utils_free(token->source.data);
 	mirac_utils_memset((void* const)token, 0, sizeof(mirac_token_s));
 	token->type = mirac_token_type_none;
 }
@@ -479,7 +478,6 @@ mirac_lexer_s mirac_lexer_from_parts(
 void mirac_lexer_destroy(
 	mirac_lexer_s* const lexer)
 {
-	mirac_utils_free(lexer->buffer.data);
 	mirac_utils_memset((void*)lexer, 0, sizeof(mirac_lexer_s));
 }
 

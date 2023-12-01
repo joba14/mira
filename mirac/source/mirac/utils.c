@@ -20,12 +20,19 @@
 #include <string.h>
 #include <stdlib.h>
 
+// TODO: implement arenas!
+
+/* static */ int64_t g_allocations_counter = 0;
+/* static */ int64_t g_allocations_in_bytes = 0;
+
 void* mirac_utils_malloc(
 	const uint64_t size)
 {
 	mirac_debug_assert(size > 0);
 	void* const pointer = (void* const)malloc(size);
 	if (!pointer && size) { mirac_logger_panic("internal failure -- failed to allocate memory"); }
+	++g_allocations_counter;
+	g_allocations_in_bytes += size;
 	return pointer;
 }
 
@@ -36,6 +43,8 @@ void* mirac_utils_realloc(
 	mirac_debug_assert(size > 0);
 	pointer = (void*)realloc(pointer, size);
 	if (!pointer && size) { mirac_logger_panic("internal failure -- failed to reallocate memory"); }
+	++g_allocations_counter;
+	g_allocations_in_bytes += size;
 	return pointer;
 }
 

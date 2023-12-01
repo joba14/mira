@@ -497,7 +497,7 @@ static void collect_string_literals(
 	mirac_unit_s* const unit)
 {
 	mirac_debug_assert(unit != NULL);
-	unit->strings = mirac_tokens_vector_from_parts(4);
+	unit->strings = mirac_token_refs_vector_from_parts(4);
 
 	for (uint64_t global_index = 0; global_index < unit->globals.count; ++global_index)
 	{
@@ -531,7 +531,7 @@ static void collect_string_literals(
 
 					for (uint64_t string_index = 0; string_index < unit->strings.count; ++string_index)
 					{
-						mirac_token_s* const string_token = &unit->strings.data[string_index];
+						mirac_token_s* const string_token = unit->strings.data[string_index];
 						mirac_debug_assert(string_token != NULL);
 						mirac_debug_assert(mirac_token_is_string_literal(string_token));
 
@@ -544,7 +544,7 @@ static void collect_string_literals(
 
 					if (!string_literal_exists)
 					{
-						mirac_tokens_vector_push(&unit->strings, *token);
+						mirac_token_refs_vector_push(&unit->strings, token);
 					}
 				} break;
 
@@ -796,17 +796,6 @@ static void perform_cross_reference(
 					}
 				} break;
 			}
-
-			// mirac_logger_debug("Stack:");
-			// mirac_logger_debug("  count=%lu", stack.count);
-			// mirac_logger_debug("  capacity=%lu", stack.capacity);
-			// for (uint64_t stack_index = 0; stack_index < stack.count; ++stack_index)
-			// {
-			// 	mirac_token_s* const stack_token = stack.data[stack_index];
-			// 	mirac_token_print(stack_token);
-			// }
-			// mirac_logger_debug("--- ");
-			// getchar();
 		}
 
 		mirac_token_refs_vector_destroy(&stack);

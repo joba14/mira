@@ -71,8 +71,12 @@ int32_t main(
 
 		for (uint64_t string_index = 0; string_index < unit.strings.count; ++string_index)
 		{
-			mirac_token_print(&unit.strings.data[string_index]);
+			mirac_token_print(unit.strings.data[string_index]);
 		}
+
+		// TODO: remove:
+		extern int64_t g_allocations_counter;
+		printf("g_allocations_counter=%lu\n", g_allocations_counter);
 
 		(void)fclose(source_file);
 	}

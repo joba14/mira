@@ -69,8 +69,11 @@ mirac_define_vector_type(mirac_globals_vector, mirac_global_s);
 typedef struct
 {
 	mirac_globals_vector_s globals;
-	mirac_tokens_vector_s strings;
+	mirac_token_refs_vector_s strings;
 } mirac_unit_s;
+
+void mirac_unit_destroy(
+	mirac_unit_s* const unit);
 
 typedef struct
 {
