@@ -15,10 +15,9 @@
 
 #include <mirac/debug.h>
 #include <mirac/utils.h>
+#include <mirac/global_arena.h>
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include <mirac/c_types.h>
 
 #define mirac_define_vector_type(_type_name, _element_type)                    \
 	typedef struct                                                             \
@@ -42,9 +41,6 @@
 		_type_name ## _s* const vector,                                        \
 		_element_type* const element);                                         \
 	                                                                           \
-	void _type_name ## _shrink(                                                \
-		_type_name ## _s* const vector);                                       \
-	                                                                           \
 	_element_type* _type_name ## _at(                                          \
 		_type_name ## _s* const vector,                                        \
 		const uint64_t index);                                                 \
@@ -58,7 +54,7 @@
 		mirac_debug_assert(capacity > 0);                                      \
 		                                                                       \
 		_type_name ## _s vector = {0};                                         \
-		vector.data = (_element_type*)mirac_utils_malloc(                      \
+		vector.data = (_element_type*)mirac_global_arena_malloc(               \
 			capacity * sizeof(_element_type));                                 \
 		mirac_debug_assert(vector.data != NULL);                               \
 		                                                                       \
@@ -71,7 +67,6 @@
 		_type_name ## _s* const vector)                                        \
 	{                                                                          \
 		mirac_debug_assert(vector != NULL);                                    \
-		mirac_utils_free(vector->data);                                        \
 		mirac_utils_memset(vector, 0, sizeof(_type_name ## _s));               \
 	}                                                                          \
 	                                                                           \
@@ -87,11 +82,15 @@
 				vector->capacity + (vector->capacity / 2)                      \
 			);                                                                 \
 			                                                                   \
-			vector->data = (_element_type*)mirac_utils_realloc(                \
-				vector->data, new_capacity * sizeof(_element_type)             \
+			_element_type* new_data = mirac_global_arena_malloc(               \
+				new_capacity * sizeof(_element_type));                         \
+			mirac_debug_assert(new_data != NULL);                              \
+			                                                                   \
+			mirac_utils_memcpy(new_data,                                       \
+				vector->data, vector->count * sizeof(_element_type)            \
 			);                                                                 \
 			                                                                   \
-			mirac_debug_assert(vector->data != NULL);                          \
+			vector->data = new_data;                                           \
 			vector->capacity = new_capacity;                                   \
 		}                                                                      \
 		                                                                       \
@@ -112,29 +111,6 @@
 		*element = vector->data[vector->count - 1];                            \
 		vector->count--;                                                       \
 		return true;                                                           \
-	}                                                                          \
-	                                                                           \
-	void _type_name ## _shrink(                                                \
-		_type_name ## _s* const vector)                                        \
-	{                                                                          \
-		mirac_debug_assert(vector != NULL);                                    \
-		                                                                       \
-		if (vector->count <= 0)                                                \
-		{                                                                      \
-			return;                                                            \
-		}                                                                      \
-		                                                                       \
-		if (vector->count >= vector->capacity)                                 \
-		{                                                                      \
-			return;                                                            \
-		}                                                                      \
-		                                                                       \
-		vector->data = (_element_type*)mirac_utils_realloc(                    \
-			vector->data, vector->count * sizeof(_element_type)                \
-		);                                                                     \
-		                                                                       \
-		mirac_debug_assert(vector->data != NULL);                              \
-		vector->capacity = vector->count;                                      \
 	}                                                                          \
 	                                                                           \
 	_element_type* _type_name ## _at(                                          \
