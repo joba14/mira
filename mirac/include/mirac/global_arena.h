@@ -15,12 +15,22 @@
 
 #include <mirac/c_types.h>
 
+/**
+ * @brief Create global arena object.
+ */
 void mirac_global_arena_create(
 	void);
 
+/**
+ * @brief Destroy and deallocate the entire global arena (and it's nodes).
+ */
 void mirac_global_arena_destroy(
 	void);
 
+/**
+ * @brief Allocate a region of memory with provided size and store the pointer
+ * to it wihtin the global arena's node.
+ */
 void* mirac_global_arena_malloc(
 	const uint64_t size);
 

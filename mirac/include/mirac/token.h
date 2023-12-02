@@ -220,6 +220,12 @@ bool mirac_token_is_string_literal(
 	mirac_token_s* const token);
 
 /**
+ * @brief Stringify token.
+ */
+const char* mirac_token_to_string(
+	const mirac_token_s* const token);
+
+/**
  * @brief Print the token to the stdout.
  */
 void mirac_token_print(

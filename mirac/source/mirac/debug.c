@@ -25,7 +25,7 @@ void mirac_debug_assert_impl(
 	if (!expression)
 	{
 		(void)fprintf(stderr,
-			"\033[91m" "\033[1m" "%s" "\033[0m" ": assertion `%s` failed at %s:%lu\n",
+			"\033[91m" "\033[1m" "%s" "\033[0m" ": assertion '%s' failed at %s:%lu\n",
 			"fatal", expression_string, file, line);
 		exit(-1);
 	}

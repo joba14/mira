@@ -69,19 +69,11 @@ int32_t main(
 
 		// TODO: remove:
 		// [
-		for (uint64_t global_index = 0; global_index < unit.globals.count; ++global_index)
-		{
-			mirac_global_print(&unit.globals.data[global_index]);
-		}
-
-		for (uint64_t string_index = 0; string_index < unit.strings.count; ++string_index)
-		{
-			mirac_token_print(unit.strings.data[string_index]);
-		}
+		mirac_unit_print(&unit);
+		mirac_logger_log(" ");
 		// ]
 
 		mirac_global_arena_destroy();
-
 		(void)fclose(source_file);
 	}
 

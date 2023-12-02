@@ -22,6 +22,7 @@
 typedef struct
 {
 	FILE* file;
+	const char* file_path;
 	mirac_location_s location;
 	uint64_t tokens_count;
 	mirac_token_s token;

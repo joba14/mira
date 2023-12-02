@@ -283,6 +283,107 @@ bool mirac_token_is_string_literal(
 	);
 }
 
+const char* mirac_token_to_string(
+	const mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	#define token_string_buffer_capacity 4096
+	static char token_string_buffer[token_string_buffer_capacity + 1];
+	token_string_buffer[0] = 0;
+
+	uint64_t written = (uint64_t)snprintf(
+		token_string_buffer, token_string_buffer_capacity,
+		"Token[type='%s', location='" mirac_location_fmt "', index='%lu', source='%.*s'",
+		mirac_token_type_to_string(token->type),
+		mirac_location_arg(token->location),
+		token->index,
+		(signed int)token->source.length,
+		token->source.data
+	);
+
+	switch (token->type)
+	{
+		case mirac_token_type_literal_i8:
+		case mirac_token_type_literal_i16:
+		case mirac_token_type_literal_i32:
+		case mirac_token_type_literal_i64:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%li'", token->as_ival
+			);
+		} break;
+
+		case mirac_token_type_literal_u8:
+		case mirac_token_type_literal_u16:
+		case mirac_token_type_literal_u32:
+		case mirac_token_type_literal_u64:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%lu'", token->as_uval
+			);
+		} break;
+
+		case mirac_token_type_literal_f32:
+		case mirac_token_type_literal_f64:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%Lf'", token->as_fval
+			);
+		} break;
+
+		case mirac_token_type_literal_str:
+		case mirac_token_type_literal_cstr:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%.*s'", (signed int)token->as_str.length, token->as_str.data
+			);
+		} break;
+
+		case mirac_token_type_identifier:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%.*s'", (signed int)token->as_ident.length, token->as_ident.data
+			);
+		} break;
+
+		default:
+		{
+		} break;
+	}
+
+	if (token->prev_ref != NULL)
+	{
+		written += (uint64_t)snprintf(
+			token_string_buffer + written, token_string_buffer_capacity - written,
+			", prev_ref='TokenRef[type='%s', index='%lu']'",
+			mirac_token_type_to_string(token->prev_ref->type),
+			token->prev_ref->index
+		);
+	}
+
+	if (token->next_ref != NULL)
+	{
+		written += (uint64_t)snprintf(
+			token_string_buffer + written, token_string_buffer_capacity - written,
+			", next_ref='TokenRef[type='%s', index='%lu']'",
+			mirac_token_type_to_string(token->next_ref->type),
+			token->next_ref->index
+		);
+	}
+
+	written += (uint64_t)snprintf(
+		token_string_buffer + written, token_string_buffer_capacity - written, "]"
+	);
+
+	token_string_buffer[written] = 0;
+	return token_string_buffer;
+}
+
 void mirac_token_print(
 	const mirac_token_s* const token)
 {

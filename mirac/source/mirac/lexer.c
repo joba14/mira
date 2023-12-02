@@ -125,6 +125,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 
 	mirac_lexer_s lexer;
 	lexer.file = file;
+	lexer.file_path = file_path;
 	lexer.location.file = file_path;
 	lexer.location.line = 1;
 	lexer.location.column = 0;

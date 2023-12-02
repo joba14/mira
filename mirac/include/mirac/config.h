@@ -22,6 +22,9 @@ typedef struct
 	const char* output;
 } mirac_config_s;
 
+/**
+ * @brief Create config object by parsing cli arguments.
+ */
 mirac_config_s mirac_config_from_cli(
 	const int32_t argc,
 	const char** const argv,

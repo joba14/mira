@@ -64,18 +64,23 @@ typedef struct
 } mirac_global_s;
 
 void mirac_global_print(
+	const uint64_t global_index,
 	const mirac_global_s* const global);
 
 mirac_define_vector_type(mirac_globals_vector, mirac_global_s);
 
 typedef struct
 {
+	const char* identifier;
 	mirac_globals_vector_s globals;
 	mirac_token_refs_vector_s strings;
 } mirac_unit_s;
 
-mirac_unit_s mirac_unit_create(
-	void);
+mirac_unit_s mirac_unit_from_parts(
+	const char* identifier);
+
+void mirac_unit_print(
+	mirac_unit_s* const unit);
 
 typedef struct
 {

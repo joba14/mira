@@ -59,7 +59,7 @@ void mirac_arena_destroy(
 
 /**
  * @brief Allocate a region of memory with provided size and store the pointer
- * to it wihtin a node.
+ * to it wihtin arena's node.
  */
 void* mirac_arena_malloc(
 	mirac_arena_s* const arena,

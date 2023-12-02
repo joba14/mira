@@ -65,53 +65,38 @@ const char* mirac_global_type_to_string(
 }
 
 void mirac_global_print(
+	const uint64_t global_index,
 	const mirac_global_s* const global)
 {
 	mirac_debug_assert(global != NULL);
-	(void)printf("Global[type='%s'", mirac_global_type_to_string(global->type));
+	mirac_logger_log("    [%lu] Global[type='%s'", global_index, mirac_global_type_to_string(global->type));
 
 	switch (global->type)
 	{
 		case mirac_global_type_function:
 		{
-			(void)printf("\n    ident: ");
-			mirac_token_print(&global->as_function.identifier);
+			mirac_logger_log("        ident: '%s'", mirac_token_to_string(&global->as_function.identifier));
 
-			(void)printf("    req (%lu):\n", global->as_function.req_tokens.count);
-
+			mirac_logger_log("        req (%lu):", global->as_function.req_tokens.count);
 			for (uint64_t index = 0; index < global->as_function.req_tokens.count; ++index)
-			{
-				(void)printf("        [%lu]: ", index);
-				mirac_token_print(&global->as_function.req_tokens.data[index]);
-			}
+				mirac_logger_log("            [%lu]: '%s'", index, mirac_token_to_string(&global->as_function.req_tokens.data[index]));
 
-			(void)printf("    ret (%lu):\n", global->as_function.ret_tokens.count);
-
+			mirac_logger_log("        ret (%lu):", global->as_function.ret_tokens.count);
 			for (uint64_t index = 0; index < global->as_function.ret_tokens.count; ++index)
-			{
-				(void)printf("        [%lu]: ", index);
-				mirac_token_print(&global->as_function.ret_tokens.data[index]);
-			}
+				mirac_logger_log("            [%lu]: '%s'", index, mirac_token_to_string(&global->as_function.ret_tokens.data[index]));
 
-			(void)printf("    body (%lu):\n", global->as_function.body_tokens.count);
-
+			mirac_logger_log("        body (%lu):", global->as_function.body_tokens.count);
 			for (uint64_t index = 0; index < global->as_function.body_tokens.count; ++index)
-			{
-				(void)printf("        [%lu]: ", index);
-				mirac_token_print(&global->as_function.body_tokens.data[index]);
-			}
+				mirac_logger_log("            [%lu]: '%s'", index, mirac_token_to_string(&global->as_function.body_tokens.data[index]));
 
-			(void)printf("    inlined: %s\n", (global->as_function.is_inlined ? "yes" : "no"));
-			(void)printf("    entry: %s\n]\n", (global->as_function.is_entry ? "yes" : "no"));
+			mirac_logger_log("        inlined: '%s'", (global->as_function.is_inlined ? "yes" : "no"));
+			mirac_logger_log("        entry: '%s'", (global->as_function.is_entry ? "yes" : "no"));
 		} break;
 
 		case mirac_global_type_memory:
 		{
-			(void)printf("\n    ident: ");
-			mirac_token_print(&global->as_memory.identifier);
-			(void)printf("    capacity: ");
-			mirac_token_print(&global->as_memory.capacity);
-			(void)printf("]\n");
+			mirac_logger_log("        ident: '%s'", mirac_token_to_string(&global->as_memory.identifier));
+			mirac_logger_log("        capacity: '%s'", mirac_token_to_string(&global->as_memory.capacity));
 		} break;
 
 		default:
@@ -119,13 +104,40 @@ void mirac_global_print(
 			mirac_debug_assert(0);
 		} break;
 	}
+
+	mirac_logger_log("    ]");
 }
 
-mirac_unit_s mirac_unit_create(
-	void)
+mirac_unit_s mirac_unit_from_parts(
+	const char* identifier)
 {
 	mirac_unit_s unit = {0};
+	unit.identifier = identifier;
 	return unit;
+}
+
+void mirac_unit_print(
+	mirac_unit_s* const unit)
+{
+	mirac_debug_assert(unit != NULL);
+
+	mirac_logger_log("Unit[identifier='%s'", unit->identifier);
+
+	for (uint64_t global_index = 0; global_index < unit->globals.count; ++global_index)
+	{
+		mirac_global_s* const global = &unit->globals.data[global_index];
+		mirac_debug_assert(global != NULL);
+		mirac_global_print(global_index, global);
+	}
+
+	for (uint64_t string_index = 0; string_index < unit->strings.count; ++string_index)
+	{
+		mirac_token_s** const string = &unit->strings.data[string_index];
+		mirac_debug_assert(string != NULL && *string != NULL);
+		mirac_logger_log("    [%lu] %s", string_index, mirac_token_to_string(*string));
+	}
+
+	mirac_logger_log("]");
 }
 
 mirac_parser_s mirac_parser_from_parts(
@@ -134,7 +146,6 @@ mirac_parser_s mirac_parser_from_parts(
 {
 	mirac_debug_assert(config != NULL);
 	mirac_debug_assert(lexer != NULL);
-
 	mirac_parser_s parser;
 	parser.config = config;
 	parser.lexer = lexer;
@@ -147,8 +158,9 @@ mirac_unit_s mirac_parser_parse(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(parser->lexer != NULL);
 
-	mirac_unit_s unit = mirac_unit_create();
+	mirac_unit_s unit = mirac_unit_from_parts(parser->lexer->file_path);
 	unit.globals = mirac_globals_vector_from_parts(4);
+	unit.strings = mirac_token_refs_vector_from_parts(4);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 
 	while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
@@ -505,7 +517,6 @@ static void collect_string_literals(
 	mirac_unit_s* const unit)
 {
 	mirac_debug_assert(unit != NULL);
-	unit->strings = mirac_token_refs_vector_from_parts(4);
 
 	for (uint64_t global_index = 0; global_index < unit->globals.count; ++global_index)
 	{
@@ -529,8 +540,6 @@ static void collect_string_literals(
 		{
 			mirac_token_s* const token = &function->body_tokens.data[body_index];
 			mirac_debug_assert(token != NULL);
-
-			mirac_token_print(token);
 
 			switch (token->type)
 			{
