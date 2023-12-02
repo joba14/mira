@@ -13,17 +13,7 @@
 #ifndef __mirac__include__mirac__utils_h__
 #define __mirac__include__mirac__utils_h__
 
-#include <stdint.h>
-
-void* mirac_utils_malloc(
-	const uint64_t size);
-
-void* mirac_utils_realloc(
-	void* pointer,
-	const uint64_t size);
-
-void mirac_utils_free(
-	const void* pointer);
+#include <mirac/c_types.h>
 
 void mirac_utils_memset(
 	void* const pointer,
@@ -33,13 +23,6 @@ void mirac_utils_memset(
 void mirac_utils_memcpy(
 	void* const destination,
 	const void* const source,
-	const uint64_t length);
-
-char* mirac_utils_strdup(
-	const char* const string);
-
-char* mirac_utils_strndup(
-	const char* const string,
 	const uint64_t length);
 
 int32_t mirac_utils_strcmp(

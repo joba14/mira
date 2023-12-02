@@ -15,45 +15,9 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-#include <stddef.h>
 #include <memory.h>
 #include <string.h>
 #include <stdlib.h>
-
-// TODO: implement arenas!
-
-/* static */ int64_t g_allocations_counter = 0;
-/* static */ uint64_t g_allocations_in_bytes = 0;
-
-void* mirac_utils_malloc(
-	const uint64_t size)
-{
-	mirac_debug_assert(size > 0);
-	void* const pointer = (void* const)malloc(size);
-	if (!pointer && size) { mirac_logger_panic("internal failure -- failed to allocate memory"); }
-	++g_allocations_counter;
-	g_allocations_in_bytes += size;
-	return pointer;
-}
-
-void* mirac_utils_realloc(
-	void* pointer,
-	const uint64_t size)
-{
-	mirac_debug_assert(size > 0);
-	pointer = (void*)realloc(pointer, size);
-	if (!pointer && size) { mirac_logger_panic("internal failure -- failed to reallocate memory"); }
-	++g_allocations_counter;
-	g_allocations_in_bytes += size;
-	return pointer;
-}
-
-void mirac_utils_free(
-	const void* pointer)
-{
-	free((void*)pointer);
-	pointer = NULL;
-}
 
 void mirac_utils_memset(
 	void* const pointer,
@@ -73,26 +37,6 @@ void mirac_utils_memcpy(
 	mirac_debug_assert(source != NULL);
 	mirac_debug_assert(length > 0);
 	(void)memcpy((void*)destination, (const void*)source, length);
-}
-
-char* mirac_utils_strdup(
-	const char* const string)
-{
-	mirac_debug_assert(string != NULL);
-	char* const result = strdup(string);
-	if (!result) { mirac_logger_panic("internal failure -- failed to duplicate (and allocate) string"); }
-	return result;
-}
-
-char* mirac_utils_strndup(
-	const char* const string,
-	const uint64_t length)
-{
-	mirac_debug_assert(string != NULL);
-	mirac_debug_assert(length > 0);
-	char* const result = strndup(string, length);
-	if (!result) { mirac_logger_panic("internal failure -- failed to duplicate (and allocate) string"); }
-	return result;
 }
 
 int32_t mirac_utils_strcmp(
