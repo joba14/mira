@@ -1,81 +1,107 @@
 
-func casting do
-	as i64
-	as i64
+func fn1 do
+	1 2 ; 3 4 5 6
 end
 
-func if-elif-else-blocks do
-	if 1 do
-		1 print
-	end
-
-	if 1 do
-		2 print
-	else
-		3 print
-	end
-
-	if 1 do
-		4 print
-	elif 0 do
-		5 print
-	else 0
-		6 print
-	end
-
-	if 1 do
-		7 print
-	elif 0 do
-		8 print
-	elif 0 do
-		8 print
-	elif 0 do
-		10 print
-	else
-		11 print
-	end
+func fn2 do
+	1 2 3 ; 4 5 6
 end
 
-func main do
-	let a do
-		if 1 do
-			12 print
-		end
-	end
+func fn3 do
+	1 2 3 4 ; 5 6
 end
 
-mem XS1 69 end
-
-// Check if number is odd
-inl func is-odd?
-	req i64
-	ret i08
-do
-	loop 1 do
-		69 print
-	end
-
-	let n do
-		n print
-	end
-
-	if 1 do
-		if 1 do
-			1 print
-		end
-		2 print
-	end
+func fn4 do
+	1 2 3 4 5 ; 6
 end
 
-func main
-	req i64
-	ret i64
-do
-	"Hello, World!"
-
-	let num do
-		; Call the is-odd? function
-		num is-odd? as i64
-	end
-	"Hello, World!"
+func fn5 do
+	1 2 3 4 5 6
 end
+
+// func reg-test do
+// 	reg n do
+// 		n print
+// 	end
+// end
+
+// func casting do
+// 	as i64
+// 	as i64
+// end
+
+// func if-elif-else-blocks do
+// 	if 1 do
+// 		1 print
+// 	end
+
+// 	if 1 do
+// 		2 print
+// 	else
+// 		3 print
+// 	end
+
+// 	if 1 do
+// 		4 print
+// 	elif 0 do
+// 		5 print
+// 	else 0
+// 		6 print
+// 	end
+
+// 	if 1 do
+// 		7 print
+// 	elif 0 do
+// 		8 print
+// 	elif 0 do
+// 		8 print
+// 	elif 0 do
+// 		10 print
+// 	else
+// 		11 print
+// 	end
+// end
+
+// func main do
+// 	let a do
+// 		if 1 do
+// 			12 print
+// 		end
+// 	end
+// end
+
+// mem XS1 69 end
+
+// // Check if number is odd
+// inl func is-odd?
+// 	req i64
+// 	ret i08
+// do
+// 	loop 1 do
+// 		69 print
+// 	end
+
+// 	let n do
+// 		n print
+// 	end
+
+// 	if 1 do
+// 		if 1 do
+// 			1 print
+// 		end
+// 		2 print
+// 	end
+// end
+
+// func main
+// 	req i64
+// 	ret i64
+// do
+// 	"Hello, World!"
+
+// 	let num do
+// 		; Call the is-odd? function
+// 		num is-odd? as i64
+// 	end
+// 	"Hello, World!"
+// end

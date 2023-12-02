@@ -1,0 +1,4 @@
+
+func main do
+	"Hello, World!" puts
+end

@@ -14,6 +14,7 @@
 
 #include <mirac/debug.h>
 #include <mirac/logger.h>
+#include <mirac/global_arena.h>
 #include <mirac/config.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
@@ -48,6 +49,8 @@ int32_t main(
 		return -1;
 	}
 
+	mirac_global_arena_create();
+
 	// Iterating over the source files.
 	for (uint64_t source_file_index = 0; source_file_index < source_files_count; ++source_file_index)
 	{
@@ -64,6 +67,8 @@ int32_t main(
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &lexer);
 		mirac_unit_s unit = mirac_parser_parse(&parser);
 
+		// TODO: remove:
+		// [
 		for (uint64_t global_index = 0; global_index < unit.globals.count; ++global_index)
 		{
 			mirac_global_print(&unit.globals.data[global_index]);
@@ -73,10 +78,9 @@ int32_t main(
 		{
 			mirac_token_print(unit.strings.data[string_index]);
 		}
+		// ]
 
-		// TODO: remove:
-		extern int64_t g_allocations_counter;
-		printf("g_allocations_counter=%lu\n", g_allocations_counter);
+		mirac_global_arena_destroy();
 
 		(void)fclose(source_file);
 	}
