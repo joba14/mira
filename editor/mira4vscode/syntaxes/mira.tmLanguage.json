@@ -55,7 +55,7 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.mira",
-				"match": "\\b(if|elif|else|loop|let|do|end)\\b"
+				"match": "\\b(if|elif|else|loop|let|reg|do|end)\\b"
 			}]
 		},
 		"intrinsics": {
