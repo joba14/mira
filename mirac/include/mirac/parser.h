@@ -17,6 +17,8 @@
 #include <mirac/config.h>
 #include <mirac/lexer.h>
 
+#include <mirac/c_types.h>
+
 mirac_define_vector_type(mirac_tokens_vector, mirac_token_s);
 mirac_define_vector_type(mirac_token_refs_vector, mirac_token_s*);
 
@@ -72,8 +74,8 @@ typedef struct
 	mirac_token_refs_vector_s strings;
 } mirac_unit_s;
 
-void mirac_unit_destroy(
-	mirac_unit_s* const unit);
+mirac_unit_s mirac_unit_create(
+	void);
 
 typedef struct
 {

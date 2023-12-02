@@ -17,8 +17,6 @@
 #include <mirac/logger.h>
 #include <mirac/utils.h>
 
-#include <stdbool.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <getopt.h>
 

@@ -14,8 +14,7 @@
 #define __mirac__include__mirac__debug_h__
 
 #ifndef NDEBUG
-#	include <stdbool.h>
-#	include <stdint.h>
+#	include <mirac/c_types.h>
 
 void mirac_debug_assert_impl(
 	const bool expression,

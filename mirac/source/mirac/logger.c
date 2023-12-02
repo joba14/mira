@@ -14,11 +14,7 @@
 
 #include <mirac/debug.h>
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 #include <stdarg.h>
-#include <stdlib.h>
 #include <memory.h>
 #include <stdio.h>
 
@@ -91,17 +87,6 @@ void mirac_logger_error(
 	va_end(args);
 }
 
-void mirac_logger_panic(
-	const char* const format,
-	...)
-{
-	mirac_debug_assert(format != NULL);
-	va_list args; va_start(args, format);
-	log_with_tag(stderr, ANSI_RED TAG_PANIC ANSI_RESET, format, args);
-	va_end(args);
-	exit(-1);
-}
-
 static void log_with_tag(
 	FILE* const stream,
 	const char* const tag,
@@ -111,20 +96,11 @@ static void log_with_tag(
 	mirac_debug_assert(stream != NULL);
 	mirac_debug_assert(format != NULL);
 
-	#define logging_buffer_capacity 2048
-	static char logging_buffer[logging_buffer_capacity + 1];
-	uint64_t length = (uint64_t)vsnprintf(
-		logging_buffer, logging_buffer_capacity, format, args);
-	logging_buffer[length++] = '\n';
-	logging_buffer[length] = 0;
-	#undef logging_buffer_capacity
+	if (tag != NULL)
+	{
+		(void)fprintf(stream, "%s: ", tag);
+	}
 
-	if (NULL == tag)
-	{
-		(void)fprintf(stream, "%.*s", (signed int)length, logging_buffer);
-	}
-	else
-	{
-		(void)fprintf(stream, "%s: %.*s", tag, (signed int)length, logging_buffer);
-	}
+	(void)vfprintf(stream, format, args);
+	(void)fprintf(stream, "\n");
 }

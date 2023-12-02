@@ -13,8 +13,7 @@
 #ifndef __mirac__include__mirac__utf8_h__
 #define __mirac__include__mirac__utf8_h__
 
-#include <stdint.h>
-#include <limits.h>
+#include <mirac/c_types.h>
 #include <stdio.h>
 
 typedef uint32_t utf8char_t;

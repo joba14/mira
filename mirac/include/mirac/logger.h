@@ -13,6 +13,8 @@
 #ifndef __mirac__include__mirac__logger_h__
 #define __mirac__include__mirac__logger_h__
 
+#include <mirac/c_types.h>
+
 /**
  * @brief Log tagless level formattable messages.
  */
@@ -46,13 +48,6 @@ void mirac_logger_warn(
  * 
  */
 void mirac_logger_error(
-	const char* const format,
-	...) __attribute__ ((format (printf, 1, 2)));
-
-/**
- * @brief Log panic level formattable messages and exit with status -1.
- */
-void mirac_logger_panic(
 	const char* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 

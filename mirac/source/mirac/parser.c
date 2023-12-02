@@ -15,7 +15,7 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-#include <stddef.h>
+#include <stdlib.h>
 
 mirac_implement_vector_type(mirac_tokens_vector, mirac_token_s);
 mirac_implement_vector_type(mirac_token_refs_vector, mirac_token_s*);
@@ -121,6 +121,13 @@ void mirac_global_print(
 	}
 }
 
+mirac_unit_s mirac_unit_create(
+	void)
+{
+	mirac_unit_s unit = {0};
+	return unit;
+}
+
 mirac_parser_s mirac_parser_from_parts(
 	mirac_config_s* const config,
 	mirac_lexer_s* const lexer)
@@ -140,7 +147,7 @@ mirac_unit_s mirac_parser_parse(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(parser->lexer != NULL);
 
-	mirac_unit_s unit;
+	mirac_unit_s unit = mirac_unit_create();
 	unit.globals = mirac_globals_vector_from_parts(4);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 
@@ -175,8 +182,8 @@ mirac_unit_s mirac_parser_parse(
 		}
 	}
 
-	collect_string_literals(&unit);
 	perform_cross_reference(&unit);
+	collect_string_literals(&unit);
 	return unit;
 }
 
@@ -363,6 +370,7 @@ static mirac_global_function_s try_parse_function(
 				case mirac_token_type_keyword_if:
 				case mirac_token_type_keyword_loop:
 				case mirac_token_type_keyword_let:
+				case mirac_token_type_keyword_reg:
 				{
 					increase_scope_counter = true;
 				} break;
@@ -522,6 +530,8 @@ static void collect_string_literals(
 			mirac_token_s* const token = &function->body_tokens.data[body_index];
 			mirac_debug_assert(token != NULL);
 
+			mirac_token_print(token);
+
 			switch (token->type)
 			{
 				case mirac_token_type_literal_str:
@@ -591,6 +601,7 @@ static void perform_cross_reference(
 				case mirac_token_type_keyword_if:
 				case mirac_token_type_keyword_loop:
 				case mirac_token_type_keyword_let:
+				case mirac_token_type_keyword_reg:
 				{
 					mirac_token_s* popped = NULL;
 
@@ -598,7 +609,8 @@ static void perform_cross_reference(
 					{
 						if (mirac_token_type_keyword_if == popped->type ||
 							mirac_token_type_keyword_loop == popped->type ||
-							mirac_token_type_keyword_let == popped->type)
+							mirac_token_type_keyword_let == popped->type ||
+							mirac_token_type_keyword_reg == popped->type)
 						{
 							log_parser_error_and_exit(token->location,
 								"encountered an invalid keyword '%.*s', following the '%.*s' keyword.",
@@ -702,7 +714,8 @@ static void perform_cross_reference(
 					if (mirac_token_type_keyword_if == popped->type ||
 						mirac_token_type_keyword_elif == popped->type ||
 						mirac_token_type_keyword_loop == popped->type ||
-						mirac_token_type_keyword_let == popped->type)
+						mirac_token_type_keyword_let == popped->type ||
+						mirac_token_type_keyword_reg == popped->type)
 					{
 						popped->next_ref = token;
 						token->prev_ref = popped;
@@ -748,6 +761,12 @@ static void perform_cross_reference(
 							token->next_ref = popped->prev_ref;
 						}
 						else if (mirac_token_type_keyword_let == popped->prev_ref->type)
+						{
+							popped->next_ref = token;
+							token->prev_ref = popped;
+							token->next_ref = popped->prev_ref;
+						}
+						else if (mirac_token_type_keyword_reg == popped->prev_ref->type)
 						{
 							popped->next_ref = token;
 							token->prev_ref = popped;

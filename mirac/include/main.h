@@ -13,7 +13,7 @@
 #ifndef __mirac__include__main_h__
 #define __mirac__include__main_h__
 
-#include <stdint.h>
+#include <mirac/c_types.h>
 
 /**
  * @brief Entry of the executable.

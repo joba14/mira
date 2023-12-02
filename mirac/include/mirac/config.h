@@ -13,7 +13,7 @@
 #ifndef __mirac__include__mirac__config_h__
 #define __mirac__include__mirac__config_h__
 
-#include <stdint.h>
+#include <mirac/c_types.h>
 
 typedef struct
 {

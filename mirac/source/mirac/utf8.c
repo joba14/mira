@@ -14,8 +14,6 @@
 
 #include <mirac/debug.h>
 
-#include <stddef.h>
-
 static const uint8_t g_masks[] =
 {
 	0x7F,
