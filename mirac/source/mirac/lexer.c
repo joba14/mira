@@ -28,7 +28,7 @@
 		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
 			(_location).file, (_location).line, (_location).column);           \
 		mirac_logger_error(_format, ## __VA_ARGS__);                           \
-		mirac_c_exit(-1);                                                              \
+		mirac_c_exit(-1);                                                      \
 	} while (0)
 
 /**

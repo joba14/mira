@@ -22,8 +22,8 @@ void mirac_debug_assert_impl(
 	const char* const file,
 	const uint64_t line);
 
-#	define mirac_debug_assert(_expression)                                    \
-		mirac_debug_assert_impl(                                              \
+#	define mirac_debug_assert(_expression)                                     \
+		mirac_debug_assert_impl(                                               \
 			_expression,                                                       \
 			#_expression,                                                      \
 			(const char* const)__FILE__,                                       \
