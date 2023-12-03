@@ -17,6 +17,7 @@
 
 typedef struct
 {
+	const char* program;
 	const char* arch;
 	const char* entry;
 	const char* output;
@@ -29,5 +30,11 @@ mirac_config_s mirac_config_from_cli(
 	const int32_t argc,
 	const char** const argv,
 	uint64_t* const config_end_index);
+
+/**
+ * @brief Print the usage banner.
+ */
+void mirac_config_usage(
+	void);
 
 #endif

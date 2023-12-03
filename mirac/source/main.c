@@ -45,7 +45,8 @@ int32_t main(
 
 	if (source_files_count <= 0)
 	{
-		mirac_logger_error("no source files were provided -- see '--help'.");
+		mirac_logger_error("no source files were provided.");
+		mirac_config_usage();
 		return -1;
 	}
 
