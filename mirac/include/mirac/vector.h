@@ -14,10 +14,8 @@
 #define __mirac__include__mirac__vector_h__
 
 #include <mirac/debug.h>
-#include <mirac/utils.h>
+#include <mirac/c_common.h>
 #include <mirac/global_arena.h>
-
-#include <mirac/c_types.h>
 
 #define mirac_define_vector_type(_type_name, _element_type)                    \
 	typedef struct                                                             \
@@ -67,7 +65,7 @@
 		_type_name ## _s* const vector)                                        \
 	{                                                                          \
 		mirac_debug_assert(vector != NULL);                                    \
-		mirac_utils_memset(vector, 0, sizeof(_type_name ## _s));               \
+		mirac_c_memset(vector, 0, sizeof(_type_name ## _s));                   \
 	}                                                                          \
 	                                                                           \
 	void _type_name ## _push(                                                  \
@@ -86,7 +84,7 @@
 				new_capacity * sizeof(_element_type));                         \
 			mirac_debug_assert(new_data != NULL);                              \
 			                                                                   \
-			mirac_utils_memcpy(new_data,                                       \
+			mirac_c_memcpy(new_data,                                           \
 				vector->data, vector->count * sizeof(_element_type)            \
 			);                                                                 \
 			                                                                   \

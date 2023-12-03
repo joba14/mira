@@ -13,11 +13,10 @@
 #ifndef __mirac__include__mirac__parser_h__
 #define __mirac__include__mirac__parser_h__
 
+#include <mirac/c_common.h>
 #include <mirac/vector.h>
 #include <mirac/config.h>
 #include <mirac/lexer.h>
-
-#include <mirac/c_types.h>
 
 mirac_define_vector_type(mirac_tokens_vector, mirac_token_s);
 mirac_define_vector_type(mirac_token_refs_vector, mirac_token_s*);

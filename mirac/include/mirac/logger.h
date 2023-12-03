@@ -13,7 +13,7 @@
 #ifndef __mirac__include__mirac__logger_h__
 #define __mirac__include__mirac__logger_h__
 
-#include <mirac/c_types.h>
+#include <mirac/c_common.h>
 
 /**
  * @brief Log tagless level formattable messages.

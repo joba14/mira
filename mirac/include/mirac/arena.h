@@ -13,7 +13,7 @@
 #ifndef __mirac__include__mirac__arena_h__
 #define __mirac__include__mirac__arena_h__
 
-#include <mirac/c_types.h>
+#include <mirac/c_common.h>
 
 typedef struct mirac_node_s mirac_node_s;
 #define mirac_region_default_capacity (8ULL * 1024)

@@ -13,7 +13,7 @@
 #ifndef __mirac__include__mirac__version_h__
 #define __mirac__include__mirac__version_h__
 
-#include <mirac/c_types.h>
+#include <mirac/c_common.h>
 
 #define mirac_version_major 1
 #define mirac_version_minor 0

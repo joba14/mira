@@ -13,7 +13,7 @@
 #ifndef __mirac__include__mirac__global_arena_h__
 #define __mirac__include__mirac__global_arena_h__
 
-#include <mirac/c_types.h>
+#include <mirac/c_common.h>
 
 /**
  * @brief Create global arena object.

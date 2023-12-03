@@ -13,10 +13,10 @@
 #ifndef __mirac__include__mirac__lexer_h__
 #define __mirac__include__mirac__lexer_h__
 
+#include <mirac/c_common.h>
 #include <mirac/utf8.h>
 #include <mirac/token.h>
 
-#include <mirac/c_types.h>
 #include <stdio.h>
 
 typedef struct
