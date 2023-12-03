@@ -15,7 +15,7 @@ INCLUDES="
 SOURCES="
 	$PROJECT_DIR/source/mirac/debug.c
 	$PROJECT_DIR/source/mirac/logger.c
-	$PROJECT_DIR/source/mirac/utils.c
+	$PROJECT_DIR/source/mirac/c_common.c
 	$PROJECT_DIR/source/mirac/arena.c
 	$PROJECT_DIR/source/mirac/global_arena.c
 	$PROJECT_DIR/source/mirac/utf8.c
