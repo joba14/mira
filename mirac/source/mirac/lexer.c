@@ -15,10 +15,8 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 #include <mirac/global_arena.h>
-#include <mirac/utils.h>
 
 #include <inttypes.h>
-#include <memory.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -30,7 +28,7 @@
 		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
 			(_location).file, (_location).line, (_location).column);           \
 		mirac_logger_error(_format, ## __VA_ARGS__);                           \
-		exit(-1);                                                              \
+		mirac_c_exit(-1);                                                              \
 	} while (0)
 
 /**
@@ -144,7 +142,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 void mirac_lexer_destroy(
 	mirac_lexer_s* const lexer)
 {
-	mirac_utils_memset((void*)lexer, 0, sizeof(mirac_lexer_s));
+	mirac_c_memset((void*)lexer, 0, sizeof(mirac_lexer_s));
 }
 
 mirac_token_type_e mirac_lexer_lex(
@@ -300,12 +298,12 @@ static void append_buffer(
 	{
 		const uint64_t new_capacity = lexer->buffer.capacity * 2;
 		char* const new_buffer = mirac_global_arena_malloc(new_capacity);
-		mirac_utils_memcpy(new_buffer, lexer->buffer.data, lexer->buffer.length);
+		mirac_c_memcpy(new_buffer, lexer->buffer.data, lexer->buffer.length);
 		lexer->buffer.data = new_buffer;
 		lexer->buffer.capacity = new_capacity;
 	}
 
-	mirac_utils_memcpy(lexer->buffer.data + lexer->buffer.length, buffer, size);
+	mirac_c_memcpy(lexer->buffer.data + lexer->buffer.length, buffer, size);
 	lexer->buffer.length += size;
 	lexer->buffer.data[lexer->buffer.length] = 0;
 }
@@ -499,7 +497,7 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	const uint64_t keyword_or_identifier_length = lexer->buffer.length;
 	
 	char* const keyword_or_identifier = mirac_global_arena_malloc((keyword_or_identifier_length + 1) * sizeof(char));
-	mirac_utils_memcpy(keyword_or_identifier, lexer->buffer.data, keyword_or_identifier_length);
+	mirac_c_memcpy(keyword_or_identifier, lexer->buffer.data, keyword_or_identifier_length);
 
 	token->source.data = keyword_or_identifier;
 	token->source.length = keyword_or_identifier_length;
@@ -657,13 +655,13 @@ static bool lex_numeric_literal_token(
 
 	do
 	{
-		if (mirac_utils_strchr(chrs[state & base_mask], (int32_t)utf8char))
+		if (mirac_c_strchr(chrs[state & base_mask], (int32_t)utf8char))
 		{
 			state &= ~(1 << flag_dig);
 			last = utf8char;
 			continue;
 		}
-		else if (utf8char > 0x7F || !mirac_utils_strchr(matching_states[utf8char], state))
+		else if (utf8char > 0x7F || !mirac_c_strchr(matching_states[utf8char], state))
 		{
 			goto end;
 		}
@@ -727,8 +725,8 @@ static bool lex_numeric_literal_token(
 	last = 0;
 
 end:
-	if (last && !mirac_utils_strchr("iu", (int32_t)last) &&
-		!mirac_utils_strchr(chrs[state & base_mask], (int32_t)last))
+	if (last && !mirac_c_strchr("iu", (int32_t)last) &&
+		!mirac_c_strchr(chrs[state & base_mask], (int32_t)last))
 	{
 		state = old_state;
 		push_utf8char(lexer, utf8char, true);
@@ -784,7 +782,7 @@ want_int:
 	{
 		for (uint8_t index = 0; index < (sizeof(literals) / sizeof(literals[0])); ++index)
 		{
-			if (!mirac_utils_strncmp(literals[index].suffix, lexer->buffer.data + suffix_start, literals[index].suffix_length))
+			if (!mirac_c_strncmp(literals[index].suffix, lexer->buffer.data + suffix_start, literals[index].suffix_length))
 			{
 				token->type = literals[index].type;
 				kind = literals[index].kind;
@@ -813,7 +811,7 @@ want_int:
 
 		const uint64_t float_literal_length = lexer->buffer.length - 1;
 		char* const float_literal = mirac_global_arena_malloc((float_literal_length + 1) * sizeof(char));
-		mirac_utils_memcpy(float_literal, lexer->buffer.data, float_literal_length);
+		mirac_c_memcpy(float_literal, lexer->buffer.data, float_literal_length);
 
 		token->source.data = float_literal;
 		token->source.length = float_literal_length;
@@ -870,7 +868,7 @@ want_int:
 
 	const uint64_t integer_literal_length = lexer->buffer.length - 1;
 	char* const integer_literal = mirac_global_arena_malloc((integer_literal_length + 1) * sizeof(char));
-	mirac_utils_memcpy(integer_literal, lexer->buffer.data, integer_literal_length);
+	mirac_c_memcpy(integer_literal, lexer->buffer.data, integer_literal_length);
 
 	token->source.data = integer_literal;
 	token->source.length = integer_literal_length;
@@ -1094,7 +1092,7 @@ static mirac_token_type_e lex_string_literal_token(
 
 			const uint64_t string_length = lexer->buffer.length;
 			char* const string = mirac_global_arena_malloc((string_length + 1) * sizeof(char));
-			mirac_utils_memcpy(string, lexer->buffer.data, string_length);
+			mirac_c_memcpy(string, lexer->buffer.data, string_length);
 
 			utf8char_t suffix = next_utf8char(lexer, NULL, true);
 			if ('c' == suffix)

@@ -15,9 +15,7 @@
 #include <mirac/version.h>
 #include <mirac/debug.h>
 #include <mirac/logger.h>
-#include <mirac/utils.h>
 
-#include <stdlib.h>
 #include <getopt.h>
 
 static const char* g_architectures[] =
@@ -79,19 +77,19 @@ mirac_config_s mirac_config_from_cli(
 			case 'h':
 			{
 				usage(argv[0]);
-				exit(0);
+				mirac_c_exit(0);
 			} break;
 
 			case 'v':
 			{
 				mirac_logger_log("%s " mirac_version_fmt, argv[0], mirac_version_arg);
-				exit(0);
+				mirac_c_exit(0);
 			} break;
 
 			case 'l':
 			{
 				architectures();
-				exit(0);
+				mirac_c_exit(0);
 			} break;
 
 			case 'a':
@@ -112,7 +110,7 @@ mirac_config_s mirac_config_from_cli(
 			default:
 			{
 				mirac_logger_error("invalid command line option -- see '--help'.");
-				exit(-1);
+				mirac_c_exit(-1);
 			} break;
 		}
 	}
@@ -120,7 +118,7 @@ mirac_config_s mirac_config_from_cli(
 	if (NULL == config.arch)
 	{
 		mirac_logger_error("no architecture was provided -- see '--help'.");
-		exit(-1);
+		mirac_c_exit(-1);
 	}
 	else
 	{
@@ -128,7 +126,7 @@ mirac_config_s mirac_config_from_cli(
 
 		for (uint8_t index = 0; index < (sizeof(g_architectures) / sizeof(g_architectures[0])); ++index)
 		{
-			if (mirac_utils_strcmp(config.arch, g_architectures[index]) == 0)
+			if (mirac_c_strcmp(config.arch, g_architectures[index]) == 0)
 			{
 				valid_architecture = true;
 				break;
@@ -138,7 +136,7 @@ mirac_config_s mirac_config_from_cli(
 		if (!valid_architecture)
 		{
 			mirac_logger_error("invalid architecture '%s' was provided -- see '--list-archs'.", config.arch);
-			exit(-1);
+			mirac_c_exit(-1);
 		}
 	}
 

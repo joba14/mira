@@ -15,7 +15,6 @@
 #include <mirac/debug.h>
 
 #include <stdarg.h>
-#include <memory.h>
 #include <stdio.h>
 
 #define ANSI_GRAY   "\033[90m"

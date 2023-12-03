@@ -15,27 +15,24 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-#include <stdlib.h>
-
 mirac_node_s* mirac_node_from_size(
 	const uint64_t size)
 {
 	mirac_debug_assert(size > 0);
-
-	mirac_node_s* node = (mirac_node_s*)malloc(sizeof(mirac_node_s));
+	mirac_node_s* node = (mirac_node_s*)mirac_c_malloc(sizeof(mirac_node_s));
 
 	if (NULL == node)
 	{
 		mirac_logger_error("internal failure -- failed to allocate memory node.");
-		exit(-1);
+		mirac_c_exit(-1);
 	}
 
-	node->pointer = (void*)malloc(size);
+	node->pointer = (void*)mirac_c_malloc(size);
 
 	if (NULL == node->pointer)
 	{
 		mirac_logger_error("internal failure -- failed to allocate memory node's pointer.");
-		exit(-1);
+		mirac_c_exit(-1);
 	}
 
 	node->size = size;
@@ -47,8 +44,8 @@ void mirac_node_destroy(
 	mirac_node_s* const node)
 {
 	mirac_debug_assert(node != NULL);
-	free(node->pointer);
-	free(node);
+	mirac_c_free(node->pointer);
+	mirac_c_free(node);
 }
 
 mirac_arena_s mirac_arena_create(

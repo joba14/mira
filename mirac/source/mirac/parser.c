@@ -15,8 +15,6 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-#include <stdlib.h>
-
 mirac_implement_vector_type(mirac_tokens_vector, mirac_token_s);
 mirac_implement_vector_type(mirac_token_refs_vector, mirac_token_s*);
 mirac_implement_vector_type(mirac_globals_vector, mirac_global_s);
@@ -26,7 +24,7 @@ mirac_implement_vector_type(mirac_globals_vector, mirac_global_s);
 		(void)fprintf(stderr, "%s:%lu:%lu: ",                                  \
 			(_location).file, (_location).line, (_location).column);           \
 		mirac_logger_error(_format, ## __VA_ARGS__);                           \
-		exit(-1);                                                              \
+		mirac_c_exit(-1);                                                              \
 	} while (0)
 
 static mirac_global_function_s try_parse_function(
@@ -261,7 +259,7 @@ static mirac_global_function_s try_parse_function(
 	else
 	{
 		function.identifier = token;
-		function.is_entry = (mirac_utils_strcmp(function.identifier.as_ident.data, parser->config->entry) == 0);
+		function.is_entry = (mirac_c_strcmp(function.identifier.as_ident.data, parser->config->entry) == 0);
 
 		if (function.is_entry && function.is_inlined)
 		{
@@ -554,7 +552,7 @@ static void collect_string_literals(
 						mirac_debug_assert(string_token != NULL);
 						mirac_debug_assert(mirac_token_is_string_literal(string_token));
 
-						if (mirac_utils_strncmp(string_token->as_str.data, token->as_str.data, token->as_str.length) == 0)
+						if (mirac_c_strncmp(string_token->as_str.data, token->as_str.data, token->as_str.length) == 0)
 						{
 							string_literal_exists = true;
 							break;

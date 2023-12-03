@@ -13,7 +13,6 @@
 #include <mirac/debug.h>
 
 #ifndef NDEBUG
-#	include <stdlib.h>
 #	include <stdio.h>
 
 void mirac_debug_assert_impl(
@@ -27,7 +26,7 @@ void mirac_debug_assert_impl(
 		(void)fprintf(stderr,
 			"\033[91m" "\033[1m" "%s" "\033[0m" ": assertion '%s' failed at %s:%lu\n",
 			"fatal", expression_string, file, line);
-		exit(-1);
+		mirac_c_exit(-1);
 	}
 }
 #else

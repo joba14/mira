@@ -14,7 +14,6 @@
 
 #include <mirac/debug.h>
 #include <mirac/logger.h>
-#include <mirac/utils.h>
 
 #include <stdio.h>
 
@@ -97,7 +96,7 @@ static int32_t compare_keyword_tokens(
 mirac_token_type_e mirac_token_type_from_string(
 	const char* const string)
 {
-	const void* const found_token = (const void* const)mirac_utils_bsearch(
+	const void* const found_token = (const void* const)mirac_c_bsearch(
 		&string, g_token_type_to_string_map, mirac_token_type_keywords_count + 1,
 		sizeof(g_token_type_to_string_map[0]), compare_keyword_tokens
 	);
@@ -201,7 +200,7 @@ mirac_token_s mirac_token_from_parts(
 	const mirac_location_s location)
 {
 	mirac_token_s token;
-	mirac_utils_memset(
+	mirac_c_memset(
 		(void* const)&token, 0, sizeof(mirac_token_s)
 	);
 
@@ -214,7 +213,7 @@ mirac_token_s mirac_token_from_type(
 	const mirac_token_type_e token_type)
 {
 	mirac_token_s token;
-	mirac_utils_memset(
+	mirac_c_memset(
 		(void* const)&token, 0, sizeof(mirac_token_s)
 	);
 
@@ -226,7 +225,7 @@ void mirac_token_destroy(
 	mirac_token_s* const token)
 {
 	mirac_debug_assert(token != NULL);
-	mirac_utils_memset((void* const)token, 0, sizeof(mirac_token_s));
+	mirac_c_memset((void* const)token, 0, sizeof(mirac_token_s));
 	token->type = mirac_token_type_none;
 }
 
@@ -458,7 +457,7 @@ static int32_t compare_keyword_tokens(
 	const void* const left,
 	const void* const right)
 {
-	return mirac_utils_strcmp(
+	return mirac_c_strcmp(
 		*(const char**)left, *(const char**)right
 	);
 }
