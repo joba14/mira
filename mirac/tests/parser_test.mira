@@ -10,3 +10,5 @@ func main do
 		69 print
 	end
 end
+
+mem XS1 +2i08 end

@@ -212,6 +212,7 @@ static mirac_global_function_s try_parse_function(
 	{
 		function.is_inlined = true;
 
+		// TODO: simplify:
 		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
 		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
 		{
@@ -235,6 +236,7 @@ static mirac_global_function_s try_parse_function(
 	}
 	else
 	{
+		// TODO: simplify:
 		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
 		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
 		{
@@ -269,6 +271,7 @@ static mirac_global_function_s try_parse_function(
 			);
 		}
 
+		// TODO: simplify:
 		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
 		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
 		{
@@ -299,7 +302,7 @@ static mirac_global_function_s try_parse_function(
 				if (function.req_tokens.count <= 0)
 				{
 					log_parser_error_and_exit(token.location,
-						"no specifier tokens were found after 'req' keyword."
+						"no type specifier tokens were found after 'req' keyword."
 					);
 				}
 				else
