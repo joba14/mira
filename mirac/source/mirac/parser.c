@@ -454,17 +454,12 @@ static mirac_global_memory_s try_parse_memory(
 	{
 		memory.identifier = token;
 
-		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
-		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
+		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 		{
 			log_parser_error_and_exit(token.location,
 				"missing capacity specifier after '%.*s' token.",
 				(signed int)token.source.length, token.source.data
 			);
-		}
-		else
-		{
-			token = temp_token;
 		}
 	}
 
@@ -486,17 +481,12 @@ static mirac_global_memory_s try_parse_memory(
 	{
 		memory.capacity = token;
 
-		mirac_token_s temp_token = mirac_token_from_type(mirac_token_type_none);
-		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &temp_token)))
+		if (mirac_lexer_should_stop_lexing(mirac_lexer_lex(parser->lexer, &token)))
 		{
 			log_parser_error_and_exit(token.location,
 				"missing capacity specifier after '%.*s' token.",
 				(signed int)token.source.length, token.source.data
 			);
-		}
-		else
-		{
-			token = temp_token;
 		}
 	}
 
