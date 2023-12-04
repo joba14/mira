@@ -94,4 +94,22 @@ mirac_parser_s mirac_parser_from_parts(
 mirac_unit_s mirac_parser_parse(
 	mirac_parser_s* const parser);
 
+// TODO: rework the entire parser.
+//       
+//       The Great Rework of the Mirac Parser.
+//       
+//       Since the current version of the parser is working, this task is on a
+//       low priority. However, this version is sub-optimal, not very flexible,
+//       and "just working" with the emphasis on "just". The new version of the
+//       parser will work with actual abstract syntax tree and will be far more
+//       flexible that the current state of the parsed units.
+//       
+//       The Plan
+//       1. Define AST types for: expressions, if-elif-else-block, loop-block,
+//          let-block, reg-block, func-block, and mem-block.
+//       2. Define rules of global AST blocks and local (scoped) AST blocks.
+//       3. Integrate types system in the AST blocks that would be used by the
+//          type checker at the later stage of source code compilation.
+//       
+
 #endif
