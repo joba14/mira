@@ -299,7 +299,7 @@ static mirac_global_function_s try_parse_function(
 				if (function.req_tokens.count <= 0)
 				{
 					log_parser_error_and_exit(token.location,
-						"no type specifiers we found after 'req' keyword."
+						"no type specifiers were found after 'req' keyword."
 					);
 				}
 				else
@@ -332,7 +332,7 @@ static mirac_global_function_s try_parse_function(
 				if (function.ret_tokens.count <= 0)
 				{
 					log_parser_error_and_exit(token.location,
-						"no type specifiers we found after 'ret' keyword."
+						"no type specifiers were found after 'ret' keyword."
 					);
 				}
 				else
