@@ -55,9 +55,7 @@ int32_t main(
 	{
 		const char* const source_file_path = source_files[source_file_index];
 		mirac_debug_assert(source_file_path != NULL);
-
-		const uint64_t source_file_path_length = strlen(source_file_path);
-		mirac_debug_assert(source_file_path_length > 0);
+		mirac_debug_assert(strlen(source_file_path) > 0);
 
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^
@@ -66,14 +64,17 @@ int32_t main(
 			// Prepare global arena for the processing of the file.
 			mirac_global_arena_create();
 
-			mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
+			// Creating lexer and parser contexts.
+			mirac_lexer_s lexer   = mirac_lexer_from_parts(source_file_path, source_file);
 			mirac_parser_s parser = mirac_parser_from_parts(&config, &lexer);
+
+			// Parsing the source file.
 			mirac_unit_s unit = mirac_parser_parse(&parser);
 
 			// TODO: remove:
 			// [
-			mirac_unit_print(&unit);
-			mirac_logger_log(" ");
+				mirac_unit_print(&unit);
+				mirac_logger_log(" ");
 			// ]
 
 			// Destroy the arena and close the file.

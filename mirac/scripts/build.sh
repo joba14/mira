@@ -45,17 +45,17 @@ mkdir "$PROJECT_DIR/build"
 # Choose compiler flags and defines based on build configuration
 case $BUILD_CONFIGURATION in
 	"debug")
-		FLAGS="-g -O0"
+		FLAGS="$FLAGS -g -O0"
 		DEFINES="$DEFINES"
 		PROJECT_NAME_SUFFIX="_debug"
 		;;
 	"hybrid")
-		FLAGS="-g -O1"
+		FLAGS="$FLAGS -g -O1"
 		DEFINES="$DEFINES"
 		PROJECT_NAME_SUFFIX="_hybrid"
 		;;
 	"release")
-		FLAGS="-O3"
+		FLAGS="$FLAGS -O3"
 		DEFINES="$DEFINES -DNDEBUG"
 		PROJECT_NAME_SUFFIX="_release"
 		;;
