@@ -5,3 +5,4 @@
 # Visual Studio Code local configs
 .vscode/*
 !.vscode/*.code-snippets
+!.vscode/settings.json
