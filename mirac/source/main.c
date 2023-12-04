@@ -62,20 +62,24 @@ int32_t main(
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^
 
-		mirac_global_arena_create();
+		{
+			// Prepare global arena for the processing of the file.
+			mirac_global_arena_create();
 
-		mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
-		mirac_parser_s parser = mirac_parser_from_parts(&config, &lexer);
-		mirac_unit_s unit = mirac_parser_parse(&parser);
+			mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
+			mirac_parser_s parser = mirac_parser_from_parts(&config, &lexer);
+			mirac_unit_s unit = mirac_parser_parse(&parser);
 
-		// TODO: remove:
-		// [
-		mirac_unit_print(&unit);
-		mirac_logger_log(" ");
-		// ]
+			// TODO: remove:
+			// [
+			mirac_unit_print(&unit);
+			mirac_logger_log(" ");
+			// ]
 
-		mirac_global_arena_destroy();
-		(void)fclose(source_file);
+			// Destroy the arena and close the file.
+			mirac_global_arena_destroy();
+			(void)fclose(source_file);
+		}
 	}
 
 	return 0;
