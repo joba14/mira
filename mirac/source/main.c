@@ -14,19 +14,16 @@
 
 #include <mirac/debug.h>
 #include <mirac/logger.h>
+#include <mirac/c_common.h>
 #include <mirac/global_arena.h>
 #include <mirac/config.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
 #include <mirac/checker.h>
 
-#include <stddef.h>
-#include <string.h>
+#include <sys/stat.h>
 #include <errno.h>
 #include <stdio.h>
-
-#include <sys/stat.h>
-#include <unistd.h>
 
 static FILE* validate_and_open_file_for_reading(
 	const char* const file_path);
@@ -55,17 +52,17 @@ int32_t main(
 	{
 		const char* const source_file_path = source_files[source_file_index];
 		mirac_debug_assert(source_file_path != NULL);
-		mirac_debug_assert(strlen(source_file_path) > 0);
+		mirac_debug_assert(mirac_c_strlen(source_file_path) > 0);
 
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
-		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^
+		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^.
 
 		{
 			// Prepare global arena for the processing of the file.
 			mirac_global_arena_create();
 
 			// Creating lexer and parser contexts.
-			mirac_lexer_s lexer   = mirac_lexer_from_parts(source_file_path, source_file);
+			mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
 			mirac_parser_s parser = mirac_parser_from_parts(&config, &lexer);
 
 			// Parsing the source file.

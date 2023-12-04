@@ -83,6 +83,13 @@ void mirac_c_memcpy(
 	(void)memcpy((void*)destination, (const void*)source, length);
 }
 
+uint64_t mirac_c_strlen(
+	const char* const cstring)
+{
+	mirac_debug_assert(cstring != NULL);
+	return (uint64_t)strlen(cstring);
+}
+
 int32_t mirac_c_strcmp(
 	const char* const left,
 	const char* const right)

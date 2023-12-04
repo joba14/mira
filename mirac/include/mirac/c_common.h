@@ -41,6 +41,9 @@ void mirac_c_memcpy(
 	const void* const source,
 	const uint64_t length);
 
+uint64_t mirac_c_strlen(
+	const char* const cstring);
+
 int32_t mirac_c_strcmp(
 	const char* const left,
 	const char* const right);
