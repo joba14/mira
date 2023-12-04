@@ -50,8 +50,6 @@ int32_t main(
 		return -1;
 	}
 
-	mirac_global_arena_create();
-
 	// Iterating over the source files.
 	for (uint64_t source_file_index = 0; source_file_index < source_files_count; ++source_file_index)
 	{
@@ -63,6 +61,8 @@ int32_t main(
 
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^
+
+		mirac_global_arena_create();
 
 		mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &lexer);

@@ -31,6 +31,7 @@ void mirac_global_arena_destroy(
 {
 	mirac_debug_assert(g_is_arena_created);
 	mirac_arena_destroy(&g_arena);
+	g_is_arena_created = false;
 }
 
 void* mirac_global_arena_malloc(
