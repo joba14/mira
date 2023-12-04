@@ -390,8 +390,9 @@ static mirac_global_function_s try_parse_function(
 					if (increase_scope_counter)
 					{
 						increase_scope_counter = false;
-						++scopes_counter;
 					}
+
+					++scopes_counter;
 				} break;
 
 				case mirac_token_type_keyword_end:
@@ -716,10 +717,6 @@ static void perform_cross_reference(
 							(signed int)token->source.length, token->source.data
 						);
 					}
-
-					// TODO: remove:
-					mirac_logger_debug("%s", mirac_token_to_string(popped));
-					getchar();
 
 					if (mirac_token_type_keyword_if == popped->type ||
 						mirac_token_type_keyword_elif == popped->type ||
