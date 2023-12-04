@@ -299,7 +299,7 @@ static mirac_global_function_s try_parse_function(
 				if (function.req_tokens.count <= 0)
 				{
 					log_parser_error_and_exit(token.location,
-						"no type specifiers were found after 'req' keyword."
+						"no specifier tokens were found after 'req' keyword."
 					);
 				}
 				else
@@ -332,7 +332,7 @@ static mirac_global_function_s try_parse_function(
 				if (function.ret_tokens.count <= 0)
 				{
 					log_parser_error_and_exit(token.location,
-						"no type specifiers were found after 'ret' keyword."
+						"no type specifier tokens were found after 'ret' keyword."
 					);
 				}
 				else
@@ -446,7 +446,7 @@ static mirac_global_memory_s try_parse_memory(
 	if (token.type != mirac_token_type_identifier)
 	{
 		log_parser_error_and_exit(token.location,
-			"expected identifier token after 'mem' keyword, but found token '%.*s'.",
+			"expected identifier token after 'mem' token, but found token '%.*s'.",
 			(signed int)token.source.length, token.source.data
 		);
 	}
@@ -463,14 +463,23 @@ static mirac_global_memory_s try_parse_memory(
 		}
 	}
 
-	if (!mirac_token_is_unsigned_integer_literal(&token) && token.as_uval <= 0)
+	if (!mirac_token_is_signed_integer_literal(&token) &&
+		!mirac_token_is_unsigned_integer_literal(&token))
+	{
+		log_parser_error_and_exit(token.location,
+			"invalid token '%.*s' used as capacity specifier.",
+			(signed int)token.source.length, token.source.data
+		);
+	}
+
+	if (mirac_token_is_unsigned_integer_literal(&token) && token.as_uval <= 0)
 	{
 		log_parser_error_and_exit(token.location,
 			"unsigned capacity specifier '%.*s' must be higher than 0.",
 			(signed int)token.source.length, token.source.data
 		);
 	}
-	else if (!mirac_token_is_signed_integer_literal(&token) && token.as_ival <= 0)
+	else if (mirac_token_is_signed_integer_literal(&token) && token.as_ival <= 0)
 	{
 		log_parser_error_and_exit(token.location,
 			"signed capacity specifier '%.*s' must be higher than 0.",
@@ -493,7 +502,7 @@ static mirac_global_memory_s try_parse_memory(
 	if (token.type != mirac_token_type_keyword_end)
 	{
 		log_parser_error_and_exit(token.location,
-			"expected 'end' keyword after memorie's capacity token, but found token '%.*s'.",
+			"expected 'end' token after memorie's capacity token, but found token '%.*s'.",
 			(signed int)token.source.length, token.source.data
 		);
 	}
@@ -610,7 +619,7 @@ static void perform_cross_reference(
 							mirac_token_type_keyword_reg == popped->type)
 						{
 							log_parser_error_and_exit(token->location,
-								"encountered an invalid keyword '%.*s', following the '%.*s' keyword.",
+								"encountered an invalid token '%.*s', following the '%.*s' token.",
 								(signed int)token->source.length, token->source.data,
 								(signed int)popped->source.length, popped->source.data
 							);
@@ -707,6 +716,10 @@ static void perform_cross_reference(
 							(signed int)token->source.length, token->source.data
 						);
 					}
+
+					// TODO: remove:
+					mirac_logger_debug("%s", mirac_token_to_string(popped));
+					getchar();
 
 					if (mirac_token_type_keyword_if == popped->type ||
 						mirac_token_type_keyword_elif == popped->type ||

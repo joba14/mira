@@ -1,8 +1,19 @@
 
-inl func inc req i64 ret i64 do
-	1 add
-end
+// inl func inc req i64 ret i64 do
+// 	1 add
+// end
+
+// func main do
+// 	10u16 func1 putu
+
+// 	; if
+// 	1 2 add 3 eq do
+// 		69 print
+// 	end
+// end
 
 func main do
-	10u16 func1 putu
+	1 do
+		69 print
+	end
 end
