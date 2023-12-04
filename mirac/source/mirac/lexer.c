@@ -766,11 +766,11 @@ want_int:
 		mirac_token_type_e type;
 	} literals[] =
 	{
-		{ "i8",  2, kind_signed,   mirac_token_type_literal_i8  },
+		{ "i08", 2, kind_signed,   mirac_token_type_literal_i08 },
 		{ "i16", 3, kind_signed,   mirac_token_type_literal_i16 },
 		{ "i32", 3, kind_signed,   mirac_token_type_literal_i32 },
 		{ "i64", 3, kind_signed,   mirac_token_type_literal_i64 },
-		{ "u8",  2, kind_unsigned, mirac_token_type_literal_u8  },
+		{ "u08", 2, kind_unsigned, mirac_token_type_literal_u08 },
 		{ "u16", 3, kind_unsigned, mirac_token_type_literal_u16 },
 		{ "u32", 3, kind_unsigned, mirac_token_type_literal_u32 },
 		{ "u64", 3, kind_unsigned, mirac_token_type_literal_u64 },

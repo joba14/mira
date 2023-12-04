@@ -390,9 +390,8 @@ static mirac_global_function_s try_parse_function(
 					if (increase_scope_counter)
 					{
 						increase_scope_counter = false;
+						++scopes_counter;
 					}
-
-					++scopes_counter;
 				} break;
 
 				case mirac_token_type_keyword_end:

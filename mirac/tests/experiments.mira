@@ -1,35 +1,4 @@
 
-func fn1 do
-	1 2 ; 3 4 5 6
-end
-
-func fn2 do
-	1 2 3 ; 4 5 6
-end
-
-func fn3 do
-	1 2 3 4 ; 5 6
-end
-
-func fn4 do
-	1 2 3 4 5 ; 6
-end
-
-func fn5 do
-	1 2 3 4 5 6
-end
-
-func reg-test do
-	reg n do
-		n print
-	end
-end
-
-func casting do
-	as i64
-	as i64
-end
-
 func if-elif-else-blocks do
 	if 1 do
 		1 print
@@ -60,6 +29,37 @@ func if-elif-else-blocks do
 	else
 		11 print
 	end
+end
+
+func fn1 do
+	1 2 ; 3 4 5 6
+end
+
+func fn2 do
+	1 2 3 ; 4 5 6
+end
+
+func fn3 do
+	1 2 3 4 ; 5 6
+end
+
+func fn4 do
+	1 2 3 4 5 ; 6
+end
+
+func fn5 do
+	1 2 3 4 5 6
+end
+
+func reg-test do
+	reg n do
+		n print
+	end
+end
+
+func casting do
+	as i64
+	as i64
 end
 
 func main do

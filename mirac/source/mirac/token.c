@@ -110,7 +110,7 @@ const char* mirac_token_type_to_string(
 {
 	switch (token_type)
 	{
-		case mirac_token_type_literal_i8:
+		case mirac_token_type_literal_i08:
 		{
 			return "literal_i8";
 		} break;
@@ -130,7 +130,7 @@ const char* mirac_token_type_to_string(
 			return "literal_i64";
 		} break;
 
-		case mirac_token_type_literal_u8:
+		case mirac_token_type_literal_u08:
 		{
 			return "literal_u8";
 		} break;
@@ -253,10 +253,10 @@ bool mirac_token_is_signed_integer_literal(
 {
 	mirac_debug_assert(token != NULL);
 	return (
-		(mirac_token_type_keyword_i08 == token->type) ||
-		(mirac_token_type_keyword_i16 == token->type) ||
-		(mirac_token_type_keyword_i32 == token->type) ||
-		(mirac_token_type_keyword_i64 == token->type)
+		(mirac_token_type_literal_i08 == token->type) ||
+		(mirac_token_type_literal_i16 == token->type) ||
+		(mirac_token_type_literal_i32 == token->type) ||
+		(mirac_token_type_literal_i64 == token->type)
 	);
 }
 
@@ -265,10 +265,10 @@ bool mirac_token_is_unsigned_integer_literal(
 {
 	mirac_debug_assert(token != NULL);
 	return (
-		(mirac_token_type_keyword_u08 == token->type) ||
-		(mirac_token_type_keyword_u16 == token->type) ||
-		(mirac_token_type_keyword_u32 == token->type) ||
-		(mirac_token_type_keyword_u64 == token->type)
+		(mirac_token_type_literal_u08 == token->type) ||
+		(mirac_token_type_literal_u16 == token->type) ||
+		(mirac_token_type_literal_u32 == token->type) ||
+		(mirac_token_type_literal_u64 == token->type)
 	);
 }
 
@@ -302,7 +302,7 @@ const char* mirac_token_to_string(
 
 	switch (token->type)
 	{
-		case mirac_token_type_literal_i8:
+		case mirac_token_type_literal_i08:
 		case mirac_token_type_literal_i16:
 		case mirac_token_type_literal_i32:
 		case mirac_token_type_literal_i64:
@@ -313,7 +313,7 @@ const char* mirac_token_to_string(
 			);
 		} break;
 
-		case mirac_token_type_literal_u8:
+		case mirac_token_type_literal_u08:
 		case mirac_token_type_literal_u16:
 		case mirac_token_type_literal_u32:
 		case mirac_token_type_literal_u64:
@@ -398,7 +398,7 @@ void mirac_token_print(
 
 	switch (token->type)
 	{
-		case mirac_token_type_literal_i8:
+		case mirac_token_type_literal_i08:
 		case mirac_token_type_literal_i16:
 		case mirac_token_type_literal_i32:
 		case mirac_token_type_literal_i64:
@@ -406,7 +406,7 @@ void mirac_token_print(
 			(void)printf(", value='%li']", token->as_ival);
 		} break;
 
-		case mirac_token_type_literal_u8:
+		case mirac_token_type_literal_u08:
 		case mirac_token_type_literal_u16:
 		case mirac_token_type_literal_u32:
 		case mirac_token_type_literal_u64:
