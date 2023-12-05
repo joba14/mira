@@ -268,8 +268,6 @@ void mirac_lexer_unlex(
 {
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
-
-	mirac_debug_assert(mirac_token_type_none == lexer->token.type);
 	lexer->token = *token;
 }
 
