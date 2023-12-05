@@ -100,7 +100,7 @@ typedef enum
 	mirac_token_type_keyword_u16,
 	mirac_token_type_keyword_u32,
 	mirac_token_type_keyword_u64,
-	mirac_token_type_keywords_count = mirac_token_type_keyword_u08,
+	mirac_token_type_keywords_count = mirac_token_type_keyword_u64,
 
 	// Tokens with additional information
 	mirac_token_type_literal_i08,
