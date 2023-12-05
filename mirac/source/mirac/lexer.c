@@ -102,6 +102,11 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
+static uint64_t compute_exponent(
+	uint64_t value,
+	uint64_t exponent,
+	const bool is_signed);
+
 static bool lex_numeric_literal_token(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
@@ -518,34 +523,34 @@ static mirac_token_type_e lex_identifier_or_keyword(
 }
 
 static uint64_t compute_exponent(
-	uint64_t n,
+	uint64_t value,
 	uint64_t exponent,
 	const bool is_signed)
 {
-	if (0 == n)
+	if (0 == value)
 	{
 		return 0;
 	}
 
 	for (uint64_t index = 0; index < exponent; ++index)
 	{
-		uint64_t old = n;
-		n *= 10;
+		uint64_t old = value;
+		value *= 10;
 
-		if (n / 10 != old)
+		if (value / 10 != old)
 		{
 			errno = ERANGE;
 			return INT64_MAX;
 		}
 	}
 
-	if (is_signed && n > (uint64_t)INT64_MIN)
+	if (is_signed && value > (uint64_t)INT64_MIN)
 	{
 		errno = ERANGE;
 		return INT64_MAX;
 	}
 
-	return n;
+	return value;
 }
 
 static bool lex_numeric_literal_token(
