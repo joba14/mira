@@ -111,5 +111,70 @@ mirac_unit_s mirac_parser_parse(
 //       3. Integrate types system in the AST blocks that would be used by the
 //          type checker at the later stage of source code compilation.
 //       
+//       Experiments of this rework is down below:
+
+#if 1
+typedef struct
+{
+	void* dummy;
+} mirac_ast_expression_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_ast_if_elif_else_block_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_ast_loop_block_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_ast_let_block_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_ast_reg_block_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_ast_mem_block_s;
+
+typedef struct
+{
+	void* dummy;
+} mirac_ast_func_block_s;
+
+typedef enum
+{
+	mirac_ast_type_expression = 0,
+	mirac_ast_type_if_elif_else_block,
+	mirac_ast_type_loop_block,
+	mirac_ast_type_let_block,
+	mirac_ast_type_reg_block,
+	mirac_ast_type_mem_block,
+	mirac_ast_type_func_block
+} mirac_ast_type_e;
+
+typedef struct
+{
+	mirac_ast_type_e type;
+
+	union
+	{
+		mirac_ast_expression_s as_expression;
+		mirac_ast_if_elif_else_block_s as_if_elif_else_block;
+		mirac_ast_loop_block_s as_loop_block;
+		mirac_ast_let_block_s as_let_block;
+		mirac_ast_reg_block_s as_reg_block;
+		mirac_ast_mem_block_s as_mem_block;
+		mirac_ast_func_block_s as_func_block;
+	};
+} mirac_ast_block_s;
+#endif
 
 #endif

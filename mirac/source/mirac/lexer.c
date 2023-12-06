@@ -228,7 +228,15 @@ mirac_token_type_e mirac_lexer_lex(
 		return lex_string_literal_token(lexer, token);
 	}
 
+	// Keywords and identifiers
+	if (is_symbol_first_of_identifier_or_keyword(utf8char))
+	{
+		push_utf8char(lexer, utf8char, false);
+		return lex_identifier_or_keyword(lexer, token);
+	}
+
 	// Numeric literals
+	/*
 	if (is_symbol_first_of_numeric_literal(utf8char))
 	{
 		push_utf8char(lexer, utf8char, false);
@@ -240,12 +248,11 @@ mirac_token_type_e mirac_lexer_lex(
 	}
 
 	lexer->require_int = false;
+	*/
 
-	// Keywords and identifiers
-	if (is_symbol_first_of_identifier_or_keyword(utf8char))
+	if (0)
 	{
-		push_utf8char(lexer, utf8char, false);
-		return lex_identifier_or_keyword(lexer, token);
+		(void)lex_numeric_literal_token(NULL, NULL);
 	}
 
 	// Invalid token
@@ -482,19 +489,15 @@ static mirac_token_type_e lex_identifier_or_keyword(
 
 	while ((utf8char = next_utf8char(lexer, NULL, true)) != mirac_utf8_invalid)
 	{
-		if (!is_symbol_not_first_of_identifier_or_keyword(utf8char))
+		if (!is_symbol_not_first_of_identifier_or_keyword(utf8char) ||
+			is_symbol_a_white_space(utf8char))
 		{
+			// TODO: remove:
+			mirac_logger_debug("%.*s", (signed int)lexer->buffer.length, lexer->buffer.data);
+
 			push_utf8char(lexer, utf8char, true);
 			break;
 		}
-	}
-
-	if (!is_symbol_a_white_space(utf8char))
-	{
-		log_lexer_error_and_exit(
-			lexer->location, "invalid (non-white-space) symbol '%c' encountered after the identifier '%.*s'.",
-			(char)utf8char, (signed int)token->as_ident.length, token->as_ident.data
-		);
 	}
 
 	const uint64_t keyword_or_identifier_length = lexer->buffer.length;

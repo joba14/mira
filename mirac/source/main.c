@@ -57,6 +57,18 @@ int32_t main(
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^.
 
+		mirac_global_arena_create();
+		mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
+
+		(void)config;
+		mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(&lexer, &token)))
+		{
+			mirac_logger_debug("%s", mirac_token_to_string(&token));
+		}
+
+
+#if 0
 		{
 			// Prepare global arena for the processing of the file.
 			mirac_global_arena_create();
@@ -78,6 +90,7 @@ int32_t main(
 			mirac_global_arena_destroy();
 			(void)fclose(source_file);
 		}
+#endif
 	}
 
 	return 0;
