@@ -98,7 +98,7 @@ static bool is_symbol_not_first_of_identifier_or_keyword(
 static bool is_symbol_first_of_numeric_literal(
 	const utf8char_t utf8char);
 
-static mirac_token_type_e lex_identifier_or_keyword(
+static void lex_identifier_or_keyword(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
@@ -115,7 +115,7 @@ static uint8_t lex_possible_rune(
 	mirac_lexer_s* const lexer,
 	char* const rune);
 
-static mirac_token_type_e lex_string_literal_token(
+static void lex_string_literal_token(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
@@ -127,7 +127,6 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_debug_assert(file != NULL);
 
 	mirac_lexer_s lexer;
-	lexer.file = file;
 	lexer.file_path = file_path;
 	lexer.location.file = file_path;
 	lexer.location.line = 1;
@@ -135,12 +134,12 @@ mirac_lexer_s mirac_lexer_from_parts(
 	lexer.tokens_count = 0;
 	lexer.token = mirac_token_from_type(mirac_token_type_none);
 
-	lexer.buffer.capacity = 256;
-	lexer.buffer.data = mirac_global_arena_malloc(lexer.buffer.capacity * sizeof(char));
-	lexer.buffer.length = 0;
-	lexer.cache[0] = mirac_utf8_invalid;
-	lexer.cache[1] = mirac_utf8_invalid;
-	lexer.require_int = false;
+	(void)fseek(file, 0, SEEK_END);
+	lexer.buffer.length = ftell(file);
+	(void)fseek(file, 0, SEEK_SET);
+	lexer.buffer.data = (char*)mirac_c_malloc((lexer.buffer.length + 1) * sizeof(char));
+	(void)fread(lexer.buffer.data, lexer.buffer.length, 1, file);
+	lexer.buffer.data[lexer.buffer.length] = 0;
 	return lexer;
 }
 
@@ -157,6 +156,7 @@ mirac_token_type_e mirac_lexer_lex(
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
 
+	// Token caching handling.
 	if (lexer->token.type != mirac_token_type_none)
 	{
 		*token = lexer->token;
@@ -164,14 +164,14 @@ mirac_token_type_e mirac_lexer_lex(
 		return token->type;
 	}
 
+	// Reading the first utf-8 char.
 	utf8char_t utf8char = get_utf8char(lexer, &token->location);
-
 	if (mirac_utf8_invalid == utf8char)
 	{
 		return mirac_token_type_eof;
 	}
 
-	// Single and multi line comments
+	// Handling tokens by the first utf-8 char.
 	switch (utf8char)
 	{
 		case '/':
@@ -216,8 +216,16 @@ mirac_token_type_e mirac_lexer_lex(
 			return mirac_lexer_lex(lexer, token);
 		} break;
 
+		case '\"':
+		{
+			push_utf8char(lexer, utf8char, false);
+			lex_string_literal_token(lexer, token);
+			return token->type;
+		} break;
+
 		default:
 		{
+			lex_identifier_or_keyword(lexer, token);
 		} break;
 	}
 
@@ -227,6 +235,8 @@ mirac_token_type_e mirac_lexer_lex(
 		push_utf8char(lexer, utf8char, false);
 		return lex_string_literal_token(lexer, token);
 	}
+
+	(void)lex_identifier_or_keyword(lexer, token);
 
 	// Keywords and identifiers
 	if (is_symbol_first_of_identifier_or_keyword(utf8char))
@@ -471,7 +481,7 @@ static bool is_symbol_first_of_numeric_literal(
 	);
 }
 
-static mirac_token_type_e lex_identifier_or_keyword(
+static void lex_identifier_or_keyword(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
@@ -492,9 +502,6 @@ static mirac_token_type_e lex_identifier_or_keyword(
 		if (!is_symbol_not_first_of_identifier_or_keyword(utf8char) ||
 			is_symbol_a_white_space(utf8char))
 		{
-			// TODO: remove:
-			mirac_logger_debug("%.*s", (signed int)lexer->buffer.length, lexer->buffer.data);
-
 			push_utf8char(lexer, utf8char, true);
 			break;
 		}
@@ -519,7 +526,6 @@ static mirac_token_type_e lex_identifier_or_keyword(
 	lexer->tokens_count++;
 
 	clear_buffer(lexer);
-	return token->type;
 }
 
 static uint64_t compute_exponent(
@@ -1055,7 +1061,7 @@ static uint8_t lex_possible_rune(
 	return 0;
 }
 
-static mirac_token_type_e lex_string_literal_token(
+static void lex_string_literal_token(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
@@ -1133,12 +1139,10 @@ static mirac_token_type_e lex_string_literal_token(
 			// NOTE: Should never ever happen as this function will get symbols
 			//       that are already verified to be correct ones!
 			mirac_debug_assert(0); // Sanity check for developers.
-			return mirac_token_type_none; // To prevent compiler error.
 		} break;
 	}
 
 	// NOTE: Should never ever happen as this function will get symbols
 	//       that are already verified to be correct ones!
 	mirac_debug_assert(0); // Sanity check for developers.
-	return mirac_token_type_none; // To prevent compiler error.
 }

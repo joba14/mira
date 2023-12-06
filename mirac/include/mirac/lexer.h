@@ -21,7 +21,6 @@
 
 typedef struct
 {
-	FILE* file;
 	const char* file_path;
 	mirac_location_s location;
 	uint64_t tokens_count;
@@ -30,12 +29,8 @@ typedef struct
 	struct
 	{
 		char* data;
-		uint64_t capacity;
 		uint64_t length;
 	} buffer;
-
-	utf8char_t cache[2];
-	bool require_int;
 } mirac_lexer_s;
 
 /**
