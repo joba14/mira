@@ -1,0 +1,16 @@
+
+func puti req i64 do
+	; TODO: implement
+end
+
+func putu req u64 do
+	; TODO: implement
+end
+
+func putf req f64 do
+	; TODO: implement
+end
+
+func puts req u64 ptr do
+	; TODO: implement
+end
