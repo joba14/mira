@@ -14,29 +14,27 @@
 #define __mirac__include__mirac__lexer_h__
 
 #include <mirac/c_common.h>
-#include <mirac/utf8.h>
+#include <mirac/string_view.h>
 #include <mirac/token.h>
+#include <mirac/arena.h>
 
 #include <stdio.h>
 
 typedef struct
 {
+	mirac_arena_s* arena;
 	const char* file_path;
 	mirac_location_s location;
 	uint64_t tokens_count;
 	mirac_token_s token;
-
-	struct
-	{
-		char* data;
-		uint64_t length;
-	} buffer;
+	string_view_s buffer;
 } mirac_lexer_s;
 
 /**
  * @brief Create a lexer with provided file and its path.
  */
 mirac_lexer_s mirac_lexer_from_parts(
+	mirac_arena_s* const arena,
 	const char* const file_path,
 	FILE* const file);
 
@@ -62,7 +60,7 @@ void mirac_lexer_destroy(
  * "mirac_token_type_none" type or "mirac_token_type_eof" type and stop lexing when
  * that happens. I have added a helper function just for this - to verify the token
  * and determine if one needs to stop lexing or not:
- * see @ref mirac_lexer_should_stop_lexing()
+ * see @ref mirac_lexer_should_stop_lexing().
  */
 mirac_token_type_e mirac_lexer_lex(
 	mirac_lexer_s* const lexer,

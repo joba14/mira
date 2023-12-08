@@ -15,8 +15,8 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 #include <mirac/c_common.h>
-#include <mirac/global_arena.h>
 #include <mirac/config.h>
+#include <mirac/arena.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
 #include <mirac/checker.h>
@@ -57,16 +57,15 @@ int32_t main(
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 		if (!source_file) { continue; } // NOTE: The failed to open file is logged ~~^.
 
-		mirac_global_arena_create();
-		mirac_lexer_s lexer = mirac_lexer_from_parts(source_file_path, source_file);
-
 		(void)config;
+		mirac_arena_s arena = mirac_arena_from_parts();
+		mirac_lexer_s lexer = mirac_lexer_from_parts(&arena, source_file_path, source_file);
+
 		mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(&lexer, &token)))
 		{
 			mirac_logger_debug("%s", mirac_token_to_string(&token));
 		}
-
 
 #if 0
 		{

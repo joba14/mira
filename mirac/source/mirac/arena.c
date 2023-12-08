@@ -48,7 +48,7 @@ void mirac_node_destroy(
 	mirac_c_free(node);
 }
 
-mirac_arena_s mirac_arena_create(
+mirac_arena_s mirac_arena_from_parts(
 	void)
 {
 	mirac_arena_s arena = {0};

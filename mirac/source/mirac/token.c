@@ -17,92 +17,92 @@
 
 #include <stdio.h>
 
-static const char* const g_token_type_to_string_map[] =
+static const char* const g_reserved_token_types_map[] =
 {
-	[mirac_token_type_keyword_lnot] = "!",
-	[mirac_token_type_keyword_neq] = "!=",
-	[mirac_token_type_keyword_mod] = "%",
-	[mirac_token_type_keyword_band] = "&",
-	[mirac_token_type_keyword_land] = "&&",
-	[mirac_token_type_keyword_mul] = "*",
-	[mirac_token_type_keyword_add] = "+",
-	[mirac_token_type_keyword_sub] = "-",
-	[mirac_token_type_keyword_div] = "/",
-	[mirac_token_type_keyword_ls] = "<",
-	[mirac_token_type_keyword_shl] = "<<",
-	[mirac_token_type_keyword_lseq] = "<=",
-	[mirac_token_type_keyword_eq] = "==",
-	[mirac_token_type_keyword_gt] = ">",
-	[mirac_token_type_keyword_gteq] = ">=",
-	[mirac_token_type_keyword_shr] = ">>",
-	[mirac_token_type_keyword_bxor] = "^",
-	[mirac_token_type_keyword_lxor] = "^^",
-	[mirac_token_type_keyword_as] = "as",
-	[mirac_token_type_keyword_do] = "do",
-	[mirac_token_type_keyword_drop] = "drop",
-	[mirac_token_type_keyword_dup] = "dup",
-	[mirac_token_type_keyword_elif] = "elif",
-	[mirac_token_type_keyword_else] = "else",
-	[mirac_token_type_keyword_end] = "end",
-	[mirac_token_type_keyword_f32] = "f32",
-	[mirac_token_type_keyword_f64] = "f64",
-	[mirac_token_type_keyword_func] = "func",
-	[mirac_token_type_keyword_i08] = "i08",
-	[mirac_token_type_keyword_i16] = "i16",
-	[mirac_token_type_keyword_i32] = "i32",
-	[mirac_token_type_keyword_i64] = "i64",
-	[mirac_token_type_keyword_if] = "if",
-	[mirac_token_type_keyword_inl] = "inl",
-	[mirac_token_type_keyword_ld08] = "ld08",
-	[mirac_token_type_keyword_ld16] = "ld16",
-	[mirac_token_type_keyword_ld32] = "ld32",
-	[mirac_token_type_keyword_ld64] = "ld64",
-	[mirac_token_type_keyword_let] = "let",
-	[mirac_token_type_keyword_loop] = "loop",
-	[mirac_token_type_keyword_mem] = "mem",
-	[mirac_token_type_keyword_over] = "over",
-	[mirac_token_type_keyword_ptr] = "ptr",
-	[mirac_token_type_keyword_reg] = "reg",
-	[mirac_token_type_keyword_req] = "req",
-	[mirac_token_type_keyword_ret] = "ret",
-	[mirac_token_type_keyword_rot] = "rot",
-	[mirac_token_type_keyword_st08] = "st08",
-	[mirac_token_type_keyword_st16] = "st16",
-	[mirac_token_type_keyword_st32] = "st32",
-	[mirac_token_type_keyword_st64] = "st64",
-	[mirac_token_type_keyword_swap] = "swap",
-	[mirac_token_type_keyword_sys1] = "sys1",
-	[mirac_token_type_keyword_sys2] = "sys2",
-	[mirac_token_type_keyword_sys3] = "sys3",
-	[mirac_token_type_keyword_sys4] = "sys4",
-	[mirac_token_type_keyword_sys5] = "sys5",
-	[mirac_token_type_keyword_sys6] = "sys6",
-	[mirac_token_type_keyword_u08] = "u08",
-	[mirac_token_type_keyword_u16] = "u16",
-	[mirac_token_type_keyword_u32] = "u32",
-	[mirac_token_type_keyword_u64] = "u64",
-	[mirac_token_type_keyword_bor] = "|",
-	[mirac_token_type_keyword_lor] = "||",
-	[mirac_token_type_keyword_bnot] = "~"
+	[mirac_token_type_reserved_lnot] = "!",
+	[mirac_token_type_reserved_neq] = "!=",
+	[mirac_token_type_reserved_mod] = "%",
+	[mirac_token_type_reserved_band] = "&",
+	[mirac_token_type_reserved_land] = "&&",
+	[mirac_token_type_reserved_mul] = "*",
+	[mirac_token_type_reserved_add] = "+",
+	[mirac_token_type_reserved_sub] = "-",
+	[mirac_token_type_reserved_div] = "/",
+	[mirac_token_type_reserved_ls] = "<",
+	[mirac_token_type_reserved_shl] = "<<",
+	[mirac_token_type_reserved_lseq] = "<=",
+	[mirac_token_type_reserved_eq] = "==",
+	[mirac_token_type_reserved_gt] = ">",
+	[mirac_token_type_reserved_gteq] = ">=",
+	[mirac_token_type_reserved_shr] = ">>",
+	[mirac_token_type_reserved_bxor] = "^",
+	[mirac_token_type_reserved_lxor] = "^^",
+	[mirac_token_type_reserved_as] = "as",
+	[mirac_token_type_reserved_do] = "do",
+	[mirac_token_type_reserved_drop] = "drop",
+	[mirac_token_type_reserved_dup] = "dup",
+	[mirac_token_type_reserved_elif] = "elif",
+	[mirac_token_type_reserved_else] = "else",
+	[mirac_token_type_reserved_end] = "end",
+	[mirac_token_type_reserved_f32] = "f32",
+	[mirac_token_type_reserved_f64] = "f64",
+	[mirac_token_type_reserved_func] = "func",
+	[mirac_token_type_reserved_i08] = "i08",
+	[mirac_token_type_reserved_i16] = "i16",
+	[mirac_token_type_reserved_i32] = "i32",
+	[mirac_token_type_reserved_i64] = "i64",
+	[mirac_token_type_reserved_if] = "if",
+	[mirac_token_type_reserved_inl] = "inl",
+	[mirac_token_type_reserved_ld08] = "ld08",
+	[mirac_token_type_reserved_ld16] = "ld16",
+	[mirac_token_type_reserved_ld32] = "ld32",
+	[mirac_token_type_reserved_ld64] = "ld64",
+	[mirac_token_type_reserved_let] = "let",
+	[mirac_token_type_reserved_loop] = "loop",
+	[mirac_token_type_reserved_mem] = "mem",
+	[mirac_token_type_reserved_over] = "over",
+	[mirac_token_type_reserved_ptr] = "ptr",
+	[mirac_token_type_reserved_reg] = "reg",
+	[mirac_token_type_reserved_req] = "req",
+	[mirac_token_type_reserved_ret] = "ret",
+	[mirac_token_type_reserved_rot] = "rot",
+	[mirac_token_type_reserved_st08] = "st08",
+	[mirac_token_type_reserved_st16] = "st16",
+	[mirac_token_type_reserved_st32] = "st32",
+	[mirac_token_type_reserved_st64] = "st64",
+	[mirac_token_type_reserved_swap] = "swap",
+	[mirac_token_type_reserved_sys1] = "sys1",
+	[mirac_token_type_reserved_sys2] = "sys2",
+	[mirac_token_type_reserved_sys3] = "sys3",
+	[mirac_token_type_reserved_sys4] = "sys4",
+	[mirac_token_type_reserved_sys5] = "sys5",
+	[mirac_token_type_reserved_sys6] = "sys6",
+	[mirac_token_type_reserved_u08] = "u08",
+	[mirac_token_type_reserved_u16] = "u16",
+	[mirac_token_type_reserved_u32] = "u32",
+	[mirac_token_type_reserved_u64] = "u64",
+	[mirac_token_type_reserved_bor] = "|",
+	[mirac_token_type_reserved_lor] = "||",
+	[mirac_token_type_reserved_bnot] = "~"
 };
 
 /**
  * @brief Compare two keyword tokens if they are the same or not.
  */
-static int32_t compare_keyword_tokens(
+static int32_t compare_reserved_tokens(
 	const void* const left,
 	const void* const right);
 
-mirac_token_type_e mirac_token_type_from_string(
+mirac_token_type_e mirac_reserved_token_type_from_string(
 	const char* const string)
 {
 	const void* const found_token = (const void* const)mirac_c_bsearch(
-		&string, g_token_type_to_string_map, mirac_token_type_keywords_count + 1,
-		sizeof(g_token_type_to_string_map[0]), compare_keyword_tokens
+		&string, g_reserved_token_types_map, mirac_token_type_reserved_count + 1,
+		sizeof(g_reserved_token_types_map[0]), compare_reserved_tokens
 	);
 
-	return !found_token ? mirac_token_type_identifier :
-		(mirac_token_type_e)((const char**)found_token - g_token_type_to_string_map);
+	return !found_token ? mirac_token_type_none :
+		(mirac_token_type_e)((const char**)found_token - g_reserved_token_types_map);
 }
 
 const char* mirac_token_type_to_string(
@@ -187,8 +187,8 @@ const char* mirac_token_type_to_string(
 
 		default:
 		{
-			mirac_debug_assert(token_type < (sizeof(g_token_type_to_string_map) / sizeof(g_token_type_to_string_map[0])));
-			const char* const stringified_type = (const char* const)g_token_type_to_string_map[token_type];
+			mirac_debug_assert(token_type < (sizeof(g_reserved_token_types_map) / sizeof(g_reserved_token_types_map[0])));
+			const char* const stringified_type = (const char* const)g_reserved_token_types_map[token_type];
 			mirac_debug_assert(stringified_type != NULL);
 			return stringified_type;
 		} break;
@@ -200,10 +200,7 @@ mirac_token_s mirac_token_from_parts(
 	const mirac_location_s location)
 {
 	mirac_token_s token;
-	mirac_c_memset(
-		(void* const)&token, 0, sizeof(mirac_token_s)
-	);
-
+	mirac_c_memset((void* const)&token, 0, sizeof(mirac_token_s));
 	token.type = token_type;
 	token.location = location;
 	return token;
@@ -213,10 +210,7 @@ mirac_token_s mirac_token_from_type(
 	const mirac_token_type_e token_type)
 {
 	mirac_token_s token;
-	mirac_c_memset(
-		(void* const)&token, 0, sizeof(mirac_token_s)
-	);
-
+	mirac_c_memset((void* const)&token, 0, sizeof(mirac_token_s));
 	token.type = token_type;
 	return token;
 }
@@ -234,17 +228,17 @@ bool mirac_token_is_type_keyword(
 {
 	mirac_debug_assert(token != NULL);
 	return (
-		(mirac_token_type_keyword_i08 == token->type) ||
-		(mirac_token_type_keyword_i16 == token->type) ||
-		(mirac_token_type_keyword_i32 == token->type) ||
-		(mirac_token_type_keyword_i64 == token->type) ||
-		(mirac_token_type_keyword_u08 == token->type) ||
-		(mirac_token_type_keyword_u16 == token->type) ||
-		(mirac_token_type_keyword_u32 == token->type) ||
-		(mirac_token_type_keyword_u64 == token->type) ||
-		(mirac_token_type_keyword_f32 == token->type) ||
-		(mirac_token_type_keyword_f64 == token->type) ||
-		(mirac_token_type_keyword_ptr == token->type)
+		(mirac_token_type_reserved_i08 == token->type) ||
+		(mirac_token_type_reserved_i16 == token->type) ||
+		(mirac_token_type_reserved_i32 == token->type) ||
+		(mirac_token_type_reserved_i64 == token->type) ||
+		(mirac_token_type_reserved_u08 == token->type) ||
+		(mirac_token_type_reserved_u16 == token->type) ||
+		(mirac_token_type_reserved_u32 == token->type) ||
+		(mirac_token_type_reserved_u64 == token->type) ||
+		(mirac_token_type_reserved_f32 == token->type) ||
+		(mirac_token_type_reserved_f64 == token->type) ||
+		(mirac_token_type_reserved_ptr == token->type)
 	);
 }
 
@@ -453,7 +447,7 @@ void mirac_token_print(
 	(void)printf("]\n");
 }
 
-static int32_t compare_keyword_tokens(
+static int32_t compare_reserved_tokens(
 	const void* const left,
 	const void* const right)
 {

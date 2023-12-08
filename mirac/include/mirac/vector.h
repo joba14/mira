@@ -15,7 +15,6 @@
 
 #include <mirac/debug.h>
 #include <mirac/c_common.h>
-#include <mirac/global_arena.h>
 
 #define mirac_define_vector_type(_type_name, _element_type)                    \
 	typedef struct                                                             \

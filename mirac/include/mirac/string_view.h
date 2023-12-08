@@ -85,71 +85,70 @@ bool string_view_equal(
 	const string_view_s right);
 
 /**
- * @brief Trim a sequence of characters decided by 'compare' function on the left side of the string view.
+ * @brief Trim left side of the string view of provided char.
  * 
- * @param string_view[in] string view to be trimmed
- * @param compare[in]     compare function for trimming characters selection
+ * @param string_view[in]  string view to trim
+ * @param char_to_trim[in] char to trim
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim_left(
 	const string_view_s string_view,
-	bool(*compare)(const string_view_s));
+	const char char_to_trim);
 
 /**
- * @brief Trim a sequence of characters decided by 'compare' function on the right side of the string view.
+ * @brief Trim right side of the string view of provided char.
  * 
- * @param string_view[in] string view to be trimmed
- * @param compare[in]     compare function for trimming characters selection
+ * @param string_view[in]  string view to trim
+ * @param char_to_trim[in] char to trim
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim_right(
 	const string_view_s string_view,
-	bool(*compare)(const string_view_s));
+	const char char_to_trim);
 
 /**
- * @brief Trim a sequence of characters decided by 'compare' function on both sides of the string view.
+ * @brief Trim left and right sides of the string view of provided char.
  * 
- * @param string_view[in] string view to be trimmed
- * @param compare[in]     compare function for trimming characters selection
+ * @param string_view[in]  string view to trim
+ * @param char_to_trim[in] char to trim
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim(
 	const string_view_s string_view,
-	bool(*compare)(const string_view_s));
+	const char char_to_trim);
 
 /**
- * @brief Split string view into two by a provided compare function result from the left side.
+ * @brief Trim white spaces on the left side of the string view of provided char.
  * 
- * @param string_view[in] string view to split
- * @param compare[in]     compare function for splitting characters selection
- * @param left[out]       left side string view after split
- * @param right[out]      right side string view after split
+ * @param string_view[in] string view to trim
  * 
- * @return bool
+ * @return string_view_s
  */
-bool string_view_left_split(
-	const string_view_s string_view,
-	bool(*compare)(const string_view_s),
-	string_view_s* const left,
-	string_view_s* const right);
+string_view_s string_view_trim_left_white_space(
+	const string_view_s string_view);
 
 /**
- * @brief Split string view into two by a provided compare function result from the right side.
+ * @brief Trim white spaces on the right side of the string view of provided char.
  * 
- * @param string_view[in] string view to split
- * @param compare[in]     compare function for splitting characters selection
- * @param left[out]       left side string view after split
- * @param right[out]      right side string view after split
+ * @param string_view[in] string view to trim
  * 
- * @return bool
+ * @return string_view_s
  */
-bool string_view_right_split(
-	const string_view_s string_view,
-	bool(*compare)(const string_view_s),
-	string_view_s* const left,
-	string_view_s* const right);
+string_view_s string_view_trim_right_white_space(
+	const string_view_s string_view);
+
+/**
+ * @brief Trim white spaces on the left and right sides of the string view of
+ * provided char.
+ * 
+ * @param string_view[in] string view to trim
+ * 
+ * @return string_view_s
+ */
+string_view_s string_view_trim_white_space(
+	const string_view_s string_view);
 
 #endif

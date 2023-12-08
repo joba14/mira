@@ -16,7 +16,6 @@
 #include <mirac/c_common.h>
 
 typedef struct mirac_node_s mirac_node_s;
-#define mirac_region_default_capacity (8ULL * 1024)
 
 struct mirac_node_s
 {
@@ -48,7 +47,7 @@ typedef struct
 /**
  * @brief Create arena object.
  */
-mirac_arena_s mirac_arena_create(
+mirac_arena_s mirac_arena_from_parts(
 	void);
 
 /**
