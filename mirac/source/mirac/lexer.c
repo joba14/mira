@@ -81,6 +81,11 @@ mirac_token_type_e mirac_lexer_lex(
 	lexer->buffer = string_view_trim_left_white_space(lexer->buffer);
 	mirac_logger_debug(sv_fmt, sv_arg(lexer->buffer));
 
+	if (mirac_reserved_token_type_from_string(lexer->buffer))
+	{
+		return 
+	}
+
 	// TODO: split buffer by first whitespace symbol.
 	// TODO: parse the left split part.
 

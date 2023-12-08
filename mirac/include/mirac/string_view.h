@@ -37,6 +37,11 @@ typedef struct
 #define sv_arg(_string_view) ((signed int) (_string_view).length), (_string_view).data
 
 /**
+ * @brief String view format for printf-like functions.
+ */
+#define string_view_static(_string) (string_view_s) { .data = _string, .length = (sizeof(_string) / sizeof(char)) }
+
+/**
  * @brief Create string view from a const-pointer to a string or sequence of characters and its length.
  * 
  * @param data[in]   pointer to a string or sequence of characters
