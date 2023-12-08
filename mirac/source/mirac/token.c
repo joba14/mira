@@ -94,11 +94,11 @@ static int32_t compare_reserved_tokens(
 	const void* const left,
 	const void* const right);
 
-mirac_token_type_e mirac_reserved_token_type_from_string(
-	const char* const string)
+mirac_token_type_e mirac_reserved_token_type_from_string_view(
+	const string_view_s string_view)
 {
 	const void* const found_token = (const void* const)mirac_c_bsearch(
-		&string, g_reserved_token_types_map, mirac_token_type_reserved_count + 1,
+		&string_view, g_reserved_token_types_map, mirac_token_type_reserved_count + 1,
 		sizeof(g_reserved_token_types_map[0]), compare_reserved_tokens
 	);
 
@@ -189,7 +189,7 @@ const char* mirac_token_type_to_string(
 		default:
 		{
 			mirac_debug_assert(token_type < (sizeof(g_reserved_token_types_map) / sizeof(g_reserved_token_types_map[0])));
-			const char* const stringified_type = (const char* const)g_reserved_token_types_map[token_type];
+			const string_view_s stringified_type = g_reserved_token_types_map[token_type];
 			mirac_debug_assert(stringified_type != NULL);
 			return stringified_type;
 		} break;
@@ -452,7 +452,7 @@ static int32_t compare_reserved_tokens(
 	const void* const left,
 	const void* const right)
 {
-	return mirac_c_strcmp(
-		*(const char**)left, *(const char**)right
+	return string_view_compare(
+		*(const string_view_s*)left, *(const string_view_s*)right
 	);
 }

@@ -64,6 +64,18 @@ string_view_s string_view_from_cstring(
 	const char* const cstring);
 
 /**
+ * @brief Compare two string views.
+ * 
+ * @param left[in]  left comparison string view
+ * @param right[in] right comparison string view
+ * 
+ * @return int32_t
+ */
+int32_t string_view_compare(
+	const string_view_s left,
+	const string_view_s right);
+
+/**
  * @brief Check if two string views are equal for provided length (range).
  * 
  * @param left[in]   left comparison string view

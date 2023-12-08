@@ -126,8 +126,8 @@ typedef enum
 /**
  * @brief Try to parse token type from a string.
  */
-mirac_token_type_e mirac_reserved_token_type_from_string(
-	const char* const string);
+mirac_token_type_e mirac_reserved_token_type_from_string_view(
+	const string_view_s string_view);
 
 /**
  * @brief Stringify token type.

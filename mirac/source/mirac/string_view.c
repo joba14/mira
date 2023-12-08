@@ -37,6 +37,21 @@ string_view_s string_view_from_cstring(
 	return string_view_from_parts(cstring, length);
 }
 
+int32_t string_view_compare(
+	const string_view_s left,
+	const string_view_s right)
+{
+	mirac_debug_assert(left.data != NULL);
+	mirac_debug_assert(right.data != NULL);
+
+	if (left.length != right.length)
+	{
+		return left.length < right.length;
+	}
+
+	return (int32_t)strncmp(left.data, right.data, left.length);
+}
+
 bool string_view_equal_range(
 	const string_view_s left,
 	const string_view_s right,
