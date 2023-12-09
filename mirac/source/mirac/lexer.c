@@ -97,24 +97,27 @@ mirac_token_type_e mirac_lexer_lex(
 
 	if ('\"' == text.data[0]) // NOTE: At this point lexer does not perform the length check as it can vary depending on the string literal type.
 	{
-		// TODO: lex strings e.g. "hello"
-		// return token->type;
+		if (mirac_token_parse_string_literal_from_string_view(token, text) != mirac_token_type_none)
+		{
+			return token->type;
+		}
 	}
 
 	if (('-' == text.data[0]) || ('+' == text.data[0]) || isdigit(text.data[0])) // NOTE: At this point lexer does not perform the length check as it can vary depending on the numeric literal type.
 	{
-		// TODO: lex numeric literals
-		// return token->type;
+		if (mirac_token_parse_numeric_literal_from_string_view(token, text) != mirac_token_type_none)
+		{
+			return token->type;
+		}
 	}
 
-	if (mirac_token_match_string_view_to_reserved_type(token, text) != mirac_token_type_none)
+	if (mirac_token_parse_reserved_token_from_string_view(token, text) != mirac_token_type_none)
 	{
 		return token->type;
 	}
 
-	if (0)
+	if (mirac_token_parse_identifier_from_string_view(token, text) != mirac_token_type_none)
 	{
-		// TODO: lex identifiers
 		return token->type;
 	}
 

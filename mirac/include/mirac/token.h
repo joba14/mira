@@ -215,7 +215,7 @@ mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
  * 
  * @return mirac_token_type_e
  */
-mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
+mirac_token_type_e mirac_token_parse_reserved_token_from_string_view(
 	mirac_token_s* const token,
 	const string_view_s string_view);
 

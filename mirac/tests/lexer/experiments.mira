@@ -1,4 +1,6 @@
 
+-ala
+
 // comment1
 func main req i64 ret i64 do
 	// comment2

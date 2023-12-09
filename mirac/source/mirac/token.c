@@ -16,6 +16,7 @@
 #include <mirac/logger.h>
 #include <mirac/string_view.h>
 
+#include <ctype.h>
 #include <stdio.h>
 
 static const string_view_s g_reserved_token_types_map[] =
@@ -165,7 +166,7 @@ mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
 	return mirac_token_type_none;
 }
 
-mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
+mirac_token_type_e mirac_token_parse_reserved_token_from_string_view(
 	mirac_token_s* const token,
 	const string_view_s string_view)
 {
@@ -191,7 +192,30 @@ mirac_token_type_e mirac_token_parse_identifier_from_string_view(
 	// TODO: implement!
 	(void)token;
 	(void)string_view;
-	return mirac_token_type_none;
+
+	if (string_view.length <= 0)
+	{
+		return mirac_token_type_none;
+	}
+
+	if (isdigit(string_view.data[0]))
+	{
+		return mirac_token_type_none;
+	}
+
+	for (uint64_t index = 0; index < string_view.length; ++index)
+	{
+		if (('\"' == string_view.data[index]) ||
+			('\'' == string_view.data[index]) ||
+			('`'  == string_view.data[index]))
+		{
+			return mirac_token_type_none;
+		}
+	}
+
+	token->type = mirac_token_type_identifier;
+	token->as_ident = string_view;
+	return token->type;
 }
 
 #if 0
