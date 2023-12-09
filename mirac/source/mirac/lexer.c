@@ -202,13 +202,12 @@ fetch_line:
 
 	// TODO: remove:
 	// mirac_logger_debug("loc=" mirac_location_fmt ", line='" sv_fmt "'", mirac_location_arg(lexer->location), sv_arg(lexer->line));
-	// getchar();
 
 	uint64_t white_space_length = 0;
 	lexer->line = string_view_trim_left_white_space(lexer->line, &white_space_length);
 	lexer->locations[0].column += white_space_length;
 
-	if ((';' == lexer->line.data[0]) ||
+	if (((lexer->line.length >= 1) && (';' == lexer->line.data[0])) ||
 		((lexer->line.length >= 2) && ('/' == lexer->line.data[0]) && ('/' == lexer->line.data[1])))
 	{
 		(void)string_view_split_left(&lexer->line, '\n');

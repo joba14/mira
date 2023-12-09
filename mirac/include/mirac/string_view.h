@@ -196,12 +196,34 @@ string_view_s string_view_split_right(
 	string_view_s* const string_view,
 	const char char_to_split_at);
 
-// TODO: document:
+/**
+ * @brief Split string view at the first white space sequence on the left side.
+ * 
+ * @note The entire white space will be ignored and not included in neither of
+ * the string views. To get the length of the ignored white space use optional
+ * parameter 'white_space_length'.
+ * 
+ * @param string_view[in/out]     string view to split
+ * @param white_space_length[out] white space length (optional)
+ * 
+ * @return string_view_s
+ */
 string_view_s string_view_split_left_white_space(
 	string_view_s* const string_view,
 	uint64_t* const white_space_length);
 
-// TODO: document:
+/**
+ * @brief Split string view at the first white space sequence on the right side.
+ * 
+ * @note The entire white space will be ignored and not included in neither of
+ * the string views. To get the length of the ignored white space use optional
+ * parameter 'white_space_length'.
+ * 
+ * @param string_view[in/out]     string view to split
+ * @param white_space_length[out] white space length (optional)
+ * 
+ * @return string_view_s
+ */
 string_view_s string_view_split_right_white_space(
 	string_view_s* const string_view,
 	uint64_t* const white_space_length);
