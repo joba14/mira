@@ -126,7 +126,11 @@ mirac_token_s mirac_token_from_parts(
 	mirac_token_s token = {0};
 	token.type = token_type;
 	token.location = location;
-	token.text = text;
+
+	char* const text_string = (char* const)mirac_arena_malloc(arena, text.length);
+	mirac_c_memcpy(text_string, text.data, text.length);
+
+	token.text = string_view_from_parts(text_string, text_length);
 	return token;
 }
 
@@ -148,47 +152,62 @@ void mirac_token_destroy(
 
 mirac_token_type_e mirac_token_parse_string_literal_from_string_view(
 	mirac_arena_s* const arena,
-	mirac_token_s* const token,
-	const string_view_s string_view)
+	mirac_token_s* const token)
 {
+	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token->text.length > 0);
+
+	if (token->text.data[0] != '\"') // NOTE: At this point lexer does not perform the length check as it can vary depending on the string literal type.
+	{
+		return mirac_token_type_none;
+	}
+
 	// TODO: implement!
 	(void)arena;
 	(void)token;
-	(void)string_view;
 	return mirac_token_type_none;
 }
 
 mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
 	mirac_arena_s* const arena,
-	mirac_token_s* const token,
-	const string_view_s string_view)
+	mirac_token_s* const token)
 {
+	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token->text.length > 0);
+
+	if ((token->text.data[0] != '-') ||
+		(token->text.data[0] != '+') ||
+		!isdigit(text.data[0])) // NOTE: At this point lexer does not perform the length check as it can vary depending on the numeric literal type.
+	{
+		return mirac_token_type_none;
+	}
+
 	// TODO: implement!
 	(void)arena;
 	(void)token;
-	(void)string_view;
 	return mirac_token_type_none;
 }
 
 mirac_token_type_e mirac_token_parse_reserved_token_from_string_view(
 	mirac_arena_s* const arena,
-	mirac_token_s* const token,
-	const string_view_s string_view)
+	mirac_token_s* const token)
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token->text.length > 0);
 
 	// TODO: optimize the search (binary search probably should used):
 	for (uint64_t index = 0; index < mirac_token_type_reserved_count + 1; ++index)
 	{
-		if (string_view_equal(g_reserved_token_types_map[index], string_view))
+		if (string_view_equal(g_reserved_token_types_map[index], token->text))
 		{
 			token->type = (mirac_token_type_e)index;
 			break;
 		}
 	}
 
-	// TODO: decide if text and value should be separately allocated!
 	const string_view_s reserved_token = g_reserved_token_types_map[token->type];
 	char* const reserved = (char* const)mirac_arena_malloc(arena, reserved_token.length);
 	mirac_c_memcpy(reserved, reserved_token.data, reserved_token.length);
@@ -206,11 +225,7 @@ mirac_token_type_e mirac_token_parse_identifier_from_string_view(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_debug_assert(token != NULL);
-
-	if (string_view.length <= 0)
-	{
-		return mirac_token_type_none;
-	}
+	mirac_debug_assert(token->text.length > 0);
 
 	if (isdigit(string_view.data[0]))
 	{
