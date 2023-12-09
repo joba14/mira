@@ -451,6 +451,7 @@ static mirac_token_type_e parse_identifier_token_from_string_view(
 
 	if (isdigit(token->text.data[0]))
 	{
+		// TODO: throw an error here!
 		return mirac_token_type_none;
 	}
 
