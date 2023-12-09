@@ -87,21 +87,6 @@ static const string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_bnot] = string_view_static("~")
 };
 
-mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
-	const string_view_s string_view)
-{
-	// TODO: optimize the search (binary search probably should used):
-	for (uint64_t index = 0; index < mirac_token_type_reserved_count + 1; ++index)
-	{
-		if (string_view_equal(g_reserved_token_types_map[index], string_view))
-		{
-			return (mirac_token_type_e)index;
-		}
-	}
-
-	return mirac_token_type_none;
-}
-
 string_view_s mirac_token_type_to_string_view(
 	const mirac_token_type_e token_type)
 {
@@ -134,11 +119,13 @@ string_view_s mirac_token_type_to_string_view(
 
 mirac_token_s mirac_token_from_parts(
 	const mirac_token_type_e token_type,
-	const mirac_location_s location)
+	const mirac_location_s location,
+	const string_view_s text)
 {
 	mirac_token_s token = {0};
 	token.type = token_type;
 	token.location = location;
+	token.text = text;
 	return token;
 }
 
@@ -156,6 +143,55 @@ void mirac_token_destroy(
 	mirac_debug_assert(token != NULL);
 	*token = (mirac_token_s) {0};
 	token->type = mirac_token_type_none;
+}
+
+mirac_token_type_e mirac_token_parse_string_literal_from_string_view(
+	mirac_token_s* const token,
+	const string_view_s string_view)
+{
+	// TODO: implement!
+	(void)token;
+	(void)string_view;
+	return mirac_token_type_none;
+}
+
+mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
+	mirac_token_s* const token,
+	const string_view_s string_view)
+{
+	// TODO: implement!
+	(void)token;
+	(void)string_view;
+	return mirac_token_type_none;
+}
+
+mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
+	mirac_token_s* const token,
+	const string_view_s string_view)
+{
+	mirac_debug_assert(token != NULL);
+
+	// TODO: optimize the search (binary search probably should used):
+	for (uint64_t index = 0; index < mirac_token_type_reserved_count + 1; ++index)
+	{
+		if (string_view_equal(g_reserved_token_types_map[index], string_view))
+		{
+			token->type = (mirac_token_type_e)index;
+			return token->type;
+		}
+	}
+
+	return mirac_token_type_none;
+}
+
+mirac_token_type_e mirac_token_parse_identifier_from_string_view(
+	mirac_token_s* const token,
+	const string_view_s string_view)
+{
+	// TODO: implement!
+	(void)token;
+	(void)string_view;
+	return mirac_token_type_none;
 }
 
 #if 0

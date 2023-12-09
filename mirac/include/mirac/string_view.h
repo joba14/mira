@@ -173,12 +173,14 @@ string_view_s string_view_trim_white_space(
  * 
  * @param string_view[in/out]  string view to split
  * @param char_to_split_at[in] char to split at
+ * @param split_index[out]     index of split char in string view
  * 
  * @return string_view_s
  */
 string_view_s string_view_split_left(
 	string_view_s* const string_view,
-	const char char_to_split_at);
+	const char char_to_split_at,
+	uint64_t* const split_index);
 
 /**
  * @brief Split string view at a provided char from the right side.
@@ -189,12 +191,14 @@ string_view_s string_view_split_left(
  * 
  * @param string_view[in/out]  string view to split
  * @param char_to_split_at[in] char to split at
+ * @param split_index[out]     index of split char in string view
  * 
  * @return string_view_s
  */
 string_view_s string_view_split_right(
 	string_view_s* const string_view,
-	const char char_to_split_at);
+	const char char_to_split_at,
+	uint64_t* const split_index);
 
 /**
  * @brief Split string view at the first white space sequence on the left side.

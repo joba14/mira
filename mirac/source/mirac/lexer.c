@@ -91,21 +91,34 @@ mirac_token_type_e mirac_lexer_lex(
 		return token->type;
 	}
 
-	const string_view_s token_as_text = get_next_token_as_text(lexer);
-	if (token_as_text.length <= 0) { return mirac_token_type_eof; }
+	const string_view_s text = get_next_token_as_text(lexer);
+	if (text.length <= 0) { return mirac_token_type_eof; }
+	*token = mirac_token_from_parts(mirac_token_type_none, lexer->locations[0], text);
 
-	if ((token->type = mirac_token_match_string_view_to_reserved_type(token_as_text)) != mirac_token_type_none)
+	if ('\"' == text.data[0]) // NOTE: At this point lexer does not perform the length check as it can vary depending on the string literal type.
 	{
-		token->location = lexer->locations[0];
-		token->text = token_as_text;
+		// TODO: lex strings e.g. "hello"
+		// return token->type;
+	}
+
+	if (('-' == text.data[0]) || ('+' == text.data[0]) || isdigit(text.data[0])) // NOTE: At this point lexer does not perform the length check as it can vary depending on the numeric literal type.
+	{
+		// TODO: lex numeric literals
+		// return token->type;
+	}
+
+	if (mirac_token_match_string_view_to_reserved_type(token, text) != mirac_token_type_none)
+	{
 		return token->type;
 	}
 
-	// TODO: lex strings e.g. "hello"
-	// TODO: lex numeric literals
-	// TODO: lex identifiers
+	if (0)
+	{
+		// TODO: lex identifiers
+		return token->type;
+	}
 
-	log_lexer_error_and_exit(lexer->locations[0], "encountered unknown token '" sv_fmt "'.", sv_arg(token_as_text));
+	log_lexer_error_and_exit(lexer->locations[0], "encountered unknown token '" sv_fmt "'.", sv_arg(text));
 	return mirac_token_type_none; // NOTE: To prevent compiler error '-Werror=return-type'.
 }
 
@@ -184,15 +197,14 @@ static string_view_s get_next_token_as_text(
 	mirac_lexer_s* const lexer)
 {
 	mirac_debug_assert(lexer != NULL);
-
 	lexer->locations[0] = lexer->locations[1];
 
 fetch_line:
 	while ((lexer->line.length <= 0) && (lexer->buffer.length > 0))
 	{
-		lexer->line = string_view_split_left(&lexer->buffer, '\n');
-		lexer->locations[0].column = 1;
+		lexer->line = string_view_split_left(&lexer->buffer, '\n', NULL);
 		lexer->locations[0].line++;
+		lexer->locations[0].column = 1;
 	}
 
 	if ((lexer->line.length <= 0) && (lexer->buffer.length <= 0))
@@ -200,24 +212,21 @@ fetch_line:
 		return string_view_from_parts("", 0);
 	}
 
-	// TODO: remove:
-	// mirac_logger_debug("loc=" mirac_location_fmt ", line='" sv_fmt "'", mirac_location_arg(lexer->location), sv_arg(lexer->line));
-
 	uint64_t white_space_length = 0;
 	lexer->line = string_view_trim_left_white_space(lexer->line, &white_space_length);
 	lexer->locations[0].column += white_space_length;
 
-	if (((lexer->line.length >= 1) && (';' == lexer->line.data[0])) ||
-		((lexer->line.length >= 2) && ('/' == lexer->line.data[0]) && ('/' == lexer->line.data[1])))
+	if (string_view_equal_range(lexer->line, string_view_from_parts(";",  1), 1) ||
+		string_view_equal_range(lexer->line, string_view_from_parts("//", 2), 2))
 	{
-		(void)string_view_split_left(&lexer->line, '\n');
+		(void)string_view_split_left(&lexer->line, '\n', NULL);
 		lexer->line.length = 0; // NOTE: Hack to force the line to be empty for successful refetch.
 		goto fetch_line;
 	}
 
 	white_space_length = 0;
-	const string_view_s token_as_text = string_view_split_left_white_space(&lexer->line, &white_space_length);
+	const string_view_s text = string_view_split_left_white_space(&lexer->line, &white_space_length);
 	lexer->locations[1] = lexer->locations[0];
-	lexer->locations[1].column += token_as_text.length + white_space_length;
-	return token_as_text;
+	lexer->locations[1].column += text.length + white_space_length;
+	return text;
 }

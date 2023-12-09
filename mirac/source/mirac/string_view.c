@@ -205,7 +205,8 @@ string_view_s string_view_trim_white_space(
 
 string_view_s string_view_split_left(
 	string_view_s* const string_view,
-	const char char_to_split_at)
+	const char char_to_split_at,
+	uint64_t* const split_index)
 {
 	mirac_debug_assert(string_view != NULL);
 	mirac_debug_assert(string_view->data != NULL);
@@ -222,6 +223,11 @@ string_view_s string_view_split_left(
 		++index;
 	}
 
+	if (split_index != NULL)
+	{
+		*split_index = index;
+	}
+
 	const string_view_s left = string_view_from_parts(string_view->data, index);
 	*string_view = string_view_from_parts(string_view->data + index + 1, string_view->length - index - 1);
 	return left;
@@ -229,7 +235,8 @@ string_view_s string_view_split_left(
 
 string_view_s string_view_split_right(
 	string_view_s* const string_view,
-	const char char_to_split_at)
+	const char char_to_split_at,
+	uint64_t* const split_index)
 {
 	mirac_debug_assert(string_view != NULL);
 	mirac_debug_assert(string_view->data != NULL);
@@ -244,6 +251,11 @@ string_view_s string_view_split_right(
 	while ((index < string_view->length) && (string_view->data[string_view->length - index - 1] != char_to_split_at))
 	{
 		++index;
+	}
+
+	if (split_index != NULL)
+	{
+		*split_index = index;
 	}
 
 	const string_view_s right = string_view_from_parts(string_view->data + index + 1, string_view->length - index - 1);

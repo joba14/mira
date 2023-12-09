@@ -134,19 +134,6 @@ typedef enum
 string_view_s mirac_token_type_to_string_view(
 	const mirac_token_type_e token_type);
 
-/**
- * @brief Match reserved token type with provided string view.
- * 
- * @note If match is found in the reserved tokens map, "mirac_token_type_none"
- * type will be returned to indicate that the match failed.
- * 
- * @param string_view[in] string view to match with
- * 
- * @return mirac_token_type_e
- */
-mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
-	const string_view_s string_view);
-
 typedef struct mirac_token_s mirac_token_s;
 
 struct mirac_token_s
@@ -174,12 +161,14 @@ struct mirac_token_s
  * 
  * @param token_type[in] token type to assign to the new token
  * @param location[in]   location to set to the token
+ * @param text[in]       text representation from the file
  * 
  * @return mirac_token_s 
  */
 mirac_token_s mirac_token_from_parts(
 	const mirac_token_type_e token_type,
-	const mirac_location_s location);
+	const mirac_location_s location,
+	const string_view_s text);
 
 /**
  * @brief Create a token object with provided token type.
@@ -204,6 +193,36 @@ mirac_token_s mirac_token_from_type(
  */
 void mirac_token_destroy(
 	mirac_token_s* const token);
+
+// TODO: document!
+mirac_token_type_e mirac_token_parse_string_literal_from_string_view(
+	mirac_token_s* const token,
+	const string_view_s string_view);
+
+// TODO: document!
+mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
+	mirac_token_s* const token,
+	const string_view_s string_view);
+
+/**
+ * @brief Match reserved token type with provided string view.
+ * 
+ * @note If match is found in the reserved tokens map, "mirac_token_type_none"
+ * type will be returned to indicate that the match failed.
+ * 
+ * @param token[in/out]   token to set the type if matched
+ * @param string_view[in] string view to match with
+ * 
+ * @return mirac_token_type_e
+ */
+mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
+	mirac_token_s* const token,
+	const string_view_s string_view);
+
+// TODO: document!
+mirac_token_type_e mirac_token_parse_identifier_from_string_view(
+	mirac_token_s* const token,
+	const string_view_s string_view);
 
 #if 0
 /**
