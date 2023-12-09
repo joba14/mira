@@ -19,7 +19,6 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/string_view.c
 	$PROJECT_DIR/source/mirac/arena.c
 	$PROJECT_DIR/source/mirac/config.c
-	$PROJECT_DIR/source/mirac/token.c
 	$PROJECT_DIR/source/mirac/lexer.c
 	$PROJECT_DIR/source/main.c
 "
