@@ -147,29 +147,35 @@ void mirac_token_destroy(
 }
 
 mirac_token_type_e mirac_token_parse_string_literal_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view)
 {
 	// TODO: implement!
+	(void)arena;
 	(void)token;
 	(void)string_view;
 	return mirac_token_type_none;
 }
 
 mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view)
 {
 	// TODO: implement!
+	(void)arena;
 	(void)token;
 	(void)string_view;
 	return mirac_token_type_none;
 }
 
 mirac_token_type_e mirac_token_parse_reserved_token_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view)
 {
+	mirac_debug_assert(arena != NULL);
 	mirac_debug_assert(token != NULL);
 
 	// TODO: optimize the search (binary search probably should used):
@@ -178,20 +184,28 @@ mirac_token_type_e mirac_token_parse_reserved_token_from_string_view(
 		if (string_view_equal(g_reserved_token_types_map[index], string_view))
 		{
 			token->type = (mirac_token_type_e)index;
-			return token->type;
+			break;
 		}
 	}
+
+	// TODO: decide if text and value should be separately allocated!
+	const string_view_s reserved_token = g_reserved_token_types_map[token->type];
+	char* const reserved = (char* const)mirac_arena_malloc(arena, reserved_token.length);
+	mirac_c_memcpy(reserved, reserved_token.data, reserved_token.length);
+
+	token->as_ident = string_view_from_parts(identifier, string_view.length);
+	return token->type;
 
 	return mirac_token_type_none;
 }
 
 mirac_token_type_e mirac_token_parse_identifier_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view)
 {
-	// TODO: implement!
-	(void)token;
-	(void)string_view;
+	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(token != NULL);
 
 	if (string_view.length <= 0)
 	{
@@ -213,8 +227,11 @@ mirac_token_type_e mirac_token_parse_identifier_from_string_view(
 		}
 	}
 
+	char* const identifier = (char* const)mirac_arena_malloc(arena, string_view.length);
+	mirac_c_memcpy(identifier, string_view.data, string_view.length);
+
 	token->type = mirac_token_type_identifier;
-	token->as_ident = string_view;
+	token->as_ident = string_view_from_parts(identifier, string_view.length);
 	return token->type;
 }
 

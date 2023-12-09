@@ -93,11 +93,12 @@ mirac_token_type_e mirac_lexer_lex(
 
 	const string_view_s text = get_next_token_as_text(lexer);
 	if (text.length <= 0) { return mirac_token_type_eof; }
+	// TODO: decide if I should allocate (copy) this text for the token!
 	*token = mirac_token_from_parts(mirac_token_type_none, lexer->locations[0], text);
 
 	if ('\"' == text.data[0]) // NOTE: At this point lexer does not perform the length check as it can vary depending on the string literal type.
 	{
-		if (mirac_token_parse_string_literal_from_string_view(token, text) != mirac_token_type_none)
+		if (mirac_token_parse_string_literal_from_string_view(lexer->arena, token, text) != mirac_token_type_none)
 		{
 			return token->type;
 		}
@@ -105,18 +106,18 @@ mirac_token_type_e mirac_lexer_lex(
 
 	if (('-' == text.data[0]) || ('+' == text.data[0]) || isdigit(text.data[0])) // NOTE: At this point lexer does not perform the length check as it can vary depending on the numeric literal type.
 	{
-		if (mirac_token_parse_numeric_literal_from_string_view(token, text) != mirac_token_type_none)
+		if (mirac_token_parse_numeric_literal_from_string_view(lexer->arena, token, text) != mirac_token_type_none)
 		{
 			return token->type;
 		}
 	}
 
-	if (mirac_token_parse_reserved_token_from_string_view(token, text) != mirac_token_type_none)
+	if (mirac_token_parse_reserved_token_from_string_view(lexer->arena, token, text) != mirac_token_type_none)
 	{
 		return token->type;
 	}
 
-	if (mirac_token_parse_identifier_from_string_view(token, text) != mirac_token_type_none)
+	if (mirac_token_parse_identifier_from_string_view(lexer->arena, token, text) != mirac_token_type_none)
 	{
 		return token->type;
 	}

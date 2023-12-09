@@ -15,6 +15,7 @@
 
 #include <mirac/c_common.h>
 #include <mirac/string_view.h>
+#include <mirac/arena.h>
 
 typedef struct
 {
@@ -196,11 +197,13 @@ void mirac_token_destroy(
 
 // TODO: document!
 mirac_token_type_e mirac_token_parse_string_literal_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view);
 
 // TODO: document!
 mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view);
 
@@ -216,11 +219,13 @@ mirac_token_type_e mirac_token_parse_numeric_literal_from_string_view(
  * @return mirac_token_type_e
  */
 mirac_token_type_e mirac_token_parse_reserved_token_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view);
 
 // TODO: document!
 mirac_token_type_e mirac_token_parse_identifier_from_string_view(
+	mirac_arena_s* const arena,
 	mirac_token_s* const token,
 	const string_view_s string_view);
 
