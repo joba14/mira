@@ -22,7 +22,7 @@
 
 typedef struct
 {
-	string_view_s file;
+	mirac_string_view_s file;
 	uint64_t line;
 	uint64_t column;
 } mirac_location_s;
@@ -30,13 +30,13 @@ typedef struct
 /**
  * @brief Location formatting macro for printf-like functions.
  */
-#define mirac_location_fmt sv_fmt ":%lu:%lu"
+#define mirac_location_fmt mirac_sv_fmt ":%lu:%lu"
 
 /**
  * @brief Location formatting argument macro for printf-like functions.
  */
 #define mirac_location_arg(_location) \
-	sv_arg((_location).file), (_location).line, (_location).column
+	mirac_sv_arg((_location).file), (_location).line, (_location).column
 
 typedef enum
 {
@@ -133,9 +133,9 @@ typedef enum
  * 
  * @param token_type[in] token type to stringify
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s mirac_token_type_to_string_view(
+mirac_string_view_s mirac_token_type_to_string_view(
 	const mirac_token_type_e token_type);
 
 typedef struct mirac_token_s mirac_token_s;
@@ -151,11 +151,11 @@ struct mirac_token_s
 		int64_t as_ival;
 		uint64_t as_uval;
 		long double as_fval;
-		string_view_s as_str;
-		string_view_s as_ident;
+		mirac_string_view_s as_str;
+		mirac_string_view_s as_ident;
 	};
 
-	string_view_s text;
+	mirac_string_view_s text;
 };
 
 /**
@@ -172,7 +172,7 @@ struct mirac_token_s
 mirac_token_s mirac_token_from_parts(
 	const mirac_token_type_e token_type,
 	const mirac_location_s location,
-	const string_view_s text);
+	const mirac_string_view_s text);
 
 /**
  * @brief Create a token object with provided token type.
@@ -202,21 +202,27 @@ typedef struct
 {
 	mirac_config_s* config;
 	mirac_arena_s* arena;
-	string_view_s file_path;
+	mirac_string_view_s file_path;
 	mirac_location_s locations[2];
 	uint64_t tokens_count;
 	mirac_token_s token;
-	string_view_s buffer;
-	string_view_s line;
+	mirac_string_view_s buffer;
+	mirac_string_view_s line;
 } mirac_lexer_s;
 
 /**
  * @brief Create a lexer with provided file and its path.
+ * 
+ * @param config[in]    config instance
+ * @param arena[in]     arena instance for memory management
+ * @param file_path[in] path of file to lexed
+ * 
+ * @return mirac_lexer_s
  */
 mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
-	const string_view_s file_path);
+	const mirac_string_view_s file_path);
 
 /**
  * @brief Destroy the lexer.
@@ -226,6 +232,8 @@ mirac_lexer_s mirac_lexer_from_parts(
  * 
  * @warning This function does not close the file, used by lexer! It is left for the
  * user of the lexer to close the file after finishing with the lexer.
+ * 
+ * @param lexer[in/out] lexer instance
  */
 void mirac_lexer_destroy(
 	mirac_lexer_s* const lexer);
@@ -241,19 +249,31 @@ void mirac_lexer_destroy(
  * that happens. I have added a helper function just for this - to verify the token
  * and determine if one needs to stop lexing or not:
  * see @ref mirac_lexer_should_stop_lexing().
+ * 
+ * @param lexer[in/out] lexer instance
+ * @param token[out]    token to be lexed
+ * 
+ * @return mirac_token_type_e
  */
 mirac_token_type_e mirac_lexer_lex(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
 /**
- * @brief Check if lexer has reached end of file or failed to lex token.
+ * @brief Check if lexer has reached end of file or failed to lex a token.
+ * 
+ * @param type[in] newly lexed token type
+ * 
+ * @return bool
  */
 bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type);
 
 /**
  * @brief Cache a token in the lexer.
+ * 
+ * @param lexer[in/out] lexer instance
+ * @param token[in]     token to cache
  */
 void mirac_lexer_unlex(
 	mirac_lexer_s* const lexer,

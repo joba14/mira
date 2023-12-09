@@ -24,22 +24,22 @@ typedef struct
 {
 	const char* data;
 	uint64_t length;
-} string_view_s;
+} mirac_string_view_s;
 
 /**
  * @brief String view format for printf-like functions.
  */
-#define sv_fmt "%.*s"
+#define mirac_sv_fmt "%.*s"
 
 /**
  * @brief String view argument for printf-like functions.
  */
-#define sv_arg(_string_view) ((signed int) (_string_view).length), (_string_view).data
+#define mirac_sv_arg(_string_view) ((signed int) (_string_view).length), (_string_view).data
 
 /**
  * @brief String view format for printf-like functions.
  */
-#define string_view_static(_string) { (_string), (sizeof(_string) - 1) }
+#define mirac_string_view_static(_string) { (_string), (sizeof(_string) - 1) }
 
 /**
  * @brief Create string view from a const-pointer to a string or sequence of characters and its length.
@@ -47,9 +47,9 @@ typedef struct
  * @param data[in]   pointer to a string or sequence of characters
  * @param length[in] length of the string or sequence of characters
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_from_parts(
+mirac_string_view_s mirac_string_view_from_parts(
 	const char* const data,
 	const uint64_t length);
 
@@ -58,9 +58,9 @@ string_view_s string_view_from_parts(
  * 
  * @param cstring[in] pointer to a cstring
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_from_cstring(
+mirac_string_view_s mirac_string_view_from_cstring(
 	const char* const cstring);
 
 /**
@@ -72,9 +72,9 @@ string_view_s string_view_from_cstring(
  * 
  * @return bool
  */
-bool string_view_equal_range(
-	const string_view_s left,
-	const string_view_s right,
+bool mirac_string_view_equal_range(
+	const mirac_string_view_s left,
+	const mirac_string_view_s right,
 	const uint64_t length);
 
 /**
@@ -85,9 +85,9 @@ bool string_view_equal_range(
  * 
  * @return bool
  */
-bool string_view_equal(
-	const string_view_s left,
-	const string_view_s right);
+bool mirac_string_view_equal(
+	const mirac_string_view_s left,
+	const mirac_string_view_s right);
 
 /**
  * @brief Trim left side of the string view of provided char.
@@ -96,10 +96,10 @@ bool string_view_equal(
  * @param char_to_trim[in]    char to trim
  * @param trimmed_length[out] length of the trimmed string (optional)
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_trim_left(
-	const string_view_s string_view,
+mirac_string_view_s mirac_string_view_trim_left(
+	const mirac_string_view_s string_view,
 	const char char_to_trim,
 	uint64_t* const trimmed_length);
 
@@ -110,10 +110,10 @@ string_view_s string_view_trim_left(
  * @param char_to_trim[in]    char to trim
  * @param trimmed_length[out] length of the trimmed string (optional)
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_trim_right(
-	const string_view_s string_view,
+mirac_string_view_s mirac_string_view_trim_right(
+	const mirac_string_view_s string_view,
 	const char char_to_trim,
 	uint64_t* const trimmed_length);
 
@@ -123,10 +123,10 @@ string_view_s string_view_trim_right(
  * @param string_view[in]  string view to trim
  * @param char_to_trim[in] char to trim
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_trim(
-	const string_view_s string_view,
+mirac_string_view_s mirac_string_view_trim(
+	const mirac_string_view_s string_view,
 	const char char_to_trim);
 
 /**
@@ -135,10 +135,10 @@ string_view_s string_view_trim(
  * @param string_view[in]     string view to trim
  * @param trimmed_length[out] length of the trimmed string (optional)
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_trim_left_white_space(
-	const string_view_s string_view,
+mirac_string_view_s mirac_string_view_trim_left_white_space(
+	const mirac_string_view_s string_view,
 	uint64_t* const trimmed_length);
 
 /**
@@ -147,10 +147,10 @@ string_view_s string_view_trim_left_white_space(
  * @param string_view[in]     string view to trim
  * @param trimmed_length[out] length of the trimmed string (optional)
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_trim_right_white_space(
-	const string_view_s string_view,
+mirac_string_view_s mirac_string_view_trim_right_white_space(
+	const mirac_string_view_s string_view,
 	uint64_t* const trimmed_length);
 
 /**
@@ -159,10 +159,10 @@ string_view_s string_view_trim_right_white_space(
  * 
  * @param string_view[in] string view to trim
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_trim_white_space(
-	const string_view_s string_view);
+mirac_string_view_s mirac_string_view_trim_white_space(
+	const mirac_string_view_s string_view);
 
 /**
  * @brief Split string view at a provided char from the left side.
@@ -175,10 +175,10 @@ string_view_s string_view_trim_white_space(
  * @param char_to_split_at[in] char to split at
  * @param split_index[out]     index of split char in string view
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_split_left(
-	string_view_s* const string_view,
+mirac_string_view_s mirac_string_view_split_left(
+	mirac_string_view_s* const string_view,
 	const char char_to_split_at,
 	uint64_t* const split_index);
 
@@ -193,10 +193,10 @@ string_view_s string_view_split_left(
  * @param char_to_split_at[in] char to split at
  * @param split_index[out]     index of split char in string view
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_split_right(
-	string_view_s* const string_view,
+mirac_string_view_s mirac_string_view_split_right(
+	mirac_string_view_s* const string_view,
 	const char char_to_split_at,
 	uint64_t* const split_index);
 
@@ -210,10 +210,10 @@ string_view_s string_view_split_right(
  * @param string_view[in/out]     string view to split
  * @param white_space_length[out] white space length (optional)
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_split_left_white_space(
-	string_view_s* const string_view,
+mirac_string_view_s mirac_string_view_split_left_white_space(
+	mirac_string_view_s* const string_view,
 	uint64_t* const white_space_length);
 
 /**
@@ -226,10 +226,10 @@ string_view_s string_view_split_left_white_space(
  * @param string_view[in/out]     string view to split
  * @param white_space_length[out] white space length (optional)
  * 
- * @return string_view_s
+ * @return mirac_string_view_s
  */
-string_view_s string_view_split_right_white_space(
-	string_view_s* const string_view,
+mirac_string_view_s mirac_string_view_split_right_white_space(
+	mirac_string_view_s* const string_view,
 	uint64_t* const white_space_length);
 
 #endif
