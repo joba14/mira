@@ -1,7 +1,26 @@
 
-func main req i64 ret i64 do
-	1 while dup 10 <= do
-		dup puti
-		1 +
-	end
-end
+// comment1
+func req i64 ret i64 do
+	// comment2
+	loop dup <= do
+		; comment3
+		dup *
+		+ ; comment4
+	end ; comment5
+end 	// comment 6
+; comment7
+ ; comment7
+
+
+
+// // comment1
+// func main req i64 ret i64 do
+// 	// comment2
+// 	1 loop dup 10 <= do
+// 		; comment3
+// 		dup puti
+// 		1 + ; comment4
+// 	end ; comment5
+// end 	// comment 6
+// ; comment7
+//  ; comment7

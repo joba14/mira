@@ -21,7 +21,6 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/config.c
 	$PROJECT_DIR/source/mirac/token.c
 	$PROJECT_DIR/source/mirac/lexer.c
-	$PROJECT_DIR/source/mirac/checker.c
 	$PROJECT_DIR/source/main.c
 "
 

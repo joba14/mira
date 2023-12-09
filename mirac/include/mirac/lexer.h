@@ -15,28 +15,31 @@
 
 #include <mirac/c_common.h>
 #include <mirac/string_view.h>
-#include <mirac/token.h>
+#include <mirac/config.h>
 #include <mirac/arena.h>
+#include <mirac/token.h>
 
 #include <stdio.h>
 
 typedef struct
 {
+	mirac_config_s* config;
 	mirac_arena_s* arena;
-	const char* file_path;
-	mirac_location_s location;
+	string_view_s file_path;
+	mirac_location_s locations[2];
 	uint64_t tokens_count;
 	mirac_token_s token;
 	string_view_s buffer;
+	string_view_s line;
 } mirac_lexer_s;
 
 /**
  * @brief Create a lexer with provided file and its path.
  */
 mirac_lexer_s mirac_lexer_from_parts(
+	mirac_config_s* const config,
 	mirac_arena_s* const arena,
-	const char* const file_path,
-	FILE* const file);
+	const string_view_s file_path);
 
 /**
  * @brief Destroy the lexer.

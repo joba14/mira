@@ -39,7 +39,7 @@ typedef struct
 /**
  * @brief String view format for printf-like functions.
  */
-#define string_view_static(_string) (string_view_s) { .data = _string, .length = (sizeof(_string) / sizeof(char)) }
+#define string_view_static(_string) { (_string), (sizeof(_string) - 1) }
 
 /**
  * @brief Create string view from a const-pointer to a string or sequence of characters and its length.
@@ -62,18 +62,6 @@ string_view_s string_view_from_parts(
  */
 string_view_s string_view_from_cstring(
 	const char* const cstring);
-
-/**
- * @brief Compare two string views.
- * 
- * @param left[in]  left comparison string view
- * @param right[in] right comparison string view
- * 
- * @return int32_t
- */
-int32_t string_view_compare(
-	const string_view_s left,
-	const string_view_s right);
 
 /**
  * @brief Check if two string views are equal for provided length (range).
@@ -104,26 +92,30 @@ bool string_view_equal(
 /**
  * @brief Trim left side of the string view of provided char.
  * 
- * @param string_view[in]  string view to trim
- * @param char_to_trim[in] char to trim
+ * @param string_view[in]     string view to trim
+ * @param char_to_trim[in]    char to trim
+ * @param trimmed_length[out] length of the trimmed string (optional)
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim_left(
 	const string_view_s string_view,
-	const char char_to_trim);
+	const char char_to_trim,
+	uint64_t* const trimmed_length);
 
 /**
  * @brief Trim right side of the string view of provided char.
  * 
- * @param string_view[in]  string view to trim
- * @param char_to_trim[in] char to trim
+ * @param string_view[in]     string view to trim
+ * @param char_to_trim[in]    char to trim
+ * @param trimmed_length[out] length of the trimmed string (optional)
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim_right(
 	const string_view_s string_view,
-	const char char_to_trim);
+	const char char_to_trim,
+	uint64_t* const trimmed_length);
 
 /**
  * @brief Trim left and right sides of the string view of provided char.
@@ -140,22 +132,26 @@ string_view_s string_view_trim(
 /**
  * @brief Trim white spaces on the left side of the string view of provided char.
  * 
- * @param string_view[in] string view to trim
+ * @param string_view[in]     string view to trim
+ * @param trimmed_length[out] length of the trimmed string (optional)
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim_left_white_space(
-	const string_view_s string_view);
+	const string_view_s string_view,
+	uint64_t* const trimmed_length);
 
 /**
  * @brief Trim white spaces on the right side of the string view of provided char.
  * 
- * @param string_view[in] string view to trim
+ * @param string_view[in]     string view to trim
+ * @param trimmed_length[out] length of the trimmed string (optional)
  * 
  * @return string_view_s
  */
 string_view_s string_view_trim_right_white_space(
-	const string_view_s string_view);
+	const string_view_s string_view,
+	uint64_t* const trimmed_length);
 
 /**
  * @brief Trim white spaces on the left and right sides of the string view of
@@ -167,5 +163,47 @@ string_view_s string_view_trim_right_white_space(
  */
 string_view_s string_view_trim_white_space(
 	const string_view_s string_view);
+
+/**
+ * @brief Split string view at a provided char from the left side.
+ * 
+ * @note The returned string view is the left split part of the original string
+ * view, while the right split part will be set to the original string that is
+ * passed by reference.
+ * 
+ * @param string_view[in/out]  string view to split
+ * @param char_to_split_at[in] char to split at
+ * 
+ * @return string_view_s
+ */
+string_view_s string_view_split_left(
+	string_view_s* const string_view,
+	const char char_to_split_at);
+
+/**
+ * @brief Split string view at a provided char from the right side.
+ * 
+ * @note The returned string view is the right split part of the original string
+ * view, while the left split part will be set to the original string that is
+ * passed by reference.
+ * 
+ * @param string_view[in/out]  string view to split
+ * @param char_to_split_at[in] char to split at
+ * 
+ * @return string_view_s
+ */
+string_view_s string_view_split_right(
+	string_view_s* const string_view,
+	const char char_to_split_at);
+
+// TODO: document:
+string_view_s string_view_split_left_white_space(
+	string_view_s* const string_view,
+	uint64_t* const white_space_length);
+
+// TODO: document:
+string_view_s string_view_split_right_white_space(
+	string_view_s* const string_view,
+	uint64_t* const white_space_length);
 
 #endif

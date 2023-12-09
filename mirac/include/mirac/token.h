@@ -14,10 +14,11 @@
 #define __mirac__include__mirac__token_h__
 
 #include <mirac/c_common.h>
+#include <mirac/string_view.h>
 
 typedef struct
 {
-	const char* file;
+	string_view_s file;
 	uint64_t line;
 	uint64_t column;
 } mirac_location_s;
@@ -25,13 +26,13 @@ typedef struct
 /**
  * @brief Location formatting macro for printf-like functions.
  */
-#define mirac_location_fmt "%s:%lu:%lu"
+#define mirac_location_fmt sv_fmt ":%lu:%lu"
 
 /**
  * @brief Location formatting argument macro for printf-like functions.
  */
 #define mirac_location_arg(_location) \
-	(_location).file, (_location).line, (_location).column
+	sv_arg((_location).file), (_location).line, (_location).column
 
 typedef enum
 {
@@ -124,16 +125,27 @@ typedef enum
 } mirac_token_type_e;
 
 /**
- * @brief Try to parse token type from a string.
+ * @brief Stringify token type and return the string view.
+ * 
+ * @param token_type[in] token type to stringify
+ * 
+ * @return string_view_s
  */
-mirac_token_type_e mirac_reserved_token_type_from_string_view(
-	const string_view_s string_view);
+string_view_s mirac_token_type_to_string_view(
+	const mirac_token_type_e token_type);
 
 /**
- * @brief Stringify token type.
+ * @brief Match reserved token type with provided string view.
+ * 
+ * @note If match is found in the reserved tokens map, "mirac_token_type_none"
+ * type will be returned to indicate that the match failed.
+ * 
+ * @param string_view[in] string view to match with
+ * 
+ * @return mirac_token_type_e
  */
-const char* mirac_token_type_to_string(
-	const mirac_token_type_e token_type);
+mirac_token_type_e mirac_token_match_string_view_to_reserved_type(
+	const string_view_s string_view);
 
 typedef struct mirac_token_s mirac_token_s;
 
@@ -148,77 +160,52 @@ struct mirac_token_s
 		int64_t as_ival;
 		uint64_t as_uval;
 		long double as_fval;
-
-		struct
-		{
-			char* data;
-			uint64_t length;
-		} as_str;
-
-		struct
-		{
-			char* data;
-			uint64_t length;
-		} as_ident;
+		string_view_s as_str;
+		string_view_s as_ident;
 	};
 
-	struct
-	{
-		char* data;
-		uint64_t length;
-	} source;
-
-	mirac_token_s* next_ref;
-	mirac_token_s* prev_ref;
+	string_view_s text;
 };
 
 /**
  * @brief Create token with provided token type and location.
  * 
- * @note All the other fields will be set to 0.
+ * @note All the rest of the fields will be initialized to 0.
+ * 
+ * @param token_type[in] token type to assign to the new token
+ * @param location[in]   location to set to the token
+ * 
+ * @return mirac_token_s 
  */
 mirac_token_s mirac_token_from_parts(
 	const mirac_token_type_e token_type,
 	const mirac_location_s location);
 
 /**
- * @brief Create token with provided token type.
+ * @brief Create a token object with provided token type.
  * 
- * @note All the other fields will be set to 0.
+ * @note All the rest of the fields will be initialized to 0.
+ * 
+ * @param token_type[in] token type to assign to the new token
+ * 
+ * @return mirac_token_s
  */
 mirac_token_s mirac_token_from_type(
 	const mirac_token_type_e token_type);
 
 /**
- * @brief Destroy (reset) token.
+ * @brief Destroy (reset all fields to 0) token.
+ * 
+ * @note The memory that was allocated for the token's fields will not be freed
+ * with this function. It can be freed only with the arena that was used as the
+ * allocator in the lexer.
+ * 
+ * @param token[in] token to destroy
  */
 void mirac_token_destroy(
 	mirac_token_s* const token);
 
-/**
- * @brief Check if token is a type keyword.
- */
-bool mirac_token_is_type_keyword(
-	mirac_token_s* const token);
-
-/**
- * @brief Check if token is a signd integer literal.
- */
-bool mirac_token_is_signed_integer_literal(
-	mirac_token_s* const token);
-
-/**
- * @brief Check if token is an unsignd integer literal.
- */
-bool mirac_token_is_unsigned_integer_literal(
-	mirac_token_s* const token);
-
-/**
- * @brief Check if token is a string literal.
- */
-bool mirac_token_is_string_literal(
-	mirac_token_s* const token);
-
+#if 0
 /**
  * @brief Stringify token.
  */
@@ -230,5 +217,6 @@ const char* mirac_token_to_string(
  */
 void mirac_token_print(
 	const mirac_token_s* const token);
+#endif
 
 #endif
