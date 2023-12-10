@@ -1,0 +1,41 @@
+
+; ----- 
+; @brief Calculate the square of the sum of the elements in the provided array.
+; 
+; @warning The function assumes that elements in the provided array are of i64
+; type!
+; ----- 
+func sum^2 req ptr i64 ret i64 do
+	; ptr n
+	0
+	; ptr n sum
+	\>3
+	; sum ptr n
+	\+. loop 0 <= do
+		; sum ptr n
+		\><
+		; sum n ptr
+		\+.
+		; sum n ptr ptr
+		ld64 as i64
+		; sum n ptr val
+		let sum ind p val do
+			sum val + ind p
+		end
+		; sum n ptr
+		1 +
+		; sum n ptr+1
+		\><
+		; sum ptr+1 n
+		1 -
+		; sum ptr+1 n-1
+	end
+end
+
+func sum^2 req ptr i64 ret i64 do
+	0 \>3 \+. loop 0 <= do
+		\>< \+. ld64 as i64
+		let sum ind p val do sum val + ind p end
+		1 + \>< 1 -
+	end
+end
