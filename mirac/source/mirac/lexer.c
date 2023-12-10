@@ -147,6 +147,82 @@ void mirac_token_destroy(
 	token->type = mirac_token_type_none;
 }
 
+mirac_string_view_s mirac_token_to_string_view(
+	const mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	#define token_string_buffer_capacity 1024
+	static char token_string_buffer[token_string_buffer_capacity + 1];
+
+	uint64_t written = (uint64_t)snprintf(
+		token_string_buffer, token_string_buffer_capacity,
+		"Token[type='" mirac_sv_fmt "', location='" mirac_location_fmt "', text='" mirac_sv_fmt "'",
+		mirac_sv_arg(mirac_token_type_to_string_view(token->type)),
+		mirac_location_arg(token->location),
+		mirac_sv_arg(token->text)
+	);
+
+	switch (token->type)
+	{
+		case mirac_token_type_literal_i08:
+		case mirac_token_type_literal_i16:
+		case mirac_token_type_literal_i32:
+		case mirac_token_type_literal_i64:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%li']", token->as_ival
+			);
+		} break;
+
+		case mirac_token_type_literal_u08:
+		case mirac_token_type_literal_u16:
+		case mirac_token_type_literal_u32:
+		case mirac_token_type_literal_u64:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%lu']", token->as_uval
+			);
+		} break;
+
+		case mirac_token_type_literal_f32:
+		case mirac_token_type_literal_f64:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='%Lf']", token->as_fval
+			);
+		} break;
+
+		case mirac_token_type_literal_str:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='" mirac_sv_fmt "']", mirac_sv_arg(token->as_str)
+			);
+		} break;
+
+		case mirac_token_type_identifier:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written,
+				", value='" mirac_sv_fmt "']", mirac_sv_arg(token->as_ident)
+			);
+		} break;
+
+		default:
+		{
+			written += (uint64_t)snprintf(
+				token_string_buffer + written, token_string_buffer_capacity - written, "]"
+			);
+		} break;
+	}
+
+	token_string_buffer[written++] = 0;
+	return mirac_string_view_from_parts(token_string_buffer, written);
+}
+
 #define log_lexer_error_and_exit(_location, _format, ...)                      \
 	do {                                                                       \
 		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                             \

@@ -197,6 +197,16 @@ mirac_token_s mirac_token_from_type(
 void mirac_token_destroy(
 	mirac_token_s* const token);
 
+/**
+ * @brief Stringify token and return the string view.
+ * 
+ * @param token[in] token type to stringify
+ * 
+ * @return mirac_string_view_s
+ */
+mirac_string_view_s mirac_token_to_string_view(
+	const mirac_token_s* const token);
+
 typedef struct
 {
 	mirac_config_s* config;

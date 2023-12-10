@@ -30,5 +30,5 @@ void mirac_debug_assert_impl(
 	}
 }
 #else
-static_assert(1, ""); // NOTE: To prevent empty translaion unit error.
+_Static_assert(1, ""); // NOTE: To prevent empty translaion unit error.
 #endif

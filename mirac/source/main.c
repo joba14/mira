@@ -17,6 +17,14 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 
+// TODO: remove:
+// [
+#include <mirac/c_common.h>
+#include <mirac/heap_array.h>
+mirac_define_heap_array_type(ints_vector, int16_t);
+mirac_implement_heap_array_type(ints_vector, int16_t);
+// ]
+
 int32_t main(
 	const int32_t argc,
 	const char** const argv)
@@ -47,11 +55,7 @@ int32_t main(
 		mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(&lexer, &token)))
 		{
-			mirac_logger_debug(mirac_location_fmt ", " mirac_sv_fmt ", " mirac_sv_fmt,
-				mirac_location_arg(token.location),
-				mirac_sv_arg(mirac_token_type_to_string_view(token.type)),
-				mirac_sv_arg(token.text)
-			);
+			mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
 		}
 	}
 
