@@ -1,12 +1,8 @@
 
 // first single line comment
   // second single line comment
-	// third  single line comment
+	// third single line comment
 
-/* first multi line comment */
-/* second
-	multi line comment */
-/* third
-  multi line
-	comment
-*/
+; first different single line comment
+  ; second different single line comment
+	; third different single line comment
