@@ -229,8 +229,10 @@ mirac_string_view_s mirac_token_to_string_view(
 
 #define log_lexer_error_and_exit(_location, _format, ...)                      \
 	do {                                                                       \
-		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                             \
-			mirac_sv_arg((_location).file), (_location).line, (_location).column);   \
+		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                       \
+			mirac_sv_arg((_location).file),                                    \
+			(_location).line,                                                  \
+			(_location).column);                                               \
 		mirac_logger_error(_format, ## __VA_ARGS__);                           \
 		mirac_c_exit(-1);                                                      \
 	} while (0)
@@ -319,9 +321,6 @@ mirac_token_type_e mirac_lexer_lex(
 
 	const mirac_string_view_s text = get_next_token_as_text(lexer);
 	if (text.length <= 0) { return mirac_token_type_eof; }
-
-	// // TODO: remove:
-	// mirac_logger_debug("text='" mirac_sv_fmt "'", mirac_sv_arg(text));
 
 	char* const text_copy = (char* const)mirac_arena_malloc(lexer->arena, text.length);
 	mirac_c_memcpy(text_copy, text.data, text.length);
