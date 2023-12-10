@@ -119,7 +119,6 @@ typedef enum
 	mirac_token_type_literal_f32,
 	mirac_token_type_literal_f64,
 	mirac_token_type_literal_str,
-	mirac_token_type_literal_cstr,
 
 	mirac_token_type_identifier,
 

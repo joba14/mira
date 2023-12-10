@@ -1,5 +1,23 @@
 
--ala
+1
+"a"
+"ab"
+"abc"
+"abc d"
+"abc de"
+"abc name def"
+"abc \"name def"
+"abc name\" def"
+"abc \"name\" def"
+
+hi "hello" labas
+hi "hello, \"world\"!" labas
+
+"a"
+"hello"
+"hello world\n"
+
+ hi "hello, \"world\"" labas
 
 // comment1
 func main req i64 ret i64 do
