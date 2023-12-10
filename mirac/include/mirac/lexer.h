@@ -118,6 +118,7 @@ typedef enum
 	mirac_token_type_literal_u64,
 	mirac_token_type_literal_f32,
 	mirac_token_type_literal_f64,
+	mirac_token_type_literal_ptr,
 	mirac_token_type_literal_str,
 
 	mirac_token_type_identifier,
@@ -150,6 +151,7 @@ struct mirac_token_s
 		int64_t as_ival;
 		uint64_t as_uval;
 		long double as_fval;
+		uintptr_t as_ptr;
 		mirac_string_view_s as_str;
 		mirac_string_view_s as_ident;
 	};
@@ -164,6 +166,7 @@ struct mirac_token_s
  * 
  * @param token_type[in] token type to assign to the new token
  * @param location[in]   location to set to the token
+ * @param index[in]      global index of the token
  * @param text[in]       text representation from the file
  * 
  * @return mirac_token_s
@@ -171,6 +174,7 @@ struct mirac_token_s
 mirac_token_s mirac_token_from_parts(
 	const mirac_token_type_e token_type,
 	const mirac_location_s location,
+	const uint64_t index,
 	const mirac_string_view_s text);
 
 /**

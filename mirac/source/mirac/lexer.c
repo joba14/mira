@@ -95,20 +95,21 @@ mirac_string_view_s mirac_token_type_to_string_view(
 {
 	switch (token_type)
 	{
-		case mirac_token_type_literal_i08:  { return mirac_string_view_from_cstring("literal_i8");   } break;
-		case mirac_token_type_literal_i16:  { return mirac_string_view_from_cstring("literal_i16");  } break;
-		case mirac_token_type_literal_i32:  { return mirac_string_view_from_cstring("literal_i32");  } break;
-		case mirac_token_type_literal_i64:  { return mirac_string_view_from_cstring("literal_i64");  } break;
-		case mirac_token_type_literal_u08:  { return mirac_string_view_from_cstring("literal_u8");   } break;
-		case mirac_token_type_literal_u16:  { return mirac_string_view_from_cstring("literal_u16");  } break;
-		case mirac_token_type_literal_u32:  { return mirac_string_view_from_cstring("literal_u32");  } break;
-		case mirac_token_type_literal_u64:  { return mirac_string_view_from_cstring("literal_u64");  } break;
-		case mirac_token_type_literal_f32:  { return mirac_string_view_from_cstring("literal_f32");  } break;
-		case mirac_token_type_literal_f64:  { return mirac_string_view_from_cstring("literal_f64");  } break;
-		case mirac_token_type_literal_str:  { return mirac_string_view_from_cstring("literal_str");  } break;
-		case mirac_token_type_identifier:   { return mirac_string_view_from_cstring("identifier");   } break;
-		case mirac_token_type_eof:          { return mirac_string_view_from_cstring("eof");          } break;
-		case mirac_token_type_none:         { return mirac_string_view_from_cstring("none");         } break;
+		case mirac_token_type_literal_i08: { return mirac_string_view_from_cstring("literal_i8");  } break;
+		case mirac_token_type_literal_i16: { return mirac_string_view_from_cstring("literal_i16"); } break;
+		case mirac_token_type_literal_i32: { return mirac_string_view_from_cstring("literal_i32"); } break;
+		case mirac_token_type_literal_i64: { return mirac_string_view_from_cstring("literal_i64"); } break;
+		case mirac_token_type_literal_u08: { return mirac_string_view_from_cstring("literal_u8");  } break;
+		case mirac_token_type_literal_u16: { return mirac_string_view_from_cstring("literal_u16"); } break;
+		case mirac_token_type_literal_u32: { return mirac_string_view_from_cstring("literal_u32"); } break;
+		case mirac_token_type_literal_u64: { return mirac_string_view_from_cstring("literal_u64"); } break;
+		case mirac_token_type_literal_f32: { return mirac_string_view_from_cstring("literal_f32"); } break;
+		case mirac_token_type_literal_f64: { return mirac_string_view_from_cstring("literal_f64"); } break;
+		case mirac_token_type_literal_ptr: { return mirac_string_view_from_cstring("literal_ptr"); } break;
+		case mirac_token_type_literal_str: { return mirac_string_view_from_cstring("literal_str"); } break;
+		case mirac_token_type_identifier:  { return mirac_string_view_from_cstring("identifier");  } break;
+		case mirac_token_type_eof:         { return mirac_string_view_from_cstring("eof");         } break;
+		case mirac_token_type_none:        { return mirac_string_view_from_cstring("none");        } break;
 
 		default:
 		{
@@ -122,11 +123,13 @@ mirac_string_view_s mirac_token_type_to_string_view(
 mirac_token_s mirac_token_from_parts(
 	const mirac_token_type_e token_type,
 	const mirac_location_s location,
+	const uint64_t index,
 	const mirac_string_view_s text)
 {
 	mirac_token_s token = {0};
 	token.type = token_type;
 	token.location = location;
+	token.index = index;
 	token.text = text;
 	return token;
 }
@@ -156,9 +159,10 @@ mirac_string_view_s mirac_token_to_string_view(
 
 	uint64_t written = (uint64_t)snprintf(
 		token_string_buffer, token_string_buffer_capacity,
-		"Token[type='" mirac_sv_fmt "', location='" mirac_location_fmt "', text='" mirac_sv_fmt "'",
+		"Token[type='" mirac_sv_fmt "', location='" mirac_location_fmt "', index='%lu', text='" mirac_sv_fmt "'",
 		mirac_sv_arg(mirac_token_type_to_string_view(token->type)),
 		mirac_location_arg(token->location),
+		token->index,
 		mirac_sv_arg(token->text)
 	);
 
@@ -322,7 +326,7 @@ mirac_token_type_e mirac_lexer_lex(
 	char* const text_copy = (char* const)mirac_arena_malloc(lexer->arena, text.length);
 	mirac_c_memcpy(text_copy, text.data, text.length);
 	*token = mirac_token_from_parts(mirac_token_type_none,
-		lexer->locations[0], mirac_string_view_from_parts(text_copy, text.length)
+		lexer->locations[0], lexer->tokens_count++, mirac_string_view_from_parts(text_copy, text.length)
 	);
 
 	if (parse_string_literal_token_from_string_view(lexer, token) != mirac_token_type_none)
