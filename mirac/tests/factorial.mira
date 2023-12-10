@@ -3,20 +3,20 @@ func factorial1
 	req u64
 	ret u64
 do
-	dup loop dup 0 > do
+	\+. loop \+. 0 > do
 		1 -
-		swap over * swap
-	end drop
+		\>< \>. * \><
+	end \!.
 end
 
 func factorial2
 	req u64
 	ret u64
 do
-	if dup 1 < do
-		drop 1
+	if \+. 1 < do
+		\!. 1
 	else
-		dup 1 - factorial2 *
+		\+. 1 - factorial2 *
 	end
 end
 
