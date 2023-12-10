@@ -61,7 +61,7 @@
 		"intrinsics": {
 			"patterns": [{
 				"name": "variable.name",
-				"match": "\\b(dup|drop|swap|over|rot|eq|neq|ls|gt|gteq|lseq|add|sub|mul|div|mod|land|lor|lxor|lnot|band|bor|bxor|bnot|shl|shr|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys)\\b"
+				"match": "\\b(ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys1|sys2|sys3|sys4|sys5|sys6)\\b"
 			}]
 		},
 		"specifiers": {
