@@ -24,53 +24,53 @@
 static const mirac_string_view_s g_reserved_token_types_map[] =
 {
 	[mirac_token_type_reserved_lnot] = mirac_string_view_static("!"),
-	[mirac_token_type_reserved_neq] = mirac_string_view_static("!="),
-	[mirac_token_type_reserved_mod] = mirac_string_view_static("%"),
+	[mirac_token_type_reserved_neq]  = mirac_string_view_static("!="),
+	[mirac_token_type_reserved_mod]  = mirac_string_view_static("%"),
 	[mirac_token_type_reserved_band] = mirac_string_view_static("&"),
 	[mirac_token_type_reserved_land] = mirac_string_view_static("&&"),
-	[mirac_token_type_reserved_mul] = mirac_string_view_static("*"),
-	[mirac_token_type_reserved_add] = mirac_string_view_static("+"),
-	[mirac_token_type_reserved_sub] = mirac_string_view_static("-"),
-	[mirac_token_type_reserved_div] = mirac_string_view_static("/"),
-	[mirac_token_type_reserved_ls] = mirac_string_view_static("<"),
-	[mirac_token_type_reserved_shl] = mirac_string_view_static("<<"),
+	[mirac_token_type_reserved_mul]  = mirac_string_view_static("*"),
+	[mirac_token_type_reserved_add]  = mirac_string_view_static("+"),
+	[mirac_token_type_reserved_sub]  = mirac_string_view_static("-"),
+	[mirac_token_type_reserved_div]  = mirac_string_view_static("/"),
+	[mirac_token_type_reserved_ls]   = mirac_string_view_static("<"),
+	[mirac_token_type_reserved_shl]  = mirac_string_view_static("<<"),
 	[mirac_token_type_reserved_lseq] = mirac_string_view_static("<="),
-	[mirac_token_type_reserved_eq] = mirac_string_view_static("=="),
-	[mirac_token_type_reserved_gt] = mirac_string_view_static(">"),
+	[mirac_token_type_reserved_eq]   = mirac_string_view_static("=="),
+	[mirac_token_type_reserved_gt]   = mirac_string_view_static(">"),
 	[mirac_token_type_reserved_gteq] = mirac_string_view_static(">="),
-	[mirac_token_type_reserved_shr] = mirac_string_view_static(">>"),
+	[mirac_token_type_reserved_shr]  = mirac_string_view_static(">>"),
 	[mirac_token_type_reserved_drop] = mirac_string_view_static("\\!."),
-	[mirac_token_type_reserved_dup] = mirac_string_view_static("\\+."),
+	[mirac_token_type_reserved_dup]  = mirac_string_view_static("\\+."),
 	[mirac_token_type_reserved_over] = mirac_string_view_static("\\>."),
-	[mirac_token_type_reserved_rot] = mirac_string_view_static("\\>3"),
+	[mirac_token_type_reserved_rot]  = mirac_string_view_static("\\>3"),
 	[mirac_token_type_reserved_swap] = mirac_string_view_static("\\><"),
 	[mirac_token_type_reserved_bxor] = mirac_string_view_static("^"),
 	[mirac_token_type_reserved_lxor] = mirac_string_view_static("^^"),
-	[mirac_token_type_reserved_as] = mirac_string_view_static("as"),
-	[mirac_token_type_reserved_do] = mirac_string_view_static("do"),
+	[mirac_token_type_reserved_as]   = mirac_string_view_static("as"),
+	[mirac_token_type_reserved_do]   = mirac_string_view_static("do"),
 	[mirac_token_type_reserved_elif] = mirac_string_view_static("elif"),
 	[mirac_token_type_reserved_else] = mirac_string_view_static("else"),
-	[mirac_token_type_reserved_end] = mirac_string_view_static("end"),
-	[mirac_token_type_reserved_f32] = mirac_string_view_static("f32"),
-	[mirac_token_type_reserved_f64] = mirac_string_view_static("f64"),
+	[mirac_token_type_reserved_end]  = mirac_string_view_static("end"),
+	[mirac_token_type_reserved_f32]  = mirac_string_view_static("f32"),
+	[mirac_token_type_reserved_f64]  = mirac_string_view_static("f64"),
 	[mirac_token_type_reserved_func] = mirac_string_view_static("func"),
-	[mirac_token_type_reserved_i08] = mirac_string_view_static("i08"),
-	[mirac_token_type_reserved_i16] = mirac_string_view_static("i16"),
-	[mirac_token_type_reserved_i32] = mirac_string_view_static("i32"),
-	[mirac_token_type_reserved_i64] = mirac_string_view_static("i64"),
-	[mirac_token_type_reserved_if] = mirac_string_view_static("if"),
-	[mirac_token_type_reserved_inl] = mirac_string_view_static("inl"),
+	[mirac_token_type_reserved_i08]  = mirac_string_view_static("i08"),
+	[mirac_token_type_reserved_i16]  = mirac_string_view_static("i16"),
+	[mirac_token_type_reserved_i32]  = mirac_string_view_static("i32"),
+	[mirac_token_type_reserved_i64]  = mirac_string_view_static("i64"),
+	[mirac_token_type_reserved_if]   = mirac_string_view_static("if"),
+	[mirac_token_type_reserved_inl]  = mirac_string_view_static("inl"),
 	[mirac_token_type_reserved_ld08] = mirac_string_view_static("ld08"),
 	[mirac_token_type_reserved_ld16] = mirac_string_view_static("ld16"),
 	[mirac_token_type_reserved_ld32] = mirac_string_view_static("ld32"),
 	[mirac_token_type_reserved_ld64] = mirac_string_view_static("ld64"),
-	[mirac_token_type_reserved_let] = mirac_string_view_static("let"),
+	[mirac_token_type_reserved_let]  = mirac_string_view_static("let"),
 	[mirac_token_type_reserved_loop] = mirac_string_view_static("loop"),
-	[mirac_token_type_reserved_mem] = mirac_string_view_static("mem"),
-	[mirac_token_type_reserved_ptr] = mirac_string_view_static("ptr"),
-	[mirac_token_type_reserved_reg] = mirac_string_view_static("reg"),
-	[mirac_token_type_reserved_req] = mirac_string_view_static("req"),
-	[mirac_token_type_reserved_ret] = mirac_string_view_static("ret"),
+	[mirac_token_type_reserved_mem]  = mirac_string_view_static("mem"),
+	[mirac_token_type_reserved_ptr]  = mirac_string_view_static("ptr"),
+	[mirac_token_type_reserved_reg]  = mirac_string_view_static("reg"),
+	[mirac_token_type_reserved_req]  = mirac_string_view_static("req"),
+	[mirac_token_type_reserved_ret]  = mirac_string_view_static("ret"),
 	[mirac_token_type_reserved_st08] = mirac_string_view_static("st08"),
 	[mirac_token_type_reserved_st16] = mirac_string_view_static("st16"),
 	[mirac_token_type_reserved_st32] = mirac_string_view_static("st32"),
@@ -81,12 +81,12 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_sys4] = mirac_string_view_static("sys4"),
 	[mirac_token_type_reserved_sys5] = mirac_string_view_static("sys5"),
 	[mirac_token_type_reserved_sys6] = mirac_string_view_static("sys6"),
-	[mirac_token_type_reserved_u08] = mirac_string_view_static("u08"),
-	[mirac_token_type_reserved_u16] = mirac_string_view_static("u16"),
-	[mirac_token_type_reserved_u32] = mirac_string_view_static("u32"),
-	[mirac_token_type_reserved_u64] = mirac_string_view_static("u64"),
-	[mirac_token_type_reserved_bor] = mirac_string_view_static("|"),
-	[mirac_token_type_reserved_lor] = mirac_string_view_static("||"),
+	[mirac_token_type_reserved_u08]  = mirac_string_view_static("u08"),
+	[mirac_token_type_reserved_u16]  = mirac_string_view_static("u16"),
+	[mirac_token_type_reserved_u32]  = mirac_string_view_static("u32"),
+	[mirac_token_type_reserved_u64]  = mirac_string_view_static("u64"),
+	[mirac_token_type_reserved_bor]  = mirac_string_view_static("|"),
+	[mirac_token_type_reserved_lor]  = mirac_string_view_static("||"),
 	[mirac_token_type_reserved_bnot] = mirac_string_view_static("~")
 };
 
@@ -237,29 +237,71 @@ mirac_string_view_s mirac_token_to_string_view(
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
+/**
+ * @brief Validate file path and open file for reading.
+ * 
+ * @param file_path[in] path of the file to be opened
+ * 
+ * @return FILE*
+ */
 static FILE* validate_and_open_file_for_reading(
 	const mirac_string_view_s file_path);
 
+/**
+ * @brief Get the next token as text from the lexer's buffer.
+ * 
+ * @param lexer[in/out] lexer instance
+ * 
+ * @return mirac_string_view_s
+ */
 static mirac_string_view_s get_next_token_as_text(
 	mirac_lexer_s* const lexer);
 
-// TODO: document!
-static mirac_token_type_e parse_string_literal_token_from_string_view(
+/**
+ * @brief Parse string literal token from the token's text.
+ * 
+ * @param lexer[in]     lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_string_literal_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
-// TODO: document!
-static mirac_token_type_e parse_numeric_literal_token_from_string_view(
+/**
+ * @brief Parse numeric literal token from the token's text.
+ * 
+ * @param lexer[in]     lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_numeric_literal_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
-// TODO: document!
-static mirac_token_type_e parse_reserved_token_from_string_view(
+/**
+ * @brief Parse reserved token from the token's text.
+ * 
+ * @param lexer[in]     lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_reserved_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
-// TODO: document!
-static mirac_token_type_e parse_identifier_token_from_string_view(
+/**
+ * @brief Parse identifier token from the token's text.
+ * 
+ * @param lexer[in]     lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_identifier_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
@@ -328,22 +370,22 @@ mirac_token_type_e mirac_lexer_lex(
 		lexer->locations[0], lexer->tokens_count++, mirac_string_view_from_parts(text_copy, text.length)
 	);
 
-	if (parse_string_literal_token_from_string_view(lexer, token) != mirac_token_type_none)
+	if (parse_string_literal_token_from_text(lexer, token) != mirac_token_type_none)
 	{
 		return token->type;
 	}
 
-	if (parse_numeric_literal_token_from_string_view(lexer, token) != mirac_token_type_none)
+	if (parse_numeric_literal_token_from_text(lexer, token) != mirac_token_type_none)
 	{
 		return token->type;
 	}
 
-	if (parse_reserved_token_from_string_view(lexer, token) != mirac_token_type_none)
+	if (parse_reserved_token_from_text(lexer, token) != mirac_token_type_none)
 	{
 		return token->type;
 	}
 
-	if (parse_identifier_token_from_string_view(lexer, token) != mirac_token_type_none)
+	if (parse_identifier_token_from_text(lexer, token) != mirac_token_type_none)
 	{
 		return token->type;
 	}
@@ -489,7 +531,7 @@ search_for_quote_1:
 	return text;
 }
 
-static mirac_token_type_e parse_string_literal_token_from_string_view(
+static mirac_token_type_e parse_string_literal_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
@@ -596,7 +638,7 @@ search_for_quote_2:
 	return token->type;
 }
 
-static mirac_token_type_e parse_numeric_literal_token_from_string_view(
+static mirac_token_type_e parse_numeric_literal_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
@@ -674,7 +716,7 @@ static mirac_token_type_e parse_numeric_literal_token_from_string_view(
 	return token->type;
 }
 
-static mirac_token_type_e parse_reserved_token_from_string_view(
+static mirac_token_type_e parse_reserved_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
@@ -697,7 +739,7 @@ static mirac_token_type_e parse_reserved_token_from_string_view(
 	return mirac_token_type_none;
 }
 
-static mirac_token_type_e parse_identifier_token_from_string_view(
+static mirac_token_type_e parse_identifier_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
