@@ -16,12 +16,14 @@
 #ifndef NDEBUG
 #	include <mirac/c_common.h>
 
+// TODO: document!
 void mirac_debug_assert_impl(
 	const bool expression,
 	const char* const expression_string,
 	const char* const file,
 	const uint64_t line);
 
+// TODO: document!
 #	define mirac_debug_assert(_expression)                                     \
 		mirac_debug_assert_impl(                                               \
 			_expression,                                                       \

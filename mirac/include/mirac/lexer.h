@@ -196,7 +196,7 @@ mirac_token_s mirac_token_from_type(
  * with this function. It can be freed only with the arena that was used as the
  * allocator in the lexer.
  * 
- * @param token[in] token to destroy
+ * @param token[in/out] token to destroy
  */
 void mirac_token_destroy(
 	mirac_token_s* const token);
