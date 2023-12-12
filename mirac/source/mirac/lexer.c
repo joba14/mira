@@ -260,7 +260,7 @@ static mirac_string_view_s get_next_token_as_text(
 /**
  * @brief Parse string literal token from the token's text.
  * 
- * @param lexer[in]     lexer instance
+ * @param lexer[in/out] lexer instance
  * @param token[in/out] token to parse
  * 
  * @return mirac_token_type_e
@@ -272,7 +272,7 @@ static mirac_token_type_e parse_string_literal_token_from_text(
 /**
  * @brief Parse numeric literal token from the token's text.
  * 
- * @param lexer[in]     lexer instance
+ * @param lexer[in/out] lexer instance
  * @param token[in/out] token to parse
  * 
  * @return mirac_token_type_e
@@ -284,7 +284,7 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 /**
  * @brief Parse reserved token from the token's text.
  * 
- * @param lexer[in]     lexer instance
+ * @param lexer[in/out] lexer instance
  * @param token[in/out] token to parse
  * 
  * @return mirac_token_type_e
@@ -296,7 +296,7 @@ static mirac_token_type_e parse_reserved_token_from_text(
 /**
  * @brief Parse identifier token from the token's text.
  * 
- * @param lexer[in]     lexer instance
+ * @param lexer[in/out] lexer instance
  * @param token[in/out] token to parse
  * 
  * @return mirac_token_type_e
