@@ -22,9 +22,9 @@ hi "hello, \"world\"!" labas
 // comment1
 func main req i64 ret i64 do
 	// comment2
-	1 loop dup 10 <= do
+	1 loop \+. 10 <= do
 		; comment3
-		dup puti
+		\+. puti
 		1 + ; comment4
 	end ; comment5
 end 	// comment 6
