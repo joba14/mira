@@ -16,14 +16,26 @@
 #ifndef NDEBUG
 #	include <mirac/c_common.h>
 
-// TODO: document!
+/**
+ * @brief Debug assert implementation.
+ * 
+ * @param expression[in]        expression to evaluate
+ * @param expression_string[in] stringified expression
+ * @param file[in]              file in which assert exists
+ * @param line[in]              line in which assert exists
+ */
 void mirac_debug_assert_impl(
 	const bool expression,
 	const char* const expression_string,
 	const char* const file,
 	const uint64_t line);
 
-// TODO: document!
+/**
+ * @brief Debug assert wrapper.
+ * 
+ * @note It abstrats the @ref mirac_debug_assert_impl function and passes line,
+ * file, and stringified expression to the implementation function.
+ */
 #	define mirac_debug_assert(_expression)                                     \
 		mirac_debug_assert_impl(                                               \
 			_expression,                                                       \
