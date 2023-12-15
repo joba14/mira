@@ -114,8 +114,7 @@ mirac_string_view_s mirac_token_type_to_string_view(
 		default:
 		{
 			mirac_debug_assert(token_type < (sizeof(g_reserved_token_types_map) / sizeof(g_reserved_token_types_map[0])));
-			const mirac_string_view_s stringified_type = g_reserved_token_types_map[token_type];
-			return stringified_type;
+			return g_reserved_token_types_map[token_type];
 		} break;
 	}
 }

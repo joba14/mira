@@ -16,6 +16,7 @@
 #include <mirac/config.h>
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
+#include <mirac/parser.h>
 
 // TODO: remove:
 // [
@@ -48,15 +49,11 @@ int32_t main(
 	for (uint64_t source_file_index = 0; source_file_index < source_files_count; ++source_file_index)
 	{
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_files[source_file_index]);
+
 		mirac_arena_s arena = mirac_arena_from_parts();
 		mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path);
-		(void)lexer;
-
-		mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex(&lexer, &token)))
-		{
-			mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
-		}
+		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
+		mirac_parser_preview_all(&parser);
 	}
 
 	return 0;

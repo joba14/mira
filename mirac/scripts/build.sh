@@ -20,6 +20,7 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/arena.c
 	$PROJECT_DIR/source/mirac/config.c
 	$PROJECT_DIR/source/mirac/lexer.c
+	$PROJECT_DIR/source/mirac/parser.c
 	$PROJECT_DIR/source/main.c
 "
 
