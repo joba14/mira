@@ -180,25 +180,7 @@ mirac_string_view_s mirac_string_view_trim_white_space(
 mirac_string_view_s mirac_string_view_split_left(
 	mirac_string_view_s* const string_view,
 	const char char_to_split_at,
-	uint64_t* const split_index);
-
-/**
- * @brief Split string view at a provided char from the right side.
- * 
- * @note The returned string view is the right split part of the original string
- * view, while the left split part will be set to the original string that is
- * passed by reference.
- * 
- * @param string_view[in/out]  string view to split
- * @param char_to_split_at[in] char to split at
- * @param split_index[out]     index of split char in string view
- * 
- * @return mirac_string_view_s
- */
-mirac_string_view_s mirac_string_view_split_right(
-	mirac_string_view_s* const string_view,
-	const char char_to_split_at,
-	uint64_t* const split_index);
+	int64_t* const split_index);
 
 /**
  * @brief Split string view at the first white space sequence on the left side.
@@ -213,22 +195,6 @@ mirac_string_view_s mirac_string_view_split_right(
  * @return mirac_string_view_s
  */
 mirac_string_view_s mirac_string_view_split_left_white_space(
-	mirac_string_view_s* const string_view,
-	uint64_t* const white_space_length);
-
-/**
- * @brief Split string view at the first white space sequence on the right side.
- * 
- * @note The entire white space will be ignored and not included in neither of
- * the string views. To get the length of the ignored white space use optional
- * parameter 'white_space_length'.
- * 
- * @param string_view[in/out]     string view to split
- * @param white_space_length[out] white space length (optional)
- * 
- * @return mirac_string_view_s
- */
-mirac_string_view_s mirac_string_view_split_right_white_space(
 	mirac_string_view_s* const string_view,
 	uint64_t* const white_space_length);
 

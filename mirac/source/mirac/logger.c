@@ -17,18 +17,17 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define ANSI_GRAY   "\033[90m"
-#define ANSI_RED    "\033[91m"
-#define ANSI_GREEN  "\033[92m"
-#define ANSI_YELLOW "\033[93m"
-#define ANSI_BROWN  "\033[33m"
-#define ANSI_RESET  "\033[0m"
+#define ansi_gray   "\033[90m"
+#define ansi_red    "\033[91m"
+#define ansi_green  "\033[92m"
+#define ansi_yellow "\033[93m"
+#define ansi_brown  "\033[33m"
+#define ansi_reset  "\033[0m"
 
-#define TAG_DEBUG "debug"
-#define TAG_INFO  "info"
-#define TAG_WARN  "warn"
-#define TAG_ERROR "error"
-#define TAG_PANIC "panic"
+#define tag_debug "debug"
+#define tag_info  "info"
+#define tag_warn  "warn"
+#define tag_error "error"
 
 static void log_with_tag(
 	FILE* const stream,
@@ -52,7 +51,7 @@ void mirac_logger_debug(
 {
 	mirac_debug_assert(format != NULL);
 	va_list args; va_start(args, format);
-	log_with_tag(stdout, ANSI_BROWN TAG_DEBUG ANSI_RESET, format, args);
+	log_with_tag(stdout, ansi_brown tag_debug ansi_reset, format, args);
 	va_end(args);
 }
 
@@ -62,7 +61,7 @@ void mirac_logger_info(
 {
 	mirac_debug_assert(format != NULL);
 	va_list args; va_start(args, format);
-	log_with_tag(stdout, ANSI_GREEN TAG_INFO ANSI_RESET, format, args);
+	log_with_tag(stdout, ansi_green tag_info ansi_reset, format, args);
 	va_end(args);
 }
 
@@ -72,7 +71,7 @@ void mirac_logger_warn(
 {
 	mirac_debug_assert(format != NULL);
 	va_list args; va_start(args, format);
-	log_with_tag(stderr, ANSI_YELLOW TAG_WARN ANSI_RESET, format, args);
+	log_with_tag(stderr, ansi_yellow tag_warn ansi_reset, format, args);
 	va_end(args);
 }
 
@@ -82,7 +81,7 @@ void mirac_logger_error(
 {
 	mirac_debug_assert(format != NULL);
 	va_list args; va_start(args, format);
-	log_with_tag(stderr, ANSI_RED TAG_ERROR ANSI_RESET, format, args);
+	log_with_tag(stderr, ansi_red tag_error ansi_reset, format, args);
 	va_end(args);
 }
 
