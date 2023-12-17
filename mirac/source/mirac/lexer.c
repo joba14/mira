@@ -485,7 +485,7 @@ static mirac_string_view_s get_next_token_as_text(
 fetch_line:
 	while ((lexer->line.length <= 0) && (lexer->buffer.length > 0))
 	{
-		lexer->line = mirac_string_view_split_left(&lexer->buffer, '\n', NULL);
+		lexer->line = mirac_string_view_split_left(&lexer->buffer, '\n');
 		lexer->locations[0].line++;
 		lexer->locations[0].column = 1;
 	}
@@ -502,7 +502,7 @@ fetch_line:
 	if (mirac_string_view_equal_range(lexer->line, mirac_string_view_from_parts(";",  1), 1) ||
 		mirac_string_view_equal_range(lexer->line, mirac_string_view_from_parts("//", 2), 2))
 	{
-		(void)mirac_string_view_split_left(&lexer->line, '\n', NULL);
+		(void)mirac_string_view_split_left(&lexer->line, '\n');
 		lexer->line.length = 0; // NOTE: Hack to force the line to be empty for successful refetch.
 		goto fetch_line;
 	}
@@ -516,7 +516,7 @@ fetch_line:
 		text = mirac_string_view_from_parts(lexer->line.data, 1);
 
 search_for_quote_1:
-		left = mirac_string_view_split_left(&right, '\"', NULL);
+		left = mirac_string_view_split_left(&right, '\"');
 		text.length += left.length;
 
 		if ((left.length > 0) && ('\\' == left.data[left.length - 1]))
@@ -562,7 +562,7 @@ static mirac_token_type_e parse_string_literal_token_from_text(
 	mirac_string_view_s result = mirac_string_view_from_parts(right.data, 0);
 
 search_for_quote_2:
-	left = mirac_string_view_split_left(&right, '\"', NULL);
+	left = mirac_string_view_split_left(&right, '\"');
 	result.length += left.length;
 
 	if ((left.length > 0) && ('\\' == left.data[left.length - 1]))
