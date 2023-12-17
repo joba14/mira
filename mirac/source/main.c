@@ -54,6 +54,7 @@ int32_t main(
 		mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 		mirac_parser_preview_all(&parser);
+		mirac_arena_destroy(&arena);
 	}
 
 	return 0;
