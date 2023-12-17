@@ -44,7 +44,7 @@ void mirac_debug_assert_impl(
 			(const uint64_t)__LINE__                                           \
 		)
 #else
-#	define mirac_debug_assert(_expression)
+#	define mirac_debug_assert(_expression) ((void)(_expression))
 #endif
 
 #endif
