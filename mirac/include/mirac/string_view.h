@@ -142,29 +142,6 @@ mirac_string_view_s mirac_string_view_trim_left_white_space(
 	uint64_t* const trimmed_length);
 
 /**
- * @brief Trim white spaces on the right side of the string view of provided char.
- * 
- * @param string_view[in]     string view to trim
- * @param trimmed_length[out] length of the trimmed string (optional)
- * 
- * @return mirac_string_view_s
- */
-mirac_string_view_s mirac_string_view_trim_right_white_space(
-	const mirac_string_view_s string_view,
-	uint64_t* const trimmed_length);
-
-/**
- * @brief Trim white spaces on the left and right sides of the string view of
- * provided char.
- * 
- * @param string_view[in] string view to trim
- * 
- * @return mirac_string_view_s
- */
-mirac_string_view_s mirac_string_view_trim_white_space(
-	const mirac_string_view_s string_view);
-
-/**
  * @brief Split string view at a provided char from the left side.
  * 
  * @note The returned string view is the left split part of the original string
@@ -173,14 +150,12 @@ mirac_string_view_s mirac_string_view_trim_white_space(
  * 
  * @param string_view[in/out]  string view to split
  * @param char_to_split_at[in] char to split at
- * @param split_index[out]     index of split char in string view
  * 
  * @return mirac_string_view_s
  */
 mirac_string_view_s mirac_string_view_split_left(
 	mirac_string_view_s* const string_view,
-	const char char_to_split_at,
-	int64_t* const split_index);
+	const char char_to_split_at);
 
 /**
  * @brief Split string view at the first white space sequence on the left side.

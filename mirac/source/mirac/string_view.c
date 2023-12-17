@@ -163,50 +163,9 @@ mirac_string_view_s mirac_string_view_trim_left_white_space(
 	return mirac_string_view_from_parts(string_view.data + index, string_view.length - index);
 }
 
-mirac_string_view_s mirac_string_view_trim_right_white_space(
-	const mirac_string_view_s string_view,
-	uint64_t* const trimmed_length)
-{
-	mirac_debug_assert(string_view.data != NULL);
-
-	if (string_view.length <= 0)
-	{
-		return string_view;
-	}
-
-	uint64_t index = 0;
-
-	while ((index < string_view.length) && (
-			(' '  == string_view.data[string_view.length - index - 1]) ||
-			('\t' == string_view.data[string_view.length - index - 1]) ||
-			('\n' == string_view.data[string_view.length - index - 1]) ||
-			('\r' == string_view.data[string_view.length - index - 1])
-		))
-	{
-		++index;
-	}
-
-	if (trimmed_length != NULL)
-	{
-		*trimmed_length = index;
-	}
-
-	return mirac_string_view_from_parts(string_view.data, string_view.length - index);
-}
-
-mirac_string_view_s mirac_string_view_trim_white_space(
-	const mirac_string_view_s string_view)
-{
-	mirac_debug_assert(string_view.data != NULL);
-	return mirac_string_view_trim_left_white_space(
-		mirac_string_view_trim_right_white_space(string_view, NULL), NULL
-	);
-}
-
 mirac_string_view_s mirac_string_view_split_left(
 	mirac_string_view_s* const string_view,
-	const char char_to_split_at,
-	int64_t* const split_index)
+	const char char_to_split_at)
 {
 	mirac_debug_assert(string_view != NULL);
 	mirac_debug_assert(string_view->data != NULL);
@@ -227,17 +186,7 @@ mirac_string_view_s mirac_string_view_split_left(
 
 	if (string_view_length < 0 || index >= (int64_t)string_view->length)
 	{
-		if (split_index != NULL)
-		{
-			*split_index = -1;
-		}
-
 		return mirac_string_view_from_parts("", 0);
-	}
-
-	if (split_index != NULL)
-	{
-		*split_index = index;
 	}
 
 	const mirac_string_view_s left = mirac_string_view_from_parts(string_view->data, (uint64_t)index);
