@@ -1,4 +1,5 @@
 
+Here is a template for shell scripts, used to build and run the tests suite:
 ```sh
 # !/bin/sh
 
