@@ -33,7 +33,7 @@ void mirac_debug_assert_impl(
 /**
  * @brief Debug assert wrapper.
  * 
- * @note It abstrats the @ref mirac_debug_assert_impl function and passes line,
+ * @note It abstracts the @ref mirac_debug_assert_impl function and passes line,
  * file, and stringified expression to the implementation function.
  */
 #	define mirac_debug_assert(_expression)                                     \
@@ -47,7 +47,7 @@ void mirac_debug_assert_impl(
 /**
  * @brief Debug assert wrapper.
  * 
- * @note It abstrats the @ref mirac_debug_assert_impl function and passes line,
+ * @note It abstracts the @ref mirac_debug_assert_impl function and passes line,
  * file, and stringified expression to the implementation function.
  */
 #	define mirac_debug_assert(_expression) ((void)(_expression))
