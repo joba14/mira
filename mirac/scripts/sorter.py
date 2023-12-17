@@ -73,7 +73,5 @@ tokens = [
 	("mirac_token_type_reserved_swap", "\\><"),
 ]
 
-sorted_tokens = sorted(tokens, key=lambda x: x[1])
-
-for token in sorted_tokens:
+for token in sorted(tokens, key=lambda x: x[1]):
 	print(f"{token[0]}, \"{token[1]}\",")
