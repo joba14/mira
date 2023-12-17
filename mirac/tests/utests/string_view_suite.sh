@@ -1,12 +1,33 @@
 
 # !/bin/sh
 
-# Check if lalal.txt exists and remove it if it does
-if [ -e "./string_view_suite.out" ]; then
-	echo "[info]: removing previous test executable './string_view_suite.out'."
-	rm "./string_view_suite.out"
-fi
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+UTESTER_DIR="$SCRIPT_DIR/../../../tools/utester"
+MIRAC_DIR="$SCRIPT_DIR/../.."
 
+# --------------------------------------------------------------------------- #
+
+PROJECT_NAME="string_view_suite"
+
+INCLUDES="
+	-I$UTESTER_DIR/include
+	-I$MIRAC_DIR/include
+"
+
+SOURCES="
+	$MIRAC_DIR/source/mirac/debug.c
+	$MIRAC_DIR/source/mirac/logger.c
+	$MIRAC_DIR/source/mirac/c_common.c
+	$MIRAC_DIR/source/mirac/string_view.c
+	./$PROJECT_NAME.c
+"
+
+LIBRARIES="
+"
+
+# --------------------------------------------------------------------------- #
+
+# Compilation command
 gcc -Wall \
 	-Wextra \
 	-Wpedantic \
@@ -22,22 +43,18 @@ gcc -Wall \
 	-Wconversion \
 	-Wsign-conversion \
 	-Wunreachable-code \
-	-I./../../include \
-	-I./../../../tools/utester/include \
 	-g -O0 \
-	./../../source/mirac/c_common.c \
-	./../../source/mirac/debug.c \
-	./../../source/mirac/logger.c \
-	./../../source/mirac/string_view.c \
-	./string_view_suite.c \
-	-o ./string_view_suite.out
+	$INCLUDES \
+	$SOURCES \
+	-o "./$PROJECT_NAME.out" \
+	$LIBRARIES
 
 # Check if compilation was successful
 if [ $? -eq 0 ]; then
-	echo "info : compilation successful - executable: ./string_view_suite.out"
-	./string_view_suite.out
+	echo "[info]: compilation successful - executable: ./$PROJECT_NAME.out"
+	./$PROJECT_NAME.out
 	exit 0
 else
-	echo "error: compilation failed."
+	echo "[error]: compilation failed."
 	exit 1
 fi
