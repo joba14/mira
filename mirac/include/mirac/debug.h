@@ -44,6 +44,12 @@ void mirac_debug_assert_impl(
 			(const uint64_t)__LINE__                                           \
 		)
 #else
+/**
+ * @brief Debug assert wrapper.
+ * 
+ * @note It abstrats the @ref mirac_debug_assert_impl function and passes line,
+ * file, and stringified expression to the implementation function.
+ */
 #	define mirac_debug_assert(_expression) ((void)(_expression))
 #endif
 
