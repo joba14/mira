@@ -25,11 +25,14 @@ typedef struct
 	mirac_lexer_s* lexer;
 } mirac_parser_s;
 
+// TODO: write unit tests!
+// TODO: document!
 mirac_parser_s mirac_parser_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	mirac_lexer_s* const lexer);
 
+// TODO: remove after implementing the entire parser!
 void mirac_parser_preview_all(
 	mirac_parser_s* const parser);
 

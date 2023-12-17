@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <limits.h>
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib malloc function.
  * 
@@ -30,6 +31,7 @@
 void* mirac_c_malloc(
 	const uint64_t size);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib realloc function.
  * 
@@ -44,6 +46,7 @@ void* mirac_c_realloc(
 	void* pointer,
 	const uint64_t size);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib free function.
  * 
@@ -54,6 +57,7 @@ void* mirac_c_realloc(
 void mirac_c_free(
 	const void* pointer);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib exit function.
  * 
@@ -62,6 +66,7 @@ void mirac_c_free(
 void mirac_c_exit(
 	const int32_t code);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib memset function.
  * 
@@ -74,6 +79,7 @@ void mirac_c_memset(
 	const uint8_t value,
 	const uint64_t length);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib memcpy function.
  * 
@@ -86,6 +92,7 @@ void mirac_c_memcpy(
 	const void* const source,
 	const uint64_t length);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib memcmp function.
  * 
@@ -100,6 +107,7 @@ int32_t mirac_c_memcmp(
 	const uint8_t* const right,
 	const uint64_t length);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strlen function.
  * 
@@ -110,6 +118,7 @@ int32_t mirac_c_memcmp(
 uint64_t mirac_c_strlen(
 	const char* const cstring);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strcmp function.
  * 
@@ -122,6 +131,7 @@ int32_t mirac_c_strcmp(
 	const char* const left,
 	const char* const right);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strcmp function.
  * 
@@ -136,6 +146,7 @@ int32_t mirac_c_strncmp(
 	const char* const right,
 	const uint64_t length);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strchr function.
  * 
@@ -148,6 +159,7 @@ char* mirac_c_strchr(
 	const char* const string,
 	const int32_t c);
 
+// TODO: write unit tests!
 /**
  * @brief Wrapper for c's stdlib bsearch function.
  * 

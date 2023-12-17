@@ -128,6 +128,7 @@ typedef enum
 	mirac_token_type_none
 } mirac_token_type_e;
 
+// TODO: write unit tests!
 /**
  * @brief Stringify token type and return the string view.
  * 
@@ -159,6 +160,7 @@ struct mirac_token_s
 	mirac_string_view_s text;
 };
 
+// TODO: write unit tests!
 /**
  * @brief Create token with provided token type and location.
  * 
@@ -177,6 +179,7 @@ mirac_token_s mirac_token_from_parts(
 	const uint64_t index,
 	const mirac_string_view_s text);
 
+// TODO: write unit tests!
 /**
  * @brief Create a token object with provided token type.
  * 
@@ -189,6 +192,7 @@ mirac_token_s mirac_token_from_parts(
 mirac_token_s mirac_token_from_type(
 	const mirac_token_type_e token_type);
 
+// TODO: write unit tests!
 /**
  * @brief Destroy (reset all fields to 0) token.
  * 
@@ -201,6 +205,7 @@ mirac_token_s mirac_token_from_type(
 void mirac_token_destroy(
 	mirac_token_s* const token);
 
+// TODO: write unit tests!
 /**
  * @brief Stringify token and return the string view.
  * 
@@ -223,6 +228,7 @@ typedef struct
 	mirac_string_view_s line;
 } mirac_lexer_s;
 
+// TODO: write unit tests!
 /**
  * @brief Create a lexer with provided file and its path.
  * 
@@ -237,6 +243,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_arena_s* const arena,
 	const mirac_string_view_s file_path);
 
+// TODO: write unit tests!
 /**
  * @brief Destroy the lexer.
  * 
@@ -251,6 +258,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 void mirac_lexer_destroy(
 	mirac_lexer_s* const lexer);
 
+// TODO: write unit tests!
 /**
  * @brief Lex next token from the file source.
  * 
@@ -272,6 +280,7 @@ mirac_token_type_e mirac_lexer_lex(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
+// TODO: write unit tests!
 /**
  * @brief Check if lexer has reached end of file or failed to lex a token.
  * 
@@ -282,6 +291,7 @@ mirac_token_type_e mirac_lexer_lex(
 bool mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type);
 
+// TODO: write unit tests!
 /**
  * @brief Cache a token in the lexer.
  * 
