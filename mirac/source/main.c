@@ -18,14 +18,6 @@
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
 
-// TODO: remove:
-// [
-#include <mirac/c_common.h>
-#include <mirac/heap_array.h>
-mirac_define_heap_array_type(ints_vector, int16_t);
-mirac_implement_heap_array_type(ints_vector, int16_t);
-// ]
-
 int32_t main(
 	const int32_t argc,
 	const char** const argv)
