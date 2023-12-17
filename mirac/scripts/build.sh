@@ -89,6 +89,8 @@ gcc -Wall \
 if [ $? -eq 0 ]; then
 	echo "[info]: compilation successful - executable: ./build/$PROJECT_NAME$PROJECT_NAME_SUFFIX"
 	cp -f "$PROJECT_DIR/build/$PROJECT_NAME$PROJECT_NAME_SUFFIX" "$PROJECT_DIR/build/$PROJECT_NAME"
+	exit 0
 else
 	echo "[error]: compilation failed."
+	exit 1
 fi
