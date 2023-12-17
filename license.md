@@ -39,7 +39,7 @@ The **User** acknowledges and agrees that the **Project**, including all intelle
 [(to the top)](#mira)
 
 ## No Warranty
-The **Project** is provided "as is," without warranty of any kind, express or implied. The **Creator** disclaims all warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
+The **Project** is provided "as is", without warranty of any kind, express or implied. The **Creator** disclaims all warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
 
 [(to the top)](#mira)
 
