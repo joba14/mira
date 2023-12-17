@@ -85,6 +85,8 @@ utester_define_test(trim_left)
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world", 5);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', NULL);
+		utester_assert_true(5 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(view.data[0] != ' ');
 		utester_assert_true(trimmed_view.data[0] != ' ');
 	}
@@ -92,6 +94,8 @@ utester_define_test(trim_left)
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("   world", 8);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', NULL);
+		utester_assert_true(8 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[0]);
 		utester_assert_true(trimmed_view.data[0] != ' ');
 	}
@@ -100,6 +104,8 @@ utester_define_test(trim_left)
 		uint64_t spaces_count = 0;
 		const mirac_string_view_s view = mirac_string_view_from_parts("   world", 8);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', &spaces_count);
+		utester_assert_true(8 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[0]);
 		utester_assert_true(trimmed_view.data[0] != ' ');
 		utester_assert_true(3 == spaces_count);
@@ -111,6 +117,8 @@ utester_define_test(trim_right)
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world", 5);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', NULL);
+		utester_assert_true(5 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(view.data[view.length - 1] != ' ');
 		utester_assert_true(trimmed_view.data[trimmed_view.length - 1] != ' ');
 	}
@@ -118,6 +126,8 @@ utester_define_test(trim_right)
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world   ", 8);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', NULL);
+		utester_assert_true(8 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[view.length - 1]);
 		utester_assert_true(trimmed_view.data[trimmed_view.length - 1] != ' ');
 	}
@@ -126,6 +136,8 @@ utester_define_test(trim_right)
 		uint64_t spaces_count = 0;
 		const mirac_string_view_s view = mirac_string_view_from_parts("world   ", 8);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', &spaces_count);
+		utester_assert_true(8 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[view.length - 1]);
 		utester_assert_true(trimmed_view.data[trimmed_view.length - 1] != ' ');
 		utester_assert_true(3 == spaces_count);
@@ -137,6 +149,8 @@ utester_define_test(trim)
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world", 5);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim(view, ' ');
+		utester_assert_true(5 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(view.data[0] != ' ');
 		utester_assert_true(view.data[view.length - 1] != ' ');
 		utester_assert_true(trimmed_view.data[0] != ' ');
@@ -146,6 +160,8 @@ utester_define_test(trim)
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("   world   ", 11);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim(view, ' ');
+		utester_assert_true(11 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[0]);
 		utester_assert_true(' ' == view.data[view.length - 1]);
 		utester_assert_true(trimmed_view.data[0] != ' ');
@@ -159,22 +175,26 @@ utester_define_test(trim_left_white_space)
 		uint64_t trimmed_length = 0;
 		const mirac_string_view_s view = mirac_string_view_from_parts("world", 5);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left_white_space(view, &trimmed_length);
+		utester_assert_true(5 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(view.data[0] != ' ');
 		utester_assert_true(view.data[view.length - 1] != ' ');
 		utester_assert_true(trimmed_view.data[0] != ' ');
 		utester_assert_true(trimmed_view.data[trimmed_view.length - 1] != ' ');
-		utester_assert_true(trimmed_length == 0);
+		utester_assert_true(0 == trimmed_length);
 	}
 
 	{
 		uint64_t trimmed_length = 0;
 		const mirac_string_view_s view = mirac_string_view_from_parts("   world", 8);
 		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left_white_space(view, &trimmed_length);
+		utester_assert_true(8 == view.length);
+		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[0]);
-		utester_assert_true(' ' != view.data[view.length - 1]);
+		utester_assert_true(view.data[view.length - 1] != ' ');
 		utester_assert_true(trimmed_view.data[0] != ' ');
 		utester_assert_true(trimmed_view.data[trimmed_view.length - 1] != ' ');
-		utester_assert_true(trimmed_length == 3);
+		utester_assert_true(3 == trimmed_length);
 	}
 }
 
@@ -186,33 +206,39 @@ utester_define_test(split_left)
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("General")));
-	utester_assert_true(text.length == strlen("Kenobi, you are a bold one!"));
+	utester_assert_true(strlen("Kenobi, you are a bold one!") == text.length);
+	utester_assert_true(strlen("General") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("Kenobi,")));
-	utester_assert_true(text.length == strlen("you are a bold one!"));
+	utester_assert_true(strlen("you are a bold one!") == text.length);
+	utester_assert_true(strlen("Kenobi,") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("you")));
-	utester_assert_true(text.length == strlen("are a bold one!"));
+	utester_assert_true(strlen("are a bold one!") == text.length);
+	utester_assert_true(strlen("you") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("are")));
-	utester_assert_true(text.length == strlen("a bold one!"));
+	utester_assert_true(strlen("a bold one!") == text.length);
+	utester_assert_true(strlen("are") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("a")));
-	utester_assert_true(text.length == strlen("bold one!"));
+	utester_assert_true(strlen("bold one!") == text.length);
+	utester_assert_true(strlen("a") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("bold")));
-	utester_assert_true(text.length == strlen("one!"));
+	utester_assert_true(strlen("one!") == text.length);
+	utester_assert_true(strlen("bold") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(text, mirac_string_view_from_cstring("one!")));
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("")));
-	utester_assert_true(text.length == strlen("one!"));
-	utester_assert_true(left.length == 0);
+	utester_assert_true(strlen("one!") == text.length);
+	utester_assert_true(0 == left.length);
 }
 
 utester_define_test(split_left_white_space)
@@ -225,44 +251,54 @@ utester_define_test(split_left_white_space)
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("General")));
-	utester_assert_true(text.length == strlen("Kenobi,  you   are    a     bold      one!"));
+	utester_assert_true(strlen("Kenobi,  you   are    a     bold      one!") == text.length);
+	utester_assert_true(strlen("General") == left.length);
 	utester_assert_true(white_space_length == 1);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("Kenobi,")));
-	utester_assert_true(text.length == strlen("you   are    a     bold      one!"));
-	utester_assert_true(white_space_length == 2);
+	utester_assert_true(strlen("you   are    a     bold      one!") == text.length);
+	utester_assert_true(strlen("Kenobi,") == left.length);
+	utester_assert_true(2 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("you")));
-	utester_assert_true(text.length == strlen("are    a     bold      one!"));
-	utester_assert_true(white_space_length == 3);
+	utester_assert_true(strlen("are    a     bold      one!") == text.length);
+	utester_assert_true(strlen("you") == left.length);
+	utester_assert_true(3 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("are")));
-	utester_assert_true(text.length == strlen("a     bold      one!"));
-	utester_assert_true(white_space_length == 4);
+	utester_assert_true(strlen("a     bold      one!") == text.length);
+	utester_assert_true(strlen("are") == left.length);
+	utester_assert_true(4 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("a")));
-	utester_assert_true(text.length == strlen("bold      one!"));
-	utester_assert_true(white_space_length == 5);
+	utester_assert_true(strlen("bold      one!") == text.length);
+	utester_assert_true(strlen("a") == left.length);
+	utester_assert_true(5 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("bold")));
-	utester_assert_true(text.length == strlen("one!"));
-	utester_assert_true(white_space_length == 6);
+	utester_assert_true(strlen("one!") == text.length);
+	utester_assert_true(strlen("bold") == left.length);
+	utester_assert_true(6 == white_space_length);
 }
 
 utester_run_suite(string_view_suite,
-	&from_parts, &from_cstring,
-	&equal_range, &equal,
-	&trim_left, &trim_right, &trim,
+	&from_parts,
+	&from_cstring,
+	&equal_range,
+	&equal,
+	&trim_left,
+	&trim_right,
+	&trim,
 	&trim_left_white_space,
 	&split_left,
 	&split_left_white_space

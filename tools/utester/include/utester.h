@@ -177,12 +177,12 @@ struct utester_test_s
 			if (test->status)                                                  \
 			{                                                                  \
 				utester_logger_info("|   test passed");                        \
-				passed_count++;                                                \
+				++passed_count;                                                \
 			}                                                                  \
 			else                                                               \
 			{                                                                  \
 				utester_logger_error("|   test failed");                       \
-				failed_count++;                                                \
+				++failed_count;                                                \
 			}                                                                  \
 		}                                                                      \
 		                                                                       \
@@ -199,7 +199,7 @@ struct utester_test_s
 			);                                                                 \
 		}                                                                      \
 		                                                                       \
-		return 0;                                                              \
+		return !(0 == failed_count);                                           \
 	}                                                                          \
 	                                                                           \
 	_Static_assert(1, "") // NOTE: Left fot ';' support after calling the macro.
