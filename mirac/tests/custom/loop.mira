@@ -1,0 +1,14 @@
+
+420
+loop 1 1 + 2 == do
+	69 print
+end
+
+; loop
+; 	1 2 3
+; 	let a b c do
+; 		c b a
+; 	end
+; 	* * * 6 == do
+; 				69 print
+; end

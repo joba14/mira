@@ -19,9 +19,14 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 
+typedef struct mirac_ast_block_s mirac_ast_block_s;
+
+mirac_define_heap_array_type(mirac_ast_blocks_vector, mirac_ast_block_s);
+mirac_define_heap_array_type(mirac_ast_blocks_refs_vector, mirac_ast_block_s*);
+
 typedef struct
 {
-	void* _dummy; // TODO: implement!
+	mirac_token_s token;
 } mirac_ast_expression_block_s;
 
 typedef struct
@@ -31,7 +36,11 @@ typedef struct
 
 typedef struct
 {
-	void* _dummy; // TODO: implement!
+	mirac_token_s loop_token;
+	mirac_ast_blocks_vector_s condition_blocks;
+	mirac_token_s do_token;
+	mirac_ast_blocks_vector_s body_blocks;
+	mirac_token_s end_token;
 } mirac_ast_loop_block_s;
 
 typedef struct
@@ -60,10 +69,12 @@ typedef enum
 	mirac_ast_block_type_branching,
 	mirac_ast_block_type_loop,
 	mirac_ast_block_type_let,
-	mirac_ast_block_type_reg
+	mirac_ast_block_type_reg,
+	mirac_ast_block_type_function,
+	mirac_ast_block_type_memory
 } mirac_ast_block_type_e;
 
-typedef struct
+struct mirac_ast_block_s
 {
 	mirac_ast_block_type_e type;
 
@@ -74,11 +85,10 @@ typedef struct
 		mirac_ast_loop_block_s as_loop_block;
 		mirac_ast_let_block_s as_let_block;
 		mirac_ast_reg_block_s as_reg_block;
+		mirac_ast_function_block_s as_function_block;
+		mirac_ast_memory_block_s as_memory_block;
 	};
-} mirac_ast_block_s;
-
-mirac_define_heap_array_type(mirac_ast_blocks_vector, mirac_ast_block_s);
-mirac_define_heap_array_type(mirac_ast_blocks_refs_vector, mirac_ast_block_s*);
+};
 
 typedef struct
 {
