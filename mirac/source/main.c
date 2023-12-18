@@ -45,7 +45,8 @@ int32_t main(
 		mirac_arena_s arena = mirac_arena_from_parts();
 		mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
-		mirac_parser_preview_all(&parser);
+		mirac_ast_unit_s ast_unit = mirac_parser_parse_ast_unit(&parser);
+		(void)ast_unit;
 		mirac_arena_destroy(&arena);
 	}
 

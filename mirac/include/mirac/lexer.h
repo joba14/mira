@@ -276,7 +276,7 @@ void mirac_lexer_destroy(
  * 
  * @return mirac_token_type_e
  */
-mirac_token_type_e mirac_lexer_lex(
+mirac_token_type_e mirac_lexer_lex_next(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token);
 
