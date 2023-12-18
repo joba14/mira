@@ -19,19 +19,64 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 
-mirac_define_heap_array_type(mirac_ast_tokens_vector, mirac_token_s);
-mirac_define_heap_array_type(mirac_ast_tokens_refs_vector, mirac_token_s*);
+typedef struct mirac_global_s mirac_global_s;
+mirac_define_heap_array_type(mirac_tokens_vector, mirac_token_s);
+mirac_define_heap_array_type(mirac_tokens_refs_vector, mirac_token_s*);
+mirac_define_heap_array_type(mirac_globals_vector, mirac_global_s);
+
+typedef enum
+{
+	mirac_global_type_function = 0,
+	mirac_global_type_memory
+} mirac_global_type_e;
+
+const char* mirac_global_type_to_string(
+	const mirac_global_type_e global_type);
 
 typedef struct
 {
-	mirac_ast_tokens_vector_s globals;
-	mirac_ast_tokens_refs_vector_s strings;
+	mirac_token_s identifier;
+	mirac_tokens_vector_s req_tokens;
+	mirac_tokens_vector_s ret_tokens;
+	mirac_tokens_vector_s body_tokens;
+	bool is_inlined;
+	bool is_entry;
+} mirac_global_function_s;
+
+typedef struct
+{
+	mirac_token_s identifier;
+	mirac_token_s capacity;
+} mirac_global_memory_s;
+
+struct mirac_global_s
+{
+	mirac_global_type_e type;
+
+	union
+	{
+		mirac_global_function_s as_function;
+		mirac_global_memory_s as_memory;
+	};
+};
+
+void mirac_global_print(
+	const uint64_t global_index,
+	const mirac_global_s* const global);
+
+typedef struct
+{
+	const char* identifier;
+	mirac_globals_vector_s globals;
+	mirac_tokens_refs_vector_s strings;
 } mirac_unit_s;
 
-// TODO: write unit tests!
-// TODO: document!
 mirac_unit_s mirac_unit_from_parts(
-	mirac_arena_s* const arena);
+	mirac_arena_s* const arena,
+	const char* identifier);
+
+void mirac_unit_print(
+	mirac_unit_s* const unit);
 
 typedef struct
 {
@@ -40,15 +85,11 @@ typedef struct
 	mirac_lexer_s* lexer;
 } mirac_parser_s;
 
-// TODO: write unit tests!
-// TODO: document!
 mirac_parser_s mirac_parser_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	mirac_lexer_s* const lexer);
 
-// TODO: write unit tests!
-// TODO: document!
 mirac_unit_s mirac_parser_parse_unit(
 	mirac_parser_s* const parser);
 
