@@ -158,6 +158,8 @@ struct mirac_token_s
 	};
 
 	mirac_string_view_s text;
+	mirac_token_s* prev_ref;
+	mirac_token_s* next_ref;
 };
 
 // TODO: write unit tests!

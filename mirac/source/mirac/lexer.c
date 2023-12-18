@@ -364,7 +364,6 @@ mirac_token_type_e mirac_lexer_lex_next(
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
 
-	// Token caching handling.
 	if (lexer->token.type != mirac_token_type_none)
 	{
 		*token = lexer->token;
