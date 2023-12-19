@@ -30,9 +30,6 @@ typedef enum
 	mirac_global_type_memory
 } mirac_global_type_e;
 
-const char* mirac_global_type_to_string(
-	const mirac_global_type_e global_type);
-
 typedef struct
 {
 	mirac_token_s identifier;
@@ -60,20 +57,16 @@ struct mirac_global_s
 	};
 };
 
-void mirac_global_print(
-	const uint64_t global_index,
-	const mirac_global_s* const global);
-
 typedef struct
 {
-	const char* identifier;
+	mirac_string_view_s identifier;
 	mirac_globals_vector_s globals;
 	mirac_tokens_refs_vector_s strings;
 } mirac_unit_s;
 
 mirac_unit_s mirac_unit_from_parts(
 	mirac_arena_s* const arena,
-	const char* identifier);
+	const mirac_string_view_s identifier);
 
 void mirac_unit_print(
 	mirac_unit_s* const unit);
