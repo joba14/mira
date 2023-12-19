@@ -40,14 +40,16 @@ typedef struct
 
 typedef enum
 {
-	mirac_token_type_reserved_lnot = 0,
+	mirac_token_type_reserved_lnot,
 	mirac_token_type_reserved_neq,
 	mirac_token_type_reserved_mod,
 	mirac_token_type_reserved_band,
 	mirac_token_type_reserved_land,
 	mirac_token_type_reserved_mul,
 	mirac_token_type_reserved_add,
+	mirac_token_type_reserved_inc,
 	mirac_token_type_reserved_sub,
+	mirac_token_type_reserved_dec,
 	mirac_token_type_reserved_div,
 	mirac_token_type_reserved_ls,
 	mirac_token_type_reserved_shl,

@@ -20,7 +20,9 @@ tokens = [
 	("mirac_token_type_reserved_lseq", "<="),
 
 	("mirac_token_type_reserved_add", "+"),
+	("mirac_token_type_reserved_inc", "++"),
 	("mirac_token_type_reserved_sub", "-"),
+	("mirac_token_type_reserved_dec", "--"),
 	("mirac_token_type_reserved_mul", "*"),
 	("mirac_token_type_reserved_div", "/"),
 	("mirac_token_type_reserved_mod", "%"),
