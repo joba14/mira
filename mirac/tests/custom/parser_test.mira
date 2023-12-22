@@ -1,14 +1,14 @@
 
-inl func inc req i64 ret i64 do
+inl func inc req i64 ret i64 {
 	1 +
-end
+}
 
-func main do
+func main {
 	10u16 func1 putu
 
-	if 1 2 + 3 == do
+	if 1 2 + 3 == {
 		69 print
-	end
-end
+	}
+}
 
-mem XS1 +2i08 end
+mem XS1 +2i08

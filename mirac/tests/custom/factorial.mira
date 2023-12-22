@@ -2,25 +2,25 @@
 func factorial1
 	req u64
 	ret u64
-do
-	\+. loop \+. 0 > do
+{
+	\+. loop \+. 0 > {
 		1 -
 		\>< \>. * \><
-	end \!.
-end
+	} \!.
+}
 
 func factorial2
 	req u64
 	ret u64
-do
-	if \+. 1 < do
+{
+	if \+. 1 < {
 		\!. 1
-	else
+	} else {
 		\+. 1 - factorial2 *
-	end
-end
+	}
+}
 
-func main do
+func main {
 	4 factorial1 putu
 	5 factorial1 putu
 	6 factorial1 putu
@@ -28,4 +28,4 @@ func main do
 	4 factorial2 putu
 	5 factorial2 putu
 	6 factorial2 putu
-end
+}

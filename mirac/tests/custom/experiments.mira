@@ -1,107 +1,107 @@
 
-func if-elif-else-blocks do
-	if 1 do
+func if-elif-else-blocks {
+	if 1 {
 		1 print
-	end
+	}
 
-	if 1 do
+	if 1 {
 		2 print
-	else
+	} else {
 		3 print
-	end
+	}
 
-	if 1 do
+	if 1 {
 		4 print
-	elif 0 do
+	} elif 0 {
 		5 print
-	else 0
+	} else {
 		6 print
-	end
+	}
 
-	if 1 do
+	if 1 {
 		7 print
-	elif 0 do
+	} elif 0 {
 		8 print
-	elif 0 do
+	} elif 0 {
 		8 print
-	elif 0 do
+	} elif 0 {
 		10 print
-	else
+	} else {
 		11 print
-	end
-end
+	}
+}
 
-func fn1 do
+func fn1 {
 	1 2 ; 3 4 5 6
-end
+}
 
-func fn2 do
+func fn2 {
 	1 2 3 ; 4 5 6
-end
+}
 
-func fn3 do
+func fn3 {
 	1 2 3 4 ; 5 6
-end
+}
 
-func fn4 do
+func fn4 {
 	1 2 3 4 5 ; 6
-end
+}
 
-func fn5 do
+func fn5 {
 	1 2 3 4 5 6
-end
+}
 
-func reg-test do
-	reg n do
+func reg-test {
+	reg n {
 		n print
-	end
-end
+	}
+}
 
-func casting do
+func casting {
 	as i64
 	as i64
-end
+}
 
-func main do
-	let a do
-		if 1 do
+func main {
+	let a {
+		if 1 {
 			12 print
-		end
-	end
-end
+		}
+	}
+}
 
-mem XS1 69 end
+mem XS1 69
 
 // Check if number is odd
 inl func is-odd?
 	req i64
 	ret i08
-do
-	loop 1 do
+{
+	loop 1 {
 		69 print
-	end
+	}
 
-	let n do
+	let n {
 		n print
-	end
+	}
 
-	if 1 do
-		if 1 do
+	if 1 {
+		if 1 {
 			1 print
-		end
+		}
 		2 print
-	end
-end
+	}
+}
 
 func main
 	req i64
 	ret i64
-do
+{
 	"Hello, World!"
 
-	let num do
+	let num {
 		; Call the is-odd? function
 		num is-odd? as i64
-	end
+	}
 	"Hello, World!"
-end
+}

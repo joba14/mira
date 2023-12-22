@@ -1,14 +1,14 @@
 
 420
-loop 1 1 + 2 == do
+loop 1 1 + 2 == {
 	69 print
-end
+}
 
 ; loop
 ; 	1 2 3
-; 	let a b c do
+; 	let a b c {
 ; 		c b a
-; 	end
-; 	* * * 6 == do
+; 	}
+; 	* * * 6 == {
 ; 				69 print
-; end
+; }

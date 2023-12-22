@@ -11,13 +11,13 @@
 ; @warning The function assumes that elements in the provided array are of i64
 ; type!
 ; ----- 
-func sum^2 req ptr i64 ret i64 do
+func sum^2 req ptr i64 ret i64 {
 	; ptr n
 	0
 	; ptr n sum
 	\>3
 	; sum ptr n
-	loop \+. 0 <= do
+	loop \+. 0 <= {
 		; sum ptr n
 		\><
 		; sum n ptr
@@ -25,9 +25,9 @@ func sum^2 req ptr i64 ret i64 do
 		; sum n ptr ptr
 		ld64 as i64
 		; sum n ptr val
-		let sum ind p val do
+		let sum ind p val {
 			sum val + ind p
-		end
+		}
 		; sum n ptr
 		1 +
 		; sum n ptr+1
@@ -35,18 +35,18 @@ func sum^2 req ptr i64 ret i64 do
 		; sum ptr+1 n
 		1 -
 		; sum ptr+1 n-1
-	end
+	}
 	; sum ptr n
 	\!.
 	; sum ptr
 	\!.
 	; sum
-end
+}
 
-func sum^2 req ptr i64 ret i64 do
-	0 \>3 loop \+. 0 <= do
+func sum^2 req ptr i64 ret i64 {
+	0 \>3 loop \+. 0 <= {
 		\>< \+. ld64 as i64
-		let sum ind p val do sum val + ind p end
+		let sum ind p val { sum val + ind p }
 		1 + \>< 1 -
-	end \!. \!.
-end
+	} \!. \!.
+}

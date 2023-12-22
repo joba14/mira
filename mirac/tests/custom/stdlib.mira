@@ -1,16 +1,16 @@
 
-func puti req i64 do
+func puti req i64 {
 	; TODO: implement
-end
+}
 
-func putu req u64 do
+func putu req u64 {
 	; TODO: implement
-end
+}
 
-func putf req f64 do
+func putf req f64 {
 	; TODO: implement
-end
+}
 
-func puts req u64 ptr do
+func puts req u64 ptr {
 	; TODO: implement
-end
+}

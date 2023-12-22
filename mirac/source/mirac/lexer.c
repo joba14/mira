@@ -49,10 +49,8 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_bxor] = mirac_string_view_static("^"),
 	[mirac_token_type_reserved_lxor] = mirac_string_view_static("^^"),
 	[mirac_token_type_reserved_as] = mirac_string_view_static("as"),
-	[mirac_token_type_reserved_do] = mirac_string_view_static("do"),
 	[mirac_token_type_reserved_elif] = mirac_string_view_static("elif"),
 	[mirac_token_type_reserved_else] = mirac_string_view_static("else"),
-	[mirac_token_type_reserved_end] = mirac_string_view_static("end"),
 	[mirac_token_type_reserved_f32] = mirac_string_view_static("f32"),
 	[mirac_token_type_reserved_f64] = mirac_string_view_static("f64"),
 	[mirac_token_type_reserved_func] = mirac_string_view_static("func"),
@@ -87,8 +85,10 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_u16] = mirac_string_view_static("u16"),
 	[mirac_token_type_reserved_u32] = mirac_string_view_static("u32"),
 	[mirac_token_type_reserved_u64] = mirac_string_view_static("u64"),
+	[mirac_token_type_reserved_left_brace] = mirac_string_view_static("{"),
 	[mirac_token_type_reserved_bor] = mirac_string_view_static("|"),
 	[mirac_token_type_reserved_lor] = mirac_string_view_static("||"),
+	[mirac_token_type_reserved_right_brace] = mirac_string_view_static("}"),
 	[mirac_token_type_reserved_bnot] = mirac_string_view_static("~")
 };
 
