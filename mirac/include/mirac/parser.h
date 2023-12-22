@@ -68,9 +68,6 @@ mirac_unit_s mirac_unit_from_parts(
 	mirac_arena_s* const arena,
 	const mirac_string_view_s identifier);
 
-void mirac_unit_print(
-	mirac_unit_s* const unit);
-
 typedef struct
 {
 	mirac_config_s* config;
