@@ -23,7 +23,7 @@ func sum^2 req ptr i64 ret i64 {
 		; sum n ptr
 		\+.
 		; sum n ptr ptr
-		ld64 as i64
+		\*64 as i64
 		; sum n ptr val
 		let sum ind p val {
 			sum val + ind p
@@ -45,7 +45,7 @@ func sum^2 req ptr i64 ret i64 {
 
 func sum^2 req ptr i64 ret i64 {
 	0 \>3 loop \+. 0 <= {
-		\>< \+. ld64 as i64
+		\>< \+. \*64 as i64
 		let sum ind p val { sum val + ind p }
 		1 + \>< 1 -
 	} \!. \!.
