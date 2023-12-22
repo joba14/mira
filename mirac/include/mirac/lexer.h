@@ -151,13 +151,13 @@ struct mirac_token_s
 
 	union
 	{
-		int64_t as_ival;
-		uint64_t as_uval;
-		long double as_fval;
-		uintptr_t as_ptr;
-		mirac_string_view_s as_str;
-		mirac_string_view_s as_ident;
-	};
+		int64_t ival;
+		uint64_t uval;
+		long double fval;
+		uintptr_t ptr;
+		mirac_string_view_s str;
+		mirac_string_view_s ident;
+	} as;
 
 	mirac_string_view_s text;
 	mirac_token_s* prev_ref;

@@ -52,9 +52,9 @@ struct mirac_global_s
 
 	union
 	{
-		mirac_global_function_s as_function;
-		mirac_global_memory_s as_memory;
-	};
+		mirac_global_function_s function;
+		mirac_global_memory_s memory;
+	} as;
 };
 
 typedef struct

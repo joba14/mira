@@ -176,7 +176,7 @@ mirac_string_view_s mirac_token_to_string_view(
 		{
 			written += (uint64_t)snprintf(
 				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%li']", token->as_ival
+				", value='%li']", token->as.ival
 			);
 		} break;
 
@@ -187,7 +187,7 @@ mirac_string_view_s mirac_token_to_string_view(
 		{
 			written += (uint64_t)snprintf(
 				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%lu']", token->as_uval
+				", value='%lu']", token->as.uval
 			);
 		} break;
 
@@ -196,7 +196,7 @@ mirac_string_view_s mirac_token_to_string_view(
 		{
 			written += (uint64_t)snprintf(
 				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%Lf']", token->as_fval
+				", value='%Lf']", token->as.fval
 			);
 		} break;
 
@@ -204,7 +204,7 @@ mirac_string_view_s mirac_token_to_string_view(
 		{
 			written += (uint64_t)snprintf(
 				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='" mirac_sv_fmt "']", mirac_sv_arg(token->as_str)
+				", value='" mirac_sv_fmt "']", mirac_sv_arg(token->as.str)
 			);
 		} break;
 
@@ -212,7 +212,7 @@ mirac_string_view_s mirac_token_to_string_view(
 		{
 			written += (uint64_t)snprintf(
 				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='" mirac_sv_fmt "']", mirac_sv_arg(token->as_ident)
+				", value='" mirac_sv_fmt "']", mirac_sv_arg(token->as.ident)
 			);
 		} break;
 
@@ -646,7 +646,7 @@ search_for_quote_2:
 	}
 
 	token->type = mirac_token_type_literal_str;
-	token->as_str = mirac_string_view_from_parts(string_literal, string_literal_length);
+	token->as.str = mirac_string_view_from_parts(string_literal, string_literal_length);
 	return token->type;
 }
 
@@ -711,11 +711,11 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 
 	if (mirac_token_type_literal_f64 == token->type)
 	{
-		token->as_fval = strtold(token->text.data, NULL);
+		token->as.fval = strtold(token->text.data, NULL);
 	}
 	else
 	{
-		token->as_ival = strtoll(token->text.data, NULL, 10);
+		token->as.ival = strtoll(token->text.data, NULL, 10);
 	}
 
 	if (errno != 0)
@@ -798,6 +798,6 @@ static mirac_token_type_e parse_identifier_token_from_text(
 	mirac_c_memcpy(ident_string, token->text.data, token->text.length);
 
 	token->type = mirac_token_type_identifier;
-	token->as_ident = mirac_string_view_from_parts(ident_string, token->text.length);
+	token->as.ident = mirac_string_view_from_parts(ident_string, token->text.length);
 	return token->type;
 }
