@@ -21,6 +21,9 @@
 
 // -------------------------------------------------------------------------- //
 
+typedef struct mirac_ast_block_s mirac_ast_block_s;
+mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
+
 typedef struct
 {
 	mirac_token_s token;
@@ -28,32 +31,36 @@ typedef struct
 
 typedef struct
 {
-	void* _dummy; // TODO: implement!
-} mirac_ast_block_branching_s;
+	void* _dummy;
+} mirac_ast_block_if_s;
 
 typedef struct
 {
-	void* _dummy; // TODO: implement!
+	mirac_blocks_vector_s condition_blocks;
+	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_loop_s;
 
 typedef struct
 {
-	void* _dummy; // TODO: implement!
+	mirac_blocks_vector_s identifier_blocks;
+	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_let_s;
 
 typedef struct
 {
-	void* _dummy; // TODO: implement!
-} mirac_ast_block_reg_s;
-
-typedef struct
-{
-	void* _dummy; // TODO: implement!
+	mirac_token_s identifier;
+	mirac_blocks_vector_s req_blocks;
+	mirac_blocks_vector_s ret_blocks;
+	mirac_blocks_vector_s body_blocks;
+	bool is_inlined;
+	bool is_entry;
+	bool is_used;
 } mirac_ast_block_function_s;
 
 typedef struct
 {
-	void* _dummy; // TODO: implement!
+	mirac_token_s identifier;
+	mirac_token_s capacity;
 } mirac_ast_block_memory_s;
 
 typedef enum
@@ -62,26 +69,24 @@ typedef enum
 	mirac_ast_block_type_branching,
 	mirac_ast_block_type_loop,
 	mirac_ast_block_type_let,
-	mirac_ast_block_type_reg,
 	mirac_ast_block_type_function,
 	mirac_ast_block_type_memory
 } mirac_ast_block_type_e;
 
-typedef struct
+struct mirac_ast_block_s
 {
 	mirac_ast_block_type_e type;
 
 	union
 	{
-		mirac_ast_block_expression_s expression;
-		mirac_ast_block_branching_s branching;
-		mirac_ast_block_loop_s loop;
-		mirac_ast_block_let_s let;
-		mirac_ast_block_reg_s reg;
-		mirac_ast_block_function_s function;
-		mirac_ast_block_memory_s memory;
+		mirac_ast_block_expression_s expression_block;
+		mirac_ast_block_if_s if_block;
+		mirac_ast_block_loop_s loop_block;
+		mirac_ast_block_let_s let_block;
+		mirac_ast_block_function_s function_block;
+		mirac_ast_block_memory_s memory_block;
 	} as;
-} mirac_ast_block_s;
+};
 
 // -------------------------------------------------------------------------- //
 

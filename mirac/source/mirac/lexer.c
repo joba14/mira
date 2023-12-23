@@ -78,7 +78,6 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_loop] = mirac_string_view_static("loop"),
 	[mirac_token_type_reserved_mem] = mirac_string_view_static("mem"),
 	[mirac_token_type_reserved_ptr] = mirac_string_view_static("ptr"),
-	[mirac_token_type_reserved_reg] = mirac_string_view_static("reg"),
 	[mirac_token_type_reserved_req] = mirac_string_view_static("req"),
 	[mirac_token_type_reserved_ret] = mirac_string_view_static("ret"),
 	[mirac_token_type_reserved_u08] = mirac_string_view_static("u08"),

@@ -95,7 +95,6 @@ typedef enum
 	mirac_token_type_reserved_loop,
 	mirac_token_type_reserved_mem,
 	mirac_token_type_reserved_ptr,
-	mirac_token_type_reserved_reg,
 	mirac_token_type_reserved_req,
 	mirac_token_type_reserved_ret,
 	mirac_token_type_reserved_u08,

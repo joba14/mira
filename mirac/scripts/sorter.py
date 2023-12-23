@@ -64,7 +64,6 @@ tokens = [
 	("mirac_token_type_reserved_let", "let"),
 	("mirac_token_type_reserved_loop", "loop"),
 	("mirac_token_type_reserved_as", "as"),
-	("mirac_token_type_reserved_reg", "reg"),
 	("mirac_token_type_reserved_req", "req"),
 	("mirac_token_type_reserved_ret", "ret"),
 
