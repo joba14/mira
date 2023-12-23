@@ -1,78 +1,73 @@
 
 ; --- 
-; :brief branching blocks
+; :brief memory (like static arrays in c)
 ; --- 
-if 1 1 == {
-	; code goes here...
-}
-
-if 1 2 == {
-	; code goes here...
-} else {
-	; code goes here...
-}
-
-if 1 2 == {
-	; code goes here...
-} elif 2 2 == {
-	; code goes here...
-}
-
-if 1 2 == {
-	; code goes here...
-} elif 2 2 == {
-	; code goes here...
-} else {
-	; code goes here...
-}
-; --- 
-
-
-; --- 
-; :brief loop
-; --- 
-#define dup \+.
-1 loop dup 10 < {
-	; code goes here...
-	1 +
-}
-
-
-; --- 
-; :brief let (binds stack values (copies) into a reserved buffer for easier work with multiple level of values)
-; --- 
-1 2 3 4 5
-let a b c d e {
-	c as u64 putu
-	a as u64 putu
-	d as u64 putu
-	b as u64 putu
-	e as u64 putu
-}
-
-
-; --- 
-; :brief reg (binds stack values (copies) into a native registers for easier work with multiple level of values)
-; --- 
-1 2 3 4 5
-reg r0 r1 r2 r3 r4 {
-	r1 as u64 putu
-	r2 as u64 putu
-	r3 as u64 putu
-	r4 as u64 putu
-	r5 as u64 putu
-}
-
+mem my_mem_1 10 ; of size = 10 bytes
 
 ; --- 
 ; :brief function (can be marked as inlined with 'inl' keyword before 'func' keyword)
 ; --- 
 func my_func_1 {
 	; code goes here...
+
+	; --- 
+	; :brief branching blocks
+	; --- 
+	if 1 1 == {
+		; code goes here...
+	}
+
+	if 1 2 == {
+		; code goes here...
+	} else {
+		; code goes here...
+	}
+
+	if 1 2 == {
+		; code goes here...
+	} elif 2 2 == {
+		; code goes here...
+	}
+
+	if 1 2 == {
+		; code goes here...
+	} elif 2 2 == {
+		; code goes here...
+	} else {
+		; code goes here...
+	}
+	; --- 
+
+	; --- 
+	; :brief loop
+	; --- 
+	#define dup \+.
+	1 loop dup 10 < {
+		; code goes here...
+		1 +
+	}
+
+	; --- 
+	; :brief let (binds stack values (copies) into a reserved buffer for easier work with multiple level of values)
+	; --- 
+	1 2 3 4 5
+	let a b c d e {
+		c as u64 putu
+		a as u64 putu
+		d as u64 putu
+		b as u64 putu
+		e as u64 putu
+	}
+
+	; --- 
+	; :brief reg (binds stack values (copies) into a native registers for easier work with multiple level of values)
+	; --- 
+	1 2 3 4 5
+	reg r0 r1 r2 r3 r4 {
+		r1 as u64 putu
+		r2 as u64 putu
+		r3 as u64 putu
+		r4 as u64 putu
+		r5 as u64 putu
+	}
 }
-
-
-; --- 
-; :brief memory (like static arrays in c)
-; --- 
-mem my_mem_1 10 ; of size = 10 bytes

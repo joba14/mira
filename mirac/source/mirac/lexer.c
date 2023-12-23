@@ -91,6 +91,97 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_bnot] = mirac_string_view_static("~")
 };
 
+#define log_lexer_error_and_exit(_location, _format, ...)                      \
+	do                                                                         \
+	{                                                                          \
+		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                       \
+			mirac_sv_arg((_location).file),                                    \
+			(_location).line,                                                  \
+			(_location).column);                                               \
+		mirac_logger_error(_format, ## __VA_ARGS__);                           \
+		mirac_c_exit(-1);                                                      \
+	} while (0)
+
+/**
+ * @brief Validate file path and open file for reading.
+ * 
+ * @param file_path[in] path of the file to be opened
+ * 
+ * @return FILE*
+ */
+static FILE* validate_and_open_file_for_reading(
+	const mirac_string_view_s file_path);
+
+/**
+ * @brief Get the next token as text from the lexer's buffer.
+ * 
+ * @param lexer[in/out] lexer instance
+ * 
+ * @return mirac_string_view_s
+ */
+static mirac_string_view_s get_next_token_as_text(
+	mirac_lexer_s* const lexer);
+
+/**
+ * @brief Parse string literal token from the token's text.
+ * 
+ * @param lexer[in/out] lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_string_literal_token_from_text(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
+
+/**
+ * @brief Parse numeric literal token from the token's text.
+ * 
+ * @param lexer[in/out] lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_numeric_literal_token_from_text(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
+
+/**
+ * @brief Compare two string views alphabetically.
+ * 
+ * @param left[in]  pointer to the left string view
+ * @param right[in] pointer to the right string view
+ * 
+ * @return int32_t
+ */
+static int32_t compare_text_with_reserved_token(
+	const void* const left,
+	const void* const right);
+
+/**
+ * @brief Parse reserved token from the token's text.
+ * 
+ * @param lexer[in/out] lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_reserved_token_from_text(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
+
+/**
+ * @brief Parse identifier token from the token's text.
+ * 
+ * @param lexer[in/out] lexer instance
+ * @param token[in/out] token to parse
+ * 
+ * @return mirac_token_type_e
+ */
+static mirac_token_type_e parse_identifier_token_from_text(
+	mirac_lexer_s* const lexer,
+	mirac_token_s* const token);
+
 mirac_string_view_s mirac_token_type_to_string_view(
 	const mirac_token_type_e token_type)
 {
@@ -227,95 +318,29 @@ mirac_string_view_s mirac_token_to_string_view(
 	return mirac_string_view_from_parts(token_string_buffer, written);
 }
 
-#define log_lexer_error_and_exit(_location, _format, ...)                      \
-	do {                                                                       \
-		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                       \
-			mirac_sv_arg((_location).file),                                    \
-			(_location).line,                                                  \
-			(_location).column);                                               \
-		mirac_logger_error(_format, ## __VA_ARGS__);                           \
-		mirac_c_exit(-1);                                                      \
-	} while (0)
+bool mirac_token_is_signed_numeric_literal(
+	const mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	return (
+		(mirac_token_type_literal_i08 == token->type) ||
+		(mirac_token_type_literal_i16 == token->type) ||
+		(mirac_token_type_literal_i32 == token->type) ||
+		(mirac_token_type_literal_i64 == token->type)
+	);
+}
 
-/**
- * @brief Validate file path and open file for reading.
- * 
- * @param file_path[in] path of the file to be opened
- * 
- * @return FILE*
- */
-static FILE* validate_and_open_file_for_reading(
-	const mirac_string_view_s file_path);
-
-/**
- * @brief Get the next token as text from the lexer's buffer.
- * 
- * @param lexer[in/out] lexer instance
- * 
- * @return mirac_string_view_s
- */
-static mirac_string_view_s get_next_token_as_text(
-	mirac_lexer_s* const lexer);
-
-/**
- * @brief Parse string literal token from the token's text.
- * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
- * 
- * @return mirac_token_type_e
- */
-static mirac_token_type_e parse_string_literal_token_from_text(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
-
-/**
- * @brief Parse numeric literal token from the token's text.
- * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
- * 
- * @return mirac_token_type_e
- */
-static mirac_token_type_e parse_numeric_literal_token_from_text(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
-
-/**
- * @brief Compare two string views alphabetically.
- * 
- * @param left[in]  pointer to the left string view
- * @param right[in] pointer to the right string view
- * 
- * @return int32_t
- */
-static int32_t compare_text_with_reserved_token(
-	const void* const left,
-	const void* const right);
-
-/**
- * @brief Parse reserved token from the token's text.
- * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
- * 
- * @return mirac_token_type_e
- */
-static mirac_token_type_e parse_reserved_token_from_text(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
-
-/**
- * @brief Parse identifier token from the token's text.
- * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
- * 
- * @return mirac_token_type_e
- */
-static mirac_token_type_e parse_identifier_token_from_text(
-	mirac_lexer_s* const lexer,
-	mirac_token_s* const token);
+bool mirac_token_is_unsigned_numeric_literal(
+	const mirac_token_s* const token)
+{
+	mirac_debug_assert(token != NULL);
+	return (
+		(mirac_token_type_literal_u08 == token->type) ||
+		(mirac_token_type_literal_u16 == token->type) ||
+		(mirac_token_type_literal_u32 == token->type) ||
+		(mirac_token_type_literal_u64 == token->type)
+	);
+}
 
 mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,

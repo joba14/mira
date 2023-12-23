@@ -84,16 +84,21 @@
 		if (heap_array->count + 1 >= heap_array->capacity)                     \
 		{                                                                      \
 			const uint64_t new_capacity = (uint64_t)(                          \
-				heap_array->capacity + (heap_array->capacity / 2)              \
+				heap_array->capacity + (heap_array->capacity / 2) + 1          \
 			);                                                                 \
 			                                                                   \
 			_element_type* new_data = mirac_arena_malloc(                      \
 				heap_array->arena, new_capacity * sizeof(_element_type));      \
 			mirac_debug_assert(new_data != NULL);                              \
 			                                                                   \
-			mirac_c_memcpy(new_data,                                           \
-				heap_array->data, heap_array->count * sizeof(_element_type)    \
-			);                                                                 \
+			if (heap_array->count > 0)                                         \
+			{                                                                  \
+				mirac_c_memcpy(                                                \
+					new_data,                                                  \
+					heap_array->data,                                          \
+					heap_array->count * sizeof(_element_type)                  \
+				);                                                             \
+			}                                                                  \
 			                                                                   \
 			heap_array->data = new_data;                                       \
 			heap_array->capacity = new_capacity;                               \
