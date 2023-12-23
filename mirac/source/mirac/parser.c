@@ -155,7 +155,27 @@ static mirac_ast_block_func_s parse_ast_block_func(
 {
 	mirac_debug_assert(parser != NULL);
 	mirac_ast_block_func_s func_block = mirac_ast_block_func_from_parts(parser->arena);
-	// TODO: implement!
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+	if (mirac_lexer_should_stop_lexing(token.type))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected identifier token for the func definition, but reached the end of file."
+		);
+	}
+
+	if (token.type != mirac_token_type_identifier)
+	{
+		log_parser_error_and_exit(token.location,
+			"expected identifier token for the func definition, but found '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	func_block.identifier = token;
+
 	return func_block;
 }
 
@@ -203,14 +223,14 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 		);
 	}
 
-	if (mirac_token_is_signed_numeric_literal(&token) && token.as.ival <= 0)
+	if (mirac_token_is_signed_numeric_literal(&token) && (token.as.ival <= 0))
 	{
 		log_parser_error_and_exit(token.location,
 			"provided signed integer capacity token must have a positive value, but found '%li'.",
 			token.as.ival
 		);
 	}
-	else if (mirac_token_is_unsigned_numeric_literal(&token) && token.as.ival <= 0)
+	else if (mirac_token_is_unsigned_numeric_literal(&token) && (token.as.uval <= 0))
 	{
 		log_parser_error_and_exit(token.location,
 			"provided unsigned integer capacity token must have a positive value, but found '%lu'.",
