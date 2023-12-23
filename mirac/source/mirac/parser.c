@@ -168,12 +168,11 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
-	if ((mirac_token_type_none == token.type) ||
-		(mirac_token_type_eof  == token.type))
+	if (mirac_lexer_should_stop_lexing(token.type))
 	{
-		// TODO: error?!?!?
-		mirac_logger_debug("want identifier but found nothing!");
-		mirac_c_exit(-1);
+		log_parser_error_and_exit(token.location,
+			"expected identifier token for the mem definition, but reached the end of file."
+		);
 	}
 
 	if (token.type != mirac_token_type_identifier)
@@ -189,12 +188,11 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
-	if ((mirac_token_type_none == token.type) ||
-		(mirac_token_type_eof  == token.type))
+	if (mirac_lexer_should_stop_lexing(token.type))
 	{
-		// TODO: error?!?!?
-		mirac_logger_debug("want capacity but found nothing!");
-		mirac_c_exit(-1);
+		log_parser_error_and_exit(token.location,
+			"expected capacity token for the mem definition, but reached the end of file."
+		);
 	}
 
 	if (!mirac_token_is_signed_numeric_literal(&token) && !mirac_token_is_unsigned_numeric_literal(&token))
@@ -265,4 +263,7 @@ static void parse_ast_unit(
 			} break;
 		}
 	}
+
+	// TODO: remove:
+	mirac_debug_assert(!"LALALA2");
 }

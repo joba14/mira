@@ -366,10 +366,11 @@ mirac_lexer_s mirac_lexer_from_parts(
 
 	FILE* const file = validate_and_open_file_for_reading(lexer.file_path);
 	(void)fseek(file, 0, SEEK_END);
-	const uint64_t length = (uint64_t)ftell(file);
+	const uint64_t length = (uint64_t)ftell(file) + 1;
 	(void)fseek(file, 0, SEEK_SET);
 	char* const buffer = (char* const)mirac_c_malloc((length + 1) * sizeof(char));
 	(void)fread(buffer, length, 1, file);
+	buffer[length - 1] = '\n'; buffer[length] = '\0';
 	lexer.buffer = mirac_string_view_from_parts(buffer, length);
 	(void)fclose(file);
 
@@ -398,7 +399,12 @@ mirac_token_type_e mirac_lexer_lex_next(
 	}
 
 	const mirac_string_view_s text = get_next_token_as_text(lexer);
-	if (text.length <= 0) { return mirac_token_type_eof; }
+	if (text.length <= 0)
+	{
+		token->type = mirac_token_type_eof;
+		token->location = lexer->locations[0];
+		return token->type;
+	}
 
 	char* const text_copy = (char* const)mirac_arena_malloc(lexer->arena, text.length);
 	mirac_c_memcpy(text_copy, text.data, text.length);
