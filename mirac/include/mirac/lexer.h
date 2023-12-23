@@ -229,6 +229,11 @@ bool mirac_token_is_signed_numeric_literal(
 bool mirac_token_is_unsigned_numeric_literal(
 	const mirac_token_s* const token);
 
+// TODO: write unit tests!
+// TODO: document!
+bool mirac_token_is_reserved_type(
+	const mirac_token_s* const token);
+
 typedef struct
 {
 	mirac_config_s* config;

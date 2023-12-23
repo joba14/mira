@@ -15,8 +15,8 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 mirac_implement_heap_array_type(mirac_tokens_refs_vector, mirac_token_s*);
+mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 
 #define log_parser_error_and_exit(_location, _format, ...)                     \
 	do                                                                         \
@@ -40,10 +40,9 @@ static void parse_ast_unit(
 	mirac_ast_unit_s* const ast_unit);
 
 mirac_ast_block_expr_s mirac_ast_block_expr_from_parts(
-	const mirac_token_s token)
+	void)
 {
 	mirac_ast_block_expr_s expr_block = {0};
-	expr_block.token = token;
 	return expr_block;
 }
 
@@ -176,6 +175,113 @@ static mirac_ast_block_func_s parse_ast_block_func(
 
 	func_block.identifier = token;
 
+	token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+	if (mirac_lexer_should_stop_lexing(token.type))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected 'req', 'res', or '{' token after function identifier, but reached the end of file."
+		);
+	}
+
+	if ((token.type != mirac_token_type_reserved_req) &&
+		(token.type != mirac_token_type_reserved_ret) &&
+		(token.type != mirac_token_type_reserved_left_brace))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected 'req', 'res', or '{' token after function identifier, but found '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	if (mirac_token_type_reserved_req == token.type)
+	{
+		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex_next(parser->lexer, &token)))
+		{
+			if (mirac_token_is_reserved_type(&token))
+			{
+				mirac_ast_block_s new_block = {0};
+				new_block.type = mirac_ast_block_type_expr;
+				new_block.as.expr_block.token = token;
+				mirac_blocks_vector_push(&func_block.req_blocks, new_block);
+			}
+			else if ((mirac_token_type_reserved_ret == token.type) ||
+					 (mirac_token_type_reserved_left_brace == token.type))
+			{
+				break;
+			}
+			else
+			{
+				log_parser_error_and_exit(token.location,
+					"expected 'res', '{', or type specifier token(s) after 'req' token, but found '" mirac_sv_fmt "' token.",
+					mirac_sv_arg(token.text)
+				);
+			}
+		}
+	}
+
+	if (mirac_lexer_should_stop_lexing(token.type))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected 'res' or '{' token, but reached the end of file."
+		);
+	}
+
+	if ((token.type != mirac_token_type_reserved_ret) &&
+		(token.type != mirac_token_type_reserved_left_brace))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected 'res' or '{' token, but found '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	if (mirac_token_type_reserved_ret == token.type)
+	{
+		while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex_next(parser->lexer, &token)))
+		{
+			if (mirac_token_is_reserved_type(&token))
+			{
+				mirac_ast_block_s new_block = {0};
+				new_block.type = mirac_ast_block_type_expr;
+				new_block.as.expr_block.token = token;
+				mirac_blocks_vector_push(&func_block.ret_blocks, new_block);
+			}
+			else if (mirac_token_type_reserved_left_brace == token.type)
+			{
+				break;
+			}
+			else
+			{
+				log_parser_error_and_exit(token.location,
+					"expected '{' or type specifier token(s) after 'res' token, but found '" mirac_sv_fmt "' token.",
+					mirac_sv_arg(token.text)
+				);
+			}
+		}
+	}
+
+	if (mirac_lexer_should_stop_lexing(token.type))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected '{' token, but reached the end of file."
+		);
+	}
+
+	if (token.type != mirac_token_type_reserved_left_brace)
+	{
+		log_parser_error_and_exit(token.location,
+			"expected '{' token, but found '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	do
+	{
+		// TODO: parse the body!
+	} while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex_next(parser->lexer, &token)));
+
 	return func_block;
 }
 
@@ -283,7 +389,4 @@ static void parse_ast_unit(
 			} break;
 		}
 	}
-
-	// TODO: remove:
-	mirac_debug_assert(!"LALALA2");
 }

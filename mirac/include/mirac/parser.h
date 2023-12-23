@@ -22,8 +22,8 @@
 // -------------------------------------------------------------------------- //
 
 typedef struct mirac_ast_block_s mirac_ast_block_s;
-mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 mirac_define_heap_array_type(mirac_tokens_refs_vector, mirac_token_s*);
+mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 
 typedef struct
 {
@@ -31,7 +31,7 @@ typedef struct
 } mirac_ast_block_expr_s;
 
 mirac_ast_block_expr_s mirac_ast_block_expr_from_parts(
-	const mirac_token_s token);
+	void);
 
 typedef struct
 {
