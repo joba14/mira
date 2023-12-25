@@ -1,0 +1,49 @@
+
+; --- 
+; :brief: open file with provided file and mode
+; :req[0]: :ptr: file path
+; :req[1]: :u16: file mode
+; :ret[0]: :i32: file descriptor
+; :ret[1]: :i32: error code (0 on success)
+; --- 
+func open req ptr u16 ret i32 i32 {
+	5 let fp m i { i fp m 0644 } \$3 \+. -1 ==
+}
+
+; --- 
+; :brief: write data to a file
+; :req[0]: :i32: file descriptor
+; :req[1]: :ptr: pointer to message buffer
+; :req[2]: :i32: length of message buffer
+; :ret[0]: :i32: file descriptor
+; :ret[1]: :i32: error code (0 on success)
+; --- 
+func write req i32 ptr i32 ret i32 i32 {
+	4 let fd d n i { fd i fd d n } \$3 -1 ==
+}
+
+; --- 
+; :brief: open file with provided file and mode
+; :req[0]: :i32: file descriptor
+; :ret[0]: :i32: error code (0 on success)
+; --- 
+func close req i32 ret i32 {
+	6 \>< \$1 -1 ==
+}
+
+func main {
+	; opening a file for writing
+	"data.txt\0" 1 open if 0 != {
+		1 \$1 \!.
+	} \!.
+
+	; writing a message to the file
+	"hello, world :)" 15 write if 0 != {
+		1 \$1 \!.
+	} \!.
+
+	; closing the file
+	close if 0 != {
+		1 \$1 \!.
+	} \!.
+}
