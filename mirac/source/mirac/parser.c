@@ -360,6 +360,7 @@ static void parse_ast_unit(
 	{
 		// TODO: remove:
 		mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
+		continue;
 
 		switch (token.type)
 		{
