@@ -19,8 +19,6 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 
-// -------------------------------------------------------------------------- //
-
 typedef struct mirac_ast_block_s mirac_ast_block_s;
 mirac_define_heap_array_type(mirac_tokens_refs_vector, mirac_token_s*);
 mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
