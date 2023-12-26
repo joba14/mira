@@ -218,17 +218,35 @@ mirac_string_view_s mirac_token_to_string_view(
 	const mirac_token_s* const token);
 
 // TODO: write unit tests!
-// TODO: document!
+/**
+ * @brief Check if a token is signed numeric literal.
+ * 
+ * @param token[in] token to check
+ * 
+ * @return bool
+ */
 bool mirac_token_is_signed_numeric_literal(
 	const mirac_token_s* const token);
 
 // TODO: write unit tests!
-// TODO: document!
+/**
+ * @brief Check if a token is unsigned numeric literal.
+ * 
+ * @param token[in] token to check
+ * 
+ * @return bool
+ */
 bool mirac_token_is_unsigned_numeric_literal(
 	const mirac_token_s* const token);
 
 // TODO: write unit tests!
-// TODO: document!
+/**
+ * @brief Check if a token is a reserved type.
+ * 
+ * @param token[in] token to check
+ * 
+ * @return bool
+ */
 bool mirac_token_is_reserved_type(
 	const mirac_token_s* const token);
 
