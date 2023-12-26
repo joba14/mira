@@ -28,8 +28,20 @@ typedef struct
 	mirac_token_s token;
 } mirac_ast_block_expr_s;
 
-mirac_ast_block_expr_s mirac_ast_block_expr_from_parts(
-	void);
+typedef struct
+{
+	mirac_token_s token;
+} mirac_ast_block_begin_scope_s;
+
+typedef struct
+{
+	mirac_token_s token;
+} mirac_ast_block_end_scope_s;
+
+typedef struct
+{
+	mirac_token_s token;
+} mirac_ast_block_end_unit_s;
 
 typedef struct
 {
@@ -37,25 +49,16 @@ typedef struct
 	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_if_s;
 
-mirac_ast_block_if_s mirac_ast_block_if_from_parts(
-	mirac_arena_s* const arena);
-
 typedef struct
 {
 	mirac_blocks_vector_s condition_blocks;
 	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_elif_s;
 
-mirac_ast_block_elif_s mirac_ast_block_elif_from_parts(
-	mirac_arena_s* const arena);
-
 typedef struct
 {
 	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_else_s;
-
-mirac_ast_block_else_s mirac_ast_block_else_from_parts(
-	mirac_arena_s* const arena);
 
 typedef struct
 {
@@ -63,17 +66,11 @@ typedef struct
 	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_loop_s;
 
-mirac_ast_block_loop_s mirac_ast_block_loop_from_parts(
-	mirac_arena_s* const arena);
-
 typedef struct
 {
 	mirac_blocks_vector_s identifier_blocks;
 	mirac_blocks_vector_s body_blocks;
 } mirac_ast_block_let_s;
-
-mirac_ast_block_let_s mirac_ast_block_let_from_parts(
-	mirac_arena_s* const arena);
 
 typedef struct
 {
@@ -86,9 +83,6 @@ typedef struct
 	bool is_used;
 } mirac_ast_block_func_s;
 
-mirac_ast_block_func_s mirac_ast_block_func_from_parts(
-	mirac_arena_s* const arena);
-
 typedef struct
 {
 	mirac_token_s identifier;
@@ -96,12 +90,12 @@ typedef struct
 	bool is_used;
 } mirac_ast_block_mem_s;
 
-mirac_ast_block_mem_s mirac_ast_block_mem_from_parts(
-	void);
-
 typedef enum
 {
 	mirac_ast_block_type_expr = 0,
+	mirac_ast_block_type_begin_scope,
+	mirac_ast_block_type_end_scope,
+	mirac_ast_block_type_end_unit,
 	mirac_ast_block_type_if,
 	mirac_ast_block_type_elif,
 	mirac_ast_block_type_else,
@@ -117,27 +111,26 @@ struct mirac_ast_block_s
 
 	union
 	{
-		mirac_ast_block_expr_s expr_block;
-		mirac_ast_block_if_s   if_block;
-		mirac_ast_block_elif_s elif_block;
-		mirac_ast_block_else_s else_block;
-		mirac_ast_block_loop_s loop_block;
-		mirac_ast_block_let_s  let_block;
-		mirac_ast_block_func_s func_block;
-		mirac_ast_block_mem_s  mem_block;
+		mirac_ast_block_expr_s        expr_block;
+		mirac_ast_block_begin_scope_s begin_scope_block;
+		mirac_ast_block_end_scope_s   end_scope_block;
+		mirac_ast_block_end_unit_s    end_unit_block;
+		mirac_ast_block_if_s          if_block;
+		mirac_ast_block_elif_s        elif_block;
+		mirac_ast_block_else_s        else_block;
+		mirac_ast_block_loop_s        loop_block;
+		mirac_ast_block_let_s         let_block;
+		mirac_ast_block_func_s        func_block;
+		mirac_ast_block_mem_s         mem_block;
 	} as;
 };
 
 typedef struct
 {
 	mirac_string_view_s identifier;
-	mirac_blocks_vector_s global_blocks;
+	mirac_blocks_vector_s blocks;
 	mirac_tokens_refs_vector_s strings;
 } mirac_ast_unit_s;
-
-mirac_ast_unit_s mirac_ast_unit_from_parts(
-	mirac_arena_s* const arena,
-	const mirac_string_view_s identifier);
 
 typedef struct
 {
@@ -153,5 +146,8 @@ mirac_parser_s mirac_parser_from_parts(
 
 mirac_ast_unit_s mirac_parser_parse_ast_unit(
 	mirac_parser_s* const parser);
+
+void mirac_parser_print_ast_unit(
+	const mirac_ast_unit_s* const ast_unit);
 
 #endif
