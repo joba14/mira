@@ -559,9 +559,22 @@ static void print_ast_block_mem(
 	const uint8_t indent)
 {
 	mirac_debug_assert(mem_block != NULL);
-	// TODO: implement!
-	mirac_debug_assert(!"print_ast_block_mem() is not implemented yet!");
-	(void)indent;
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type=ast_block_mem\n");
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("identifier:\n");
+	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	printf(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("capacity:\n");
+	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	printf(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&mem_block->capacity)));
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
 }
 
 static void print_ast_block(
@@ -1023,15 +1036,7 @@ static mirac_ast_block_s parse_ast_block(
 	if (!mirac_lexer_should_stop_lexing(token.type))
 	{
 		mirac_lexer_unlex(parser->lexer, &token);
-
-		/*
-		log_parser_error_and_exit(token.location,
-			"encountered an invalid token '" mirac_sv_fmt "' while parsing 'any' block.",
-			mirac_sv_arg(token.text)
-		);
-		*/
 	}
-
 
 	switch (token.type)
 	{
