@@ -18,16 +18,16 @@
 
 #include <getopt.h>
 
-const char* g_program = NULL;
+static mirac_string_view_s g_program = mirac_string_view_static("");
 
-static const char* g_supported_architectures[] =
+static mirac_string_view_s g_supported_architectures[] =
 {
-	"nasm_x86_64_linux",
-	"fasm_x86_64_linux"
+	mirac_string_view_static("nasm_x86_64_linux"),
+	mirac_string_view_static("fasm_x86_64_linux")
 };
 
 static const char* const g_usage_banner =
-	"usage: %s [options] <files...>\n"
+	"usage: " mirac_sv_fmt " [options] <files...>\n"
 	"\n"
 	"options:\n"
 	"    -h, --help                 print the help message\n"
@@ -48,7 +48,7 @@ mirac_config_s mirac_config_from_cli(
 	mirac_debug_assert(argv != NULL);
 	mirac_debug_assert(config_end_index != NULL);
 
-	g_program = argv[0];
+	g_program = mirac_string_view_from_cstring(argv[0]);
 
 	if (argc <= 1)
 	{
@@ -89,17 +89,17 @@ mirac_config_s mirac_config_from_cli(
 
 			case 'a':
 			{
-				config.arch = (const char*)optarg;
+				config.arch = mirac_string_view_from_cstring((const char*)optarg);
 			} break;
 
 			case 'e':
 			{
-				config.entry = (const char*)optarg;
+				config.entry = mirac_string_view_from_cstring((const char*)optarg);
 			} break;
 
 			case 'o':
 			{
-				config.output = (const char*)optarg;
+				config.output = mirac_string_view_from_cstring((const char*)optarg);
 			} break;
 
 			default:
@@ -111,7 +111,7 @@ mirac_config_s mirac_config_from_cli(
 		}
 	}
 
-	if (NULL == config.arch)
+	if (config.arch.length <= 0)
 	{
 		mirac_logger_error("no architecture was provided.");
 		mirac_config_usage();
@@ -125,7 +125,7 @@ mirac_config_s mirac_config_from_cli(
 
 		for (uint8_t index = 0; index < supported_architectures_count; ++index)
 		{
-			if (mirac_c_strcmp(config.arch, g_supported_architectures[index]) == 0)
+			if (mirac_string_view_equal(config.arch, g_supported_architectures[index]))
 			{
 				valid_architecture = true;
 				break;
@@ -134,16 +134,16 @@ mirac_config_s mirac_config_from_cli(
 
 		if (!valid_architecture)
 		{
-			mirac_logger_error("invalid architecture '%s' was provided.", config.arch);
+			mirac_logger_error("invalid architecture '" mirac_sv_fmt "' was provided.", mirac_sv_arg(config.arch));
 			mirac_config_usage();
 			mirac_c_exit(-1);
 		}
 	}
 
-	// If entry symbol is not provided, default to 'main'.
-	if (NULL == config.entry)
+	// NOTE: If entry symbol is not provided, default to 'main'.
+	if (config.entry.length <= 0)
 	{
-		config.entry = "main";
+		config.entry = mirac_string_view_from_cstring("main");
 	}
 
 	*config_end_index = (uint64_t)optind;
@@ -153,8 +153,7 @@ mirac_config_s mirac_config_from_cli(
 void mirac_config_usage(
 	void)
 {
-	mirac_debug_assert(g_program != NULL);
-	mirac_logger_log(g_usage_banner, g_program);
+	mirac_logger_log(g_usage_banner, mirac_sv_arg(g_program));
 
 	const uint64_t supported_architectures_count =
 		sizeof(g_supported_architectures) / sizeof(g_supported_architectures[0]);
@@ -162,7 +161,7 @@ void mirac_config_usage(
 
 	for (uint8_t index = 0; index < supported_architectures_count; ++index)
 	{
-		mirac_logger_log("    - %s", g_supported_architectures[index]);
+		mirac_logger_log("    - " mirac_sv_fmt, mirac_sv_arg(g_supported_architectures[index]));
 	}
 
 	mirac_logger_log(" ");

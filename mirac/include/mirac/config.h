@@ -14,13 +14,14 @@
 #define __mirac__include__mirac__config_h__
 
 #include <mirac/c_common.h>
+#include <mirac/string_view.h>
 
 typedef struct
 {
-	const char* program;
-	const char* arch;
-	const char* entry;
-	const char* output;
+	mirac_string_view_s program;
+	mirac_string_view_s arch;
+	mirac_string_view_s entry;
+	mirac_string_view_s output;
 } mirac_config_s;
 
 // TODO: write unit tests!

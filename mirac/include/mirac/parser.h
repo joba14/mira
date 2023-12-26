@@ -105,6 +105,9 @@ typedef enum
 	mirac_ast_block_type_mem
 } mirac_ast_block_type_e;
 
+mirac_string_view_s mirac_ast_block_type_to_string_view(
+	const mirac_ast_block_type_e block_type);
+
 struct mirac_ast_block_s
 {
 	mirac_ast_block_type_e type;

@@ -241,6 +241,17 @@ bool mirac_token_is_unsigned_numeric_literal(
 
 // TODO: write unit tests!
 /**
+ * @brief Check if a token is a type token.
+ * 
+ * @param token[in] token to check
+ * 
+ * @return bool
+ */
+bool mirac_token_is_type_token(
+	const mirac_token_s* const token);
+
+// TODO: write unit tests!
+/**
  * @brief Check if a token is a reserved type.
  * 
  * @param token[in] token to check
