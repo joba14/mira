@@ -566,12 +566,12 @@ static void print_ast_block_mem(
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("identifier:\n");
 	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-	printf(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("capacity:\n");
 	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-	printf(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&mem_block->capacity)));
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->capacity)));
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -1019,8 +1019,39 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_reserved_mem == token.type);
 
-	// TODO: implement!
-	mirac_debug_assert(!"parse_ast_block_mem() is not implemented yet!");
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+	if (token.type != mirac_token_type_identifier)
+	{
+		log_parser_error_and_exit(token.location,
+			"expected identifier token after 'mem' token, but encountered '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	mem_block.identifier = token;
+
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+	if (!mirac_token_is_signed_numeric_literal(&token) &&
+		!mirac_token_is_unsigned_numeric_literal(&token))
+	{
+		log_parser_error_and_exit(token.location,
+			"expected capacity token after 'mem''s identifier token to be signed or unsigned integer literal token, but encountered '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	if ((mirac_token_is_signed_numeric_literal(&token) && (token.as.ival <= 0)) ||
+		(mirac_token_is_signed_numeric_literal(&token) && (token.as.ival <= 0)))
+	{
+		log_parser_error_and_exit(token.location,
+			"provided capacity token '" mirac_sv_fmt "' must be a positive integer value.",
+			mirac_sv_arg(token.text)
+		);
+	}
+
+	mem_block.capacity = token;
 	return mem_block;
 }
 
