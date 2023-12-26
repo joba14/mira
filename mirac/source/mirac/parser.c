@@ -65,7 +65,7 @@ static mirac_ast_block_func_s create_ast_block_func(
 static mirac_ast_block_mem_s create_ast_block_mem(
 	void);
 
-static mirac_ast_block_s create_ast_block_any(
+static mirac_ast_block_s create_ast_block(
 	void);
 
 static mirac_ast_unit_s create_ast_unit(
@@ -115,7 +115,7 @@ static void print_ast_block_mem(
 	const mirac_ast_block_mem_s* const mem_block,
 	const uint8_t indent);
 
-static void print_ast_block_any(
+static void print_ast_block(
 	const mirac_ast_block_s* const block,
 	const uint8_t indent);
 
@@ -152,7 +152,7 @@ static mirac_ast_block_func_s parse_ast_block_func(
 static mirac_ast_block_mem_s parse_ast_block_mem(
 	mirac_parser_s* const parser);
 
-static mirac_ast_block_s parse_ast_block_any(
+static mirac_ast_block_s parse_ast_block(
 	mirac_parser_s* const parser);
 
 static void parse_ast_unit(
@@ -192,7 +192,7 @@ void mirac_parser_print_ast_unit(
 
 	for (uint64_t index = 0; index < ast_unit->blocks.count; ++index)
 	{
-		print_ast_block_any(&(ast_unit->blocks.data[index]), indent);
+		print_ast_block(&(ast_unit->blocks.data[index]), indent);
 	}
 }
 
@@ -366,7 +366,7 @@ static mirac_ast_block_mem_s create_ast_block_mem(
 	return mem_block;
 }
 
-static mirac_ast_block_s create_ast_block_any(
+static mirac_ast_block_s create_ast_block(
 	void)
 {
 	mirac_ast_block_s block = {0};
@@ -459,12 +459,12 @@ static void print_ast_block_if(
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("condition_blocks:\n");
 	for (uint64_t index = 0; index < if_block->condition_blocks.count; ++index)
-		print_ast_block_any(&if_block->condition_blocks.data[index], indent + 2);
+		print_ast_block(&if_block->condition_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("body_blocks:\n");
 	for (uint64_t index = 0; index < if_block->body_blocks.count; ++index)
-		print_ast_block_any(&if_block->body_blocks.data[index], indent + 2);
+		print_ast_block(&if_block->body_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -482,12 +482,12 @@ static void print_ast_block_elif(
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("condition_blocks:\n");
 	for (uint64_t index = 0; index < elif_block->condition_blocks.count; ++index)
-		print_ast_block_any(&elif_block->condition_blocks.data[index], indent + 2);
+		print_ast_block(&elif_block->condition_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("body_blocks:\n");
 	for (uint64_t index = 0; index < elif_block->body_blocks.count; ++index)
-		print_ast_block_any(&elif_block->body_blocks.data[index], indent + 2);
+		print_ast_block(&elif_block->body_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -505,7 +505,7 @@ static void print_ast_block_else(
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("body_blocks:\n");
 	for (uint64_t index = 0; index < else_block->body_blocks.count; ++index)
-		print_ast_block_any(&else_block->body_blocks.data[index], indent + 2);
+		print_ast_block(&else_block->body_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -523,12 +523,12 @@ static void print_ast_block_loop(
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("condition_blocks:\n");
 	for (uint64_t index = 0; index < loop_block->condition_blocks.count; ++index)
-		print_ast_block_any(&loop_block->condition_blocks.data[index], indent + 2);
+		print_ast_block(&loop_block->condition_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("body_blocks:\n");
 	for (uint64_t index = 0; index < loop_block->body_blocks.count; ++index)
-		print_ast_block_any(&loop_block->body_blocks.data[index], indent + 2);
+		print_ast_block(&loop_block->body_blocks.data[index], indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -564,7 +564,7 @@ static void print_ast_block_mem(
 	(void)indent;
 }
 
-static void print_ast_block_any(
+static void print_ast_block(
 	const mirac_ast_block_s* const block,
 	const uint8_t indent)
 {
@@ -735,7 +735,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -761,7 +761,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 after_if_condition_blocks:
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -800,7 +800,7 @@ static mirac_ast_block_elif_s parse_ast_block_elif(
 
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -826,7 +826,7 @@ static mirac_ast_block_elif_s parse_ast_block_elif(
 after_elif_condition_blocks:
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -873,7 +873,7 @@ static mirac_ast_block_else_s parse_ast_block_else(
 
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -912,7 +912,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -938,7 +938,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 after_loop_condition_blocks:
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
+		mirac_ast_block_s block = parse_ast_block(parser);
 
 		switch (block.type)
 		{
@@ -1011,11 +1011,11 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	return mem_block;
 }
 
-static mirac_ast_block_s parse_ast_block_any(
+static mirac_ast_block_s parse_ast_block(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != NULL);
-	mirac_ast_block_s block = create_ast_block_any();
+	mirac_ast_block_s block = create_ast_block();
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -1115,11 +1115,7 @@ static void parse_ast_unit(
 
 	while (1)
 	{
-		mirac_ast_block_s block = parse_ast_block_any(parser);
-		// TODO: remove:
-		// [
-		// print_ast_block_any(&block, 0);
-		// ]
+		mirac_ast_block_s block = parse_ast_block(parser);
 		if (mirac_ast_block_type_end_unit == block.type) { break; }
 		mirac_blocks_vector_push(&ast_unit->blocks, block);
 	}
