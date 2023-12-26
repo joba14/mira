@@ -1,0 +1,16 @@
+
+else {
+	"1" puts
+}
+
+else {
+	"2" puts
+}
+
+else {
+	"3" puts
+}
+
+else {
+	"4" puts
+}

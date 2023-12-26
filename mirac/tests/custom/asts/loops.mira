@@ -1,0 +1,16 @@
+
+loop 1 {
+	"1" puts
+}
+
+loop 1 1 == {
+	"2" puts
+}
+
+loop 0 1 + 1 == {
+	"3" puts
+}
+
+loop {
+	"4" puts
+}
