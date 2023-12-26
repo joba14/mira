@@ -1,20 +1,20 @@
 
-func task1 {
-	10 putu
+func task1 req i32 labas {
+	10 ; putu
 }
 
-func task2 req i64 {
-	10 putu
-}
+// func task2 req i64 {
+// 	10 putu
+// }
 
-func task3 ret i64 {
-	10 putu
-}
+// func task3 ret i64 {
+// 	10 putu
+// }
 
-func task4 req i64 ret i64 {
-	10 putu
-}
+// func task4 req i64 ret i64 {
+// 	10 putu
+// }
 
-func task5 req i32 i08 ret i64 i16 {
-	10 putu
-}
+// func task5 req i32 i08 ret i64 i16 {
+// 	10 putu
+// }

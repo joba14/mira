@@ -74,9 +74,19 @@ typedef struct
 
 typedef struct
 {
+	mirac_blocks_vector_s type_blocks;
+} mirac_ast_block_req_s;
+
+typedef struct
+{
+	mirac_blocks_vector_s type_blocks;
+} mirac_ast_block_ret_s;
+
+typedef struct
+{
 	mirac_token_s identifier;
-	mirac_blocks_vector_s req_blocks;
-	mirac_blocks_vector_s ret_blocks;
+	mirac_ast_block_req_s req_block;
+	mirac_ast_block_ret_s ret_block;
 	mirac_blocks_vector_s body_blocks;
 	bool is_inlined;
 	bool is_entry;
@@ -101,6 +111,8 @@ typedef enum
 	mirac_ast_block_type_else,
 	mirac_ast_block_type_loop,
 	mirac_ast_block_type_let,
+	mirac_ast_block_type_req,
+	mirac_ast_block_type_ret,
 	mirac_ast_block_type_func,
 	mirac_ast_block_type_mem
 } mirac_ast_block_type_e;
@@ -123,6 +135,8 @@ struct mirac_ast_block_s
 		mirac_ast_block_else_s        else_block;
 		mirac_ast_block_loop_s        loop_block;
 		mirac_ast_block_let_s         let_block;
+		mirac_ast_block_req_s         req_block;
+		mirac_ast_block_ret_s         ret_block;
 		mirac_ast_block_func_s        func_block;
 		mirac_ast_block_mem_s         mem_block;
 	} as;
