@@ -380,10 +380,11 @@ bool mirac_token_is_reserved_type(
 	);
 }
 
-mirac_lexer_s mirac_lexer_from_string_view(
+mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
-	const mirac_string_view_s string_view)
+	const mirac_string_view_s file_path,
+	const mirac_string_view_s buffer)
 {
 	mirac_debug_assert(config != NULL);
 	mirac_debug_assert(arena != NULL);
@@ -393,11 +394,11 @@ mirac_lexer_s mirac_lexer_from_string_view(
 	lexer.config = config;
 	lexer.arena = arena;
 
-	lexer.locations[0].file = mirac_string_view_from_parts("none", 4);
+	lexer.locations[0].file = file_path;
 	lexer.locations[1] = lexer.locations[0];
 	lexer.token = mirac_token_from_type(mirac_token_type_none);
 
-	lexer.buffer = string_view;
+	lexer.buffer = buffer;
 	lexer.line = (mirac_string_view_s) {0};
 	return lexer;
 }
@@ -416,17 +417,12 @@ mirac_lexer_s mirac_lexer_from_file_path(
 	(void)fseek(file, 0, SEEK_SET);
 	char* const buffer = (char* const)mirac_c_malloc((length + 1) * sizeof(char));
 	(void)fread(buffer, length, 1, file);
-	buffer[length - 1] = '\n'; buffer[length] = '\0';
+	buffer[length - 1] = '\n';
+	buffer[length] = '\0';
 	(void)fclose(file);
 
-	mirac_lexer_s lexer = mirac_lexer_from_string_view(
-		config, arena, mirac_string_view_from_parts(buffer, length)
-	);
-
-	// NOTE: Overwriting file path and locations
-	lexer.file_path = file_path;
-	lexer.locations[0].file = file_path;
-	lexer.locations[1] = lexer.locations[0];
+	mirac_lexer_s lexer = mirac_lexer_from_parts(
+		config, arena, file_path, mirac_string_view_from_parts(buffer, length));
 	return lexer;
 }
 

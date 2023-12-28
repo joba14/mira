@@ -48,7 +48,6 @@ int32_t main(
 		mirac_ast_unit_s ast_unit = mirac_parser_parse_ast_unit(&parser);
 		mirac_parser_print_ast_unit(&ast_unit);
 		mirac_arena_destroy(&arena);
-		(void)ast_unit;
 	}
 
 	return 0;
