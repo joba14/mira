@@ -29,51 +29,67 @@ mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
+// TODO: document!
 static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_scope_s create_ast_block_scope(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_if_s create_ast_block_if(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_elif_s create_ast_block_elif(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_else_s create_ast_block_else(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_loop_s create_ast_block_loop(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_func_s create_ast_block_func(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_mem_s create_ast_block_mem(
 	mirac_arena_s* const arena);
 
+// TODO: document!
 static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_if_s parse_ast_block_if(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_elif_s parse_ast_block_elif(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_else_s parse_ast_block_else(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_loop_s parse_ast_block_loop(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_func_s parse_ast_block_func(
 	mirac_parser_s* const parser);
 
+// TODO: document!
 static mirac_ast_block_mem_s parse_ast_block_mem(
 	mirac_parser_s* const parser);
 
