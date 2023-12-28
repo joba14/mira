@@ -1,32 +1,4 @@
 
-elif 1 2 == {
+elif {
 	"1" puts
-}
-
-elif 1 2 == {
-	"2" puts
-}
-
-elif {
-	"3" puts
-}
-
-elif {
-	"4" puts
-}
-
-elif { 1 2 == } {
-	"5" puts
-}
-
-elif { 1 2 == } {
-	"6" puts
-}
-
-elif { } {
-	"7" puts
-}
-
-elif { } {
-	"8" puts
 }
