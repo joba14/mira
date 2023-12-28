@@ -82,7 +82,7 @@ typedef struct
 	mirac_token_s identifier;
 	mirac_tokens_vector_s req_tokens;
 	mirac_tokens_vector_s ret_tokens;
-	mirac_blocks_vector_s blocks;
+	mirac_ast_block_scope_s scope;
 	bool is_inlined;
 	bool is_entry;
 	bool is_used;
