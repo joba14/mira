@@ -14,3 +14,19 @@ else {
 else {
 	"4" puts
 }
+
+else { } {
+	"5" puts
+}
+
+else { } {
+	"6" puts
+}
+
+else { } {
+	"7" puts
+}
+
+else { } {
+	"8" puts
+}

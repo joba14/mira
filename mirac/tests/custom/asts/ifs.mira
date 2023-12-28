@@ -14,3 +14,19 @@ if {
 if {
 	"NOK2" puts
 }
+
+if { 1 1 == } {
+	"OK3" puts
+}
+
+if { 1 1 != } {
+	"NOK3" puts
+}
+
+if { } {
+	"OK4" puts
+}
+
+if { } {
+	"NOK4" puts
+}
