@@ -12,9 +12,8 @@
 
 #include <utester.h>
 
+#include <mirac/c_common.h>
 #include <mirac/string_view.h>
-
-#include <string.h>
 
 utester_define_test(from_parts)
 {
@@ -206,38 +205,38 @@ utester_define_test(split_left)
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("General")));
-	utester_assert_true(strlen("Kenobi, you are a bold one!") == text.length);
-	utester_assert_true(strlen("General") == left.length);
+	utester_assert_true(mirac_c_strlen("Kenobi, you are a bold one!") == text.length);
+	utester_assert_true(mirac_c_strlen("General") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("Kenobi,")));
-	utester_assert_true(strlen("you are a bold one!") == text.length);
-	utester_assert_true(strlen("Kenobi,") == left.length);
+	utester_assert_true(mirac_c_strlen("you are a bold one!") == text.length);
+	utester_assert_true(mirac_c_strlen("Kenobi,") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("you")));
-	utester_assert_true(strlen("are a bold one!") == text.length);
-	utester_assert_true(strlen("you") == left.length);
+	utester_assert_true(mirac_c_strlen("are a bold one!") == text.length);
+	utester_assert_true(mirac_c_strlen("you") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("are")));
-	utester_assert_true(strlen("a bold one!") == text.length);
-	utester_assert_true(strlen("are") == left.length);
+	utester_assert_true(mirac_c_strlen("a bold one!") == text.length);
+	utester_assert_true(mirac_c_strlen("are") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("a")));
-	utester_assert_true(strlen("bold one!") == text.length);
-	utester_assert_true(strlen("a") == left.length);
+	utester_assert_true(mirac_c_strlen("bold one!") == text.length);
+	utester_assert_true(mirac_c_strlen("a") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("bold")));
-	utester_assert_true(strlen("one!") == text.length);
-	utester_assert_true(strlen("bold") == left.length);
+	utester_assert_true(mirac_c_strlen("one!") == text.length);
+	utester_assert_true(mirac_c_strlen("bold") == left.length);
 
 	left = mirac_string_view_split_left(&text, ' ');
 	utester_assert_true(mirac_string_view_equal(text, mirac_string_view_from_cstring("one!")));
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("")));
-	utester_assert_true(strlen("one!") == text.length);
+	utester_assert_true(mirac_c_strlen("one!") == text.length);
 	utester_assert_true(0 == left.length);
 }
 
@@ -251,43 +250,43 @@ utester_define_test(split_left_white_space)
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("General")));
-	utester_assert_true(strlen("Kenobi,  you   are    a     bold      one!") == text.length);
-	utester_assert_true(strlen("General") == left.length);
+	utester_assert_true(mirac_c_strlen("Kenobi,  you   are    a     bold      one!") == text.length);
+	utester_assert_true(mirac_c_strlen("General") == left.length);
 	utester_assert_true(white_space_length == 1);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("Kenobi,")));
-	utester_assert_true(strlen("you   are    a     bold      one!") == text.length);
-	utester_assert_true(strlen("Kenobi,") == left.length);
+	utester_assert_true(mirac_c_strlen("you   are    a     bold      one!") == text.length);
+	utester_assert_true(mirac_c_strlen("Kenobi,") == left.length);
 	utester_assert_true(2 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("you")));
-	utester_assert_true(strlen("are    a     bold      one!") == text.length);
-	utester_assert_true(strlen("you") == left.length);
+	utester_assert_true(mirac_c_strlen("are    a     bold      one!") == text.length);
+	utester_assert_true(mirac_c_strlen("you") == left.length);
 	utester_assert_true(3 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("are")));
-	utester_assert_true(strlen("a     bold      one!") == text.length);
-	utester_assert_true(strlen("are") == left.length);
+	utester_assert_true(mirac_c_strlen("a     bold      one!") == text.length);
+	utester_assert_true(mirac_c_strlen("are") == left.length);
 	utester_assert_true(4 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("a")));
-	utester_assert_true(strlen("bold      one!") == text.length);
-	utester_assert_true(strlen("a") == left.length);
+	utester_assert_true(mirac_c_strlen("bold      one!") == text.length);
+	utester_assert_true(mirac_c_strlen("a") == left.length);
 	utester_assert_true(5 == white_space_length);
 
 	white_space_length = 0;
 	left = mirac_string_view_split_left_white_space(&text, &white_space_length);
 	utester_assert_true(mirac_string_view_equal(left, mirac_string_view_from_cstring("bold")));
-	utester_assert_true(strlen("one!") == text.length);
-	utester_assert_true(strlen("bold") == left.length);
+	utester_assert_true(mirac_c_strlen("one!") == text.length);
+	utester_assert_true(mirac_c_strlen("bold") == left.length);
 	utester_assert_true(6 == white_space_length);
 }
 

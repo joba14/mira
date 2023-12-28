@@ -176,25 +176,34 @@ struct utester_test_s
 			                                                                   \
 			if (test->status)                                                  \
 			{                                                                  \
-				utester_logger_info("|   test passed");                        \
+				utester_logger_info(                                           \
+					"|   " ansi_green "test passed" ansi_reset);               \
 				++passed_count;                                                \
 			}                                                                  \
 			else                                                               \
 			{                                                                  \
-				utester_logger_error("|   test failed");                       \
+				utester_logger_error(                                          \
+					"|   " ansi_red "test failed" ansi_reset);                 \
 				++failed_count;                                                \
 			}                                                                  \
 		}                                                                      \
 		                                                                       \
 		if (failed_count > 0)                                                  \
 		{                                                                      \
-			utester_logger_error("| Done: %lu tests passed and %lu failed...", \
+			utester_logger_error(                                              \
+				"| " ansi_red                                                  \
+				"Done: %lu tests passed and %lu failed..."                     \
+				ansi_reset,                                                    \
 				passed_count, failed_count                                     \
 			);                                                                 \
 		}                                                                      \
 		else                                                                   \
 		{                                                                      \
-			utester_logger_info("| Done: %lu tests passed and %lu failed...",  \
+			utester_logger_info(                                               \
+				"| "                                                           \
+				ansi_green                                                     \
+				"Done: %lu tests passed and %lu failed..."                     \
+				ansi_reset,                                                    \
 				passed_count, failed_count                                     \
 			);                                                                 \
 		}                                                                      \

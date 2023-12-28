@@ -390,7 +390,6 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_debug_assert(arena != NULL);
 
 	mirac_lexer_s lexer = {0};
-
 	lexer.config = config;
 	lexer.arena = arena;
 
