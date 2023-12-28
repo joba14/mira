@@ -175,6 +175,10 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 static mirac_ast_block_s parse_ast_block(
 	mirac_parser_s* const parser);
 
+static void unparse_ast_block(
+	mirac_parser_s* const parser,
+	mirac_ast_block_s* const block);
+
 static void parse_ast_unit(
 	mirac_parser_s* const parser,
 	mirac_ast_unit_s* const ast_unit);
@@ -216,6 +220,7 @@ mirac_parser_s mirac_parser_from_parts(
 	parser.config = config;
 	parser.arena = arena;
 	parser.lexer = lexer;
+	parser.block.type = mirac_ast_block_type_none; // TODO: use a constructor?
 	return parser;
 }
 
@@ -1227,11 +1232,6 @@ static mirac_ast_block_req_s parse_ast_block_req(
 	{
 		mirac_ast_block_s block = parse_ast_block(parser);
 
-		// TODO: remove:
-		printf(" --- ");
-		print_ast_block(&block, 1);
-		getchar();
-
 		switch (block.type)
 		{
 			case mirac_ast_block_type_expr:
@@ -1242,12 +1242,14 @@ static mirac_ast_block_req_s parse_ast_block_req(
 				}
 				else
 				{
+					unparse_ast_block(parser, &block);
 					goto after_req_type_blocks;
 				}
 			} break;
 
 			default:
 			{
+				unparse_ast_block(parser, &block);
 				goto after_req_type_blocks;
 			} break;
 		}
@@ -1288,13 +1290,14 @@ static mirac_ast_block_ret_s parse_ast_block_ret(
 				}
 				else
 				{
+					unparse_ast_block(parser, &block);
 					goto after_ret_type_blocks;
 				}
-
 			} break;
 
 			default:
 			{
+				unparse_ast_block(parser, &block);
 				goto after_ret_type_blocks;
 			} break;
 		}
@@ -1358,42 +1361,26 @@ static mirac_ast_block_func_s parse_ast_block_func(
 	func_block.is_entry = mirac_string_view_equal(parser->config->entry, token.as.ident);
 	func_block.identifier = token;
 
-	// TODO: remove:
-	mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
-
 	if (mirac_lexer_lex_next(parser->lexer, &token) == mirac_token_type_reserved_req)
 	{
-		// TODO: remove:
-		mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
-
 		mirac_lexer_unlex(parser->lexer, &token);
 		func_block.req_block = parse_ast_block_req(parser);
-
-		// TODO: remove:
-		print_ast_block_req(&func_block.req_block, 0);
 	}
-
-	// TODO: remove:
-	mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
 
 	if (mirac_lexer_lex_next(parser->lexer, &token) == mirac_token_type_reserved_ret)
 	{
-		// TODO: remove:
-		mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
-
 		mirac_lexer_unlex(parser->lexer, &token);
 		func_block.ret_block = parse_ast_block_ret(parser);
 	}
 
-	// TODO: remove:
-	mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
-
-	if (token.type != mirac_token_type_reserved_left_brace)
 	{
-		log_parser_error_and_exit(token.location,
-			"expected '{' token after, but encountered '" mirac_sv_fmt "' token.",
-			mirac_sv_arg(token.text)
-		);
+		mirac_ast_block_s block = parse_ast_block(parser);
+		if (block.type != mirac_ast_block_type_begin_scope)
+		{
+			log_parser_error_and_exit(token.location,
+				"expected '{' token."
+			);
+		}
 	}
 
 	while (1)
@@ -1475,8 +1462,15 @@ static mirac_ast_block_s parse_ast_block(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != NULL);
-	mirac_ast_block_s block = create_ast_block();
 
+	if (parser->block.type != mirac_ast_block_type_none)
+	{
+		mirac_ast_block_s block = parser->block;
+		parser->block.type = mirac_ast_block_type_none;
+		return block;
+	}
+
+	mirac_ast_block_s block = create_ast_block();
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
@@ -1568,6 +1562,15 @@ static mirac_ast_block_s parse_ast_block(
 	}
 
 	return block;
+}
+
+static void unparse_ast_block(
+	mirac_parser_s* const parser,
+	mirac_ast_block_s* const block)
+{
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(block != NULL);
+	parser->block = *block;
 }
 
 static void parse_ast_unit(

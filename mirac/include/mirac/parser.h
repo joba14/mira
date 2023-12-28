@@ -114,7 +114,8 @@ typedef enum
 	mirac_ast_block_type_req,
 	mirac_ast_block_type_ret,
 	mirac_ast_block_type_func,
-	mirac_ast_block_type_mem
+	mirac_ast_block_type_mem,
+	mirac_ast_block_type_none
 } mirac_ast_block_type_e;
 
 mirac_string_view_s mirac_ast_block_type_to_string_view(
@@ -154,6 +155,7 @@ typedef struct
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;
+	mirac_ast_block_s block;
 } mirac_parser_s;
 
 mirac_parser_s mirac_parser_from_parts(

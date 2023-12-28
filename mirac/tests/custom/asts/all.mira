@@ -7,7 +7,7 @@ mem my_mem_1 10 ; of size = 10 bytes
 ; --- 
 ; :brief function (can be marked as inlined with 'inl' keyword before 'func' keyword)
 ; --- 
-func my_func_1 {
+// func my_func_1 {
 	; code goes here...
 
 	; --- 

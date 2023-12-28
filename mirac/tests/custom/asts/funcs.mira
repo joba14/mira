@@ -1,5 +1,5 @@
 
-func task1 req i32 labas {
+func task1 req i32 {
 	10 ; putu
 }
 
