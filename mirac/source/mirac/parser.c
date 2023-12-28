@@ -15,7 +15,7 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-mirac_implement_heap_array_type(mirac_tokens_refs_vector, mirac_token_s*);
+mirac_implement_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 
 #define log_parser_error_and_exit(_location, _format, ...)                     \
@@ -29,20 +29,22 @@ mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
+#if 0
 static bool is_token_expr_block_token(
 	const mirac_token_s* const token);
+#endif
+
+
+
+
+
+
 
 static mirac_ast_block_expr_s create_ast_block_expr(
-	void);
+	mirac_arena_s* const arena);
 
-static mirac_ast_block_begin_scope_s create_ast_block_begin_scope(
-	void);
-
-static mirac_ast_block_end_scope_s create_ast_block_end_scope(
-	void);
-
-static mirac_ast_block_end_unit_s create_ast_block_end_unit(
-	void);
+static mirac_ast_block_scope_s create_ast_block_scope(
+	mirac_arena_s* const arena);
 
 static mirac_ast_block_if_s create_ast_block_if(
 	mirac_arena_s* const arena);
@@ -59,90 +61,16 @@ static mirac_ast_block_loop_s create_ast_block_loop(
 static mirac_ast_block_let_s create_ast_block_let(
 	mirac_arena_s* const arena);
 
-static mirac_ast_block_req_s create_ast_block_req(
-	mirac_arena_s* const arena);
-
-static mirac_ast_block_ret_s create_ast_block_ret(
-	mirac_arena_s* const arena);
-
 static mirac_ast_block_func_s create_ast_block_func(
 	mirac_arena_s* const arena);
 
 static mirac_ast_block_mem_s create_ast_block_mem(
-	void);
-
-static mirac_ast_block_s create_ast_block(
-	void);
-
-static mirac_ast_unit_s create_ast_unit(
 	mirac_arena_s* const arena);
-
-static void print_ast_block_expr(
-	const mirac_ast_block_expr_s* const expr_block,
-	const uint8_t indent);
-
-static void print_ast_block_begin_scope(
-	const mirac_ast_block_begin_scope_s* const begin_scope_block,
-	const uint8_t indent);
-
-static void print_ast_block_end_scope(
-	const mirac_ast_block_end_scope_s* const end_scope_block,
-	const uint8_t indent);
-
-static void print_ast_block_end_unit(
-	const mirac_ast_block_end_unit_s* const end_unit_block,
-	const uint8_t indent);
-
-static void print_ast_block_if(
-	const mirac_ast_block_if_s* const if_block,
-	const uint8_t indent);
-
-static void print_ast_block_elif(
-	const mirac_ast_block_elif_s* const elif_block,
-	const uint8_t indent);
-
-static void print_ast_block_else(
-	const mirac_ast_block_else_s* const else_block,
-	const uint8_t indent);
-
-static void print_ast_block_loop(
-	const mirac_ast_block_loop_s* const loop_block,
-	const uint8_t indent);
-
-static void print_ast_block_let(
-	const mirac_ast_block_let_s* const let_block,
-	const uint8_t indent);
-
-static void print_ast_block_req(
-	const mirac_ast_block_req_s* const req_block,
-	const uint8_t indent);
-
-static void print_ast_block_ret(
-	const mirac_ast_block_ret_s* const ret_block,
-	const uint8_t indent);
-
-static void print_ast_block_func(
-	const mirac_ast_block_func_s* const func_block,
-	const uint8_t indent);
-
-static void print_ast_block_mem(
-	const mirac_ast_block_mem_s* const mem_block,
-	const uint8_t indent);
-
-static void print_ast_block(
-	const mirac_ast_block_s* const block,
-	const uint8_t indent);
 
 static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser);
 
-static mirac_ast_block_begin_scope_s parse_ast_block_begin_scope(
-	mirac_parser_s* const parser);
-
-static mirac_ast_block_end_scope_s parse_ast_block_end_scope(
-	mirac_parser_s* const parser);
-
-static mirac_ast_block_end_unit_s parse_ast_block_end_unit(
+static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_parser_s* const parser);
 
 static mirac_ast_block_if_s parse_ast_block_if(
@@ -160,50 +88,301 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 static mirac_ast_block_let_s parse_ast_block_let(
 	mirac_parser_s* const parser);
 
-static mirac_ast_block_req_s parse_ast_block_req(
-	mirac_parser_s* const parser);
-
-static mirac_ast_block_ret_s parse_ast_block_ret(
-	mirac_parser_s* const parser);
-
 static mirac_ast_block_func_s parse_ast_block_func(
 	mirac_parser_s* const parser);
 
 static mirac_ast_block_mem_s parse_ast_block_mem(
 	mirac_parser_s* const parser);
 
-static mirac_ast_block_s parse_ast_block(
-	mirac_parser_s* const parser);
+void mirac_ast_block_expr_print(
+	const mirac_ast_block_expr_s* const expr_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(expr_block != NULL);
 
-static void unparse_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block);
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_expr)));
 
-static void parse_ast_unit(
-	mirac_parser_s* const parser,
-	mirac_ast_unit_s* const ast_unit);
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_scope_print(
+	const mirac_ast_block_scope_s* const scope_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(scope_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_scope)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("blocks:\n");
+	for (uint64_t index = 0; index < scope_block->blocks.count; ++index)
+		mirac_ast_block_print(&scope_block->blocks.data[index], indent + 2);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_if_print(
+	const mirac_ast_block_if_s* const if_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(if_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_if)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("blocks:\n");
+	mirac_ast_block_scope_print(&if_block->scope, indent + 2);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_elif_print(
+	const mirac_ast_block_elif_s* const elif_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(elif_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_elif)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("scope:\n");
+	mirac_ast_block_scope_print(&elif_block->scope, indent + 2);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_else_print(
+	const mirac_ast_block_else_s* const else_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(else_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_else)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("blocks:\n");
+	mirac_ast_block_scope_print(&else_block->scope, indent + 2);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_loop_print(
+	const mirac_ast_block_loop_s* const loop_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(loop_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_loop)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("scope:\n");
+	mirac_ast_block_scope_print(&loop_block->scope, indent + 2);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_let_print(
+	const mirac_ast_block_let_s* const let_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(let_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_let)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("identifier_tokens:\n");
+	for (uint64_t identifier_index = 0; identifier_index < let_block->identifier_tokens.count; ++identifier_index)
+	{
+		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&let_block->identifier_tokens.data[identifier_index])));
+	}
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("blocks:\n");
+	for (uint64_t index = 0; index < let_block->blocks.count; ++index)
+		mirac_ast_block_print(&let_block->blocks.data[index], indent + 2);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_func_print(
+	const mirac_ast_block_func_s* const func_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(func_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_func)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("identifier:\n");
+	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->identifier)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("req_tokens:\n");
+	for (uint64_t req_index = 0; req_index < func_block->req_tokens.count; ++req_index)
+	{
+		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->req_tokens.data[req_index])));
+	}
+	
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("ret_tokens:\n");
+	for (uint64_t ret_index = 0; ret_index < func_block->ret_tokens.count; ++ret_index)
+	{
+		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->ret_tokens.data[ret_index])));
+	}
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("blocks:\n");
+	for (uint64_t index = 0; index < func_block->blocks.count; ++index)
+		mirac_ast_block_print(&func_block->blocks.data[index], indent + 2);
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("is_inlined: %s\n", func_block->is_inlined ? "yes" : "no");
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("is_entry: %s\n", func_block->is_entry ? "yes" : "no");
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("is_used: %s\n", func_block->is_used ? "yes" : "no");
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_mem_print(
+	const mirac_ast_block_mem_s* const mem_block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(mem_block != NULL);
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_mem)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("identifier:\n");
+	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("capacity:\n");
+	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->capacity)));
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("is_used: %s\n", mem_block->is_used ? "yes" : "no");
+
+	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	printf("]\n");
+}
 
 mirac_string_view_s mirac_ast_block_type_to_string_view(
-	const mirac_ast_block_type_e block_type)
+	const mirac_ast_block_type_e type)
 {
-	switch (block_type)
+	switch (type)
 	{
-		case mirac_ast_block_type_expr:        { return mirac_string_view_from_cstring("ast_block_type_expr");        } break;
-		case mirac_ast_block_type_begin_scope: { return mirac_string_view_from_cstring("ast_block_type_begin_scope"); } break;
-		case mirac_ast_block_type_end_scope:   { return mirac_string_view_from_cstring("ast_block_type_end_scope");   } break;
-		case mirac_ast_block_type_end_unit:    { return mirac_string_view_from_cstring("ast_block_type_end_unit");    } break;
-		case mirac_ast_block_type_if:          { return mirac_string_view_from_cstring("ast_block_type_if");          } break;
-		case mirac_ast_block_type_elif:        { return mirac_string_view_from_cstring("ast_block_type_elif");        } break;
-		case mirac_ast_block_type_else:        { return mirac_string_view_from_cstring("ast_block_type_else");        } break;
-		case mirac_ast_block_type_loop:        { return mirac_string_view_from_cstring("ast_block_type_loop");        } break;
-		case mirac_ast_block_type_let:         { return mirac_string_view_from_cstring("ast_block_type_let");         } break;
-		case mirac_ast_block_type_func:        { return mirac_string_view_from_cstring("ast_block_type_func");        } break;
-		case mirac_ast_block_type_mem:         { return mirac_string_view_from_cstring("ast_block_type_mem");         } break;
+		case mirac_ast_block_type_expr:  { return mirac_string_view_from_cstring("ast_block_type_expr");  } break;
+		case mirac_ast_block_type_scope: { return mirac_string_view_from_cstring("ast_block_type_scope"); } break;
+		case mirac_ast_block_type_if:    { return mirac_string_view_from_cstring("ast_block_type_if");    } break;
+		case mirac_ast_block_type_elif:  { return mirac_string_view_from_cstring("ast_block_type_elif");  } break;
+		case mirac_ast_block_type_else:  { return mirac_string_view_from_cstring("ast_block_type_else");  } break;
+		case mirac_ast_block_type_loop:  { return mirac_string_view_from_cstring("ast_block_type_loop");  } break;
+		case mirac_ast_block_type_let:   { return mirac_string_view_from_cstring("ast_block_type_let");   } break;
+		case mirac_ast_block_type_func:  { return mirac_string_view_from_cstring("ast_block_type_func");  } break;
+		case mirac_ast_block_type_mem:   { return mirac_string_view_from_cstring("ast_block_type_mem");   } break;
 
 		default:
 		{
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 			return mirac_string_view_from_parts("", 0);
+		} break;
+	}
+}
+
+mirac_ast_block_s mirac_ast_block_from_type(
+	const mirac_ast_block_type_e type)
+{
+	mirac_ast_block_s block = {0};
+	block.type = type;
+	return block;
+}
+
+void mirac_ast_block_print(
+	const mirac_ast_block_s* const block,
+	const uint8_t indent)
+{
+	mirac_debug_assert(block != NULL);
+
+	switch (block->type)
+	{
+		case mirac_ast_block_type_expr:
+		{
+			mirac_ast_block_expr_print(&block->as.expr_block, indent);
+		} break;
+
+		case mirac_ast_block_type_scope:
+		{
+			mirac_ast_block_scope_print(&block->as.scope_block, indent);
+		} break;
+
+		case mirac_ast_block_type_if:
+		{
+			mirac_ast_block_if_print(&block->as.if_block, indent);
+		} break;
+
+		case mirac_ast_block_type_elif:
+		{
+			mirac_ast_block_elif_print(&block->as.elif_block, indent);
+		} break;
+
+		case mirac_ast_block_type_else:
+		{
+			mirac_ast_block_else_print(&block->as.else_block, indent);
+		} break;
+
+		case mirac_ast_block_type_loop:
+		{
+			mirac_ast_block_loop_print(&block->as.loop_block, indent);
+		} break;
+
+		case mirac_ast_block_type_let:
+		{
+			mirac_ast_block_let_print(&block->as.let_block, indent);
+		} break;
+
+		case mirac_ast_block_type_func:
+		{
+			mirac_ast_block_func_print(&block->as.func_block, indent);
+		} break;
+
+		case mirac_ast_block_type_mem:
+		{
+			mirac_ast_block_mem_print(&block->as.mem_block, indent);
+		} break;
+
+		default:
+		{
+			mirac_debug_assert(!"Should never reach this block.");
 		} break;
 	}
 }
@@ -224,28 +403,393 @@ mirac_parser_s mirac_parser_from_parts(
 	return parser;
 }
 
-mirac_ast_unit_s mirac_parser_parse_ast_unit(
+void mirac_parser_destroy(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != NULL);
-	mirac_ast_unit_s ast_unit = create_ast_unit(parser->arena);
-	ast_unit.identifier = parser->lexer->file_path;
-	parse_ast_unit(parser, &ast_unit);
-	return ast_unit;
+	*parser = (mirac_parser_s) {0};
 }
 
-void mirac_parser_print_ast_unit(
-	const mirac_ast_unit_s* const ast_unit)
+mirac_ast_block_type_e mirac_parser_parse_next(
+	mirac_parser_s* const parser,
+	mirac_ast_block_s* const block)
 {
-	mirac_debug_assert(ast_unit != NULL);
-	uint8_t indent = 0;
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(block != NULL);
 
-	for (uint64_t index = 0; index < ast_unit->blocks.count; ++index)
+	if (parser->block.type != mirac_ast_block_type_none)
 	{
-		print_ast_block(&(ast_unit->blocks.data[index]), indent);
+		*block = parser->block;
+		parser->block.type = mirac_ast_block_type_none;
+		return block->type;
 	}
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	block->location = token.location;
+
+	if (!mirac_lexer_should_stop_lexing(token.type))
+	{
+		mirac_lexer_unlex(parser->lexer, &token);
+	}
+
+	switch (token.type)
+	{
+		case mirac_token_type_reserved_left_brace:
+		{
+			block->type = mirac_ast_block_type_scope;
+			block->as.scope_block = parse_ast_block_scope(parser);
+		} break;
+
+		case mirac_token_type_reserved_if:
+		{
+			block->type = mirac_ast_block_type_if;
+			block->as.if_block = parse_ast_block_if(parser);
+		} break;
+
+		case mirac_token_type_reserved_elif:
+		{
+			block->type = mirac_ast_block_type_elif;
+			block->as.elif_block = parse_ast_block_elif(parser);
+		} break;
+
+		case mirac_token_type_reserved_else:
+		{
+			block->type = mirac_ast_block_type_else;
+			block->as.else_block = parse_ast_block_else(parser);
+		} break;
+
+		case mirac_token_type_reserved_loop:
+		{
+			block->type = mirac_ast_block_type_loop;
+			block->as.loop_block = parse_ast_block_loop(parser);
+		} break;
+
+		case mirac_token_type_reserved_let:
+		{
+			block->type = mirac_ast_block_type_let;
+			block->as.let_block = parse_ast_block_let(parser);
+		} break;
+
+		case mirac_token_type_reserved_inl:
+		case mirac_token_type_reserved_func:
+		{
+			block->type = mirac_ast_block_type_func;
+			block->as.func_block = parse_ast_block_func(parser);
+		} break;
+
+		case mirac_token_type_reserved_mem:
+		{
+			block->type = mirac_ast_block_type_mem;
+			block->as.mem_block = parse_ast_block_mem(parser);
+		} break;
+
+		case mirac_token_type_eof:
+		{
+			block->type = mirac_ast_block_type_eou;
+		} break;
+
+		case mirac_token_type_none:
+		{
+			block->type = mirac_ast_block_type_none;
+		} break;
+
+		default:
+		{
+			block->type = mirac_ast_block_type_expr;
+			block->as.expr_block = parse_ast_block_expr(parser);
+		} break;
+	}
+
+	return block->type;
 }
 
+bool mirac_parser_should_stop_parsing(
+	const mirac_ast_block_type_e type)
+{
+	return (
+		(mirac_ast_block_type_eou  == type) ||
+		(mirac_ast_block_type_none == type)
+	);
+}
+
+void mirac_parser_unparse(
+	mirac_parser_s* const parser,
+	mirac_ast_block_s* const block)
+{
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(block != NULL);
+	parser->block = *block;
+}
+
+static mirac_ast_block_expr_s create_ast_block_expr(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_expr_s block_expr = {0};
+	return block_expr;
+}
+
+static mirac_ast_block_scope_s create_ast_block_scope(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_scope_s block_scope = {0};
+	block_scope.blocks = mirac_blocks_vector_from_parts(arena, 1);
+	return block_scope;
+}
+
+static mirac_ast_block_if_s create_ast_block_if(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_if_s block_if = {0};
+	block_if.scope = create_ast_block_scope(arena);
+	return block_if;
+}
+
+static mirac_ast_block_elif_s create_ast_block_elif(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_elif_s block_elif = {0};
+	block_elif.scope = create_ast_block_scope(arena);
+	return block_elif;
+}
+
+static mirac_ast_block_else_s create_ast_block_else(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_else_s block_else = {0};
+	block_else.scope = create_ast_block_scope(arena);
+	return block_else;
+}
+
+static mirac_ast_block_loop_s create_ast_block_loop(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_loop_s block_loop = {0};
+	block_loop.scope = create_ast_block_scope(arena);
+	return block_loop;
+}
+
+static mirac_ast_block_let_s create_ast_block_let(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_let_s block_let = {0};
+	block_let.identifier_tokens = mirac_tokens_vector_from_parts(arena, 1);
+	block_let.blocks = mirac_blocks_vector_from_parts(arena, 1);
+	return block_let;
+}
+
+static mirac_ast_block_func_s create_ast_block_func(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_func_s block_func = {0};
+	block_func.req_tokens = mirac_tokens_vector_from_parts(arena, 1);
+	block_func.ret_tokens = mirac_tokens_vector_from_parts(arena, 1);
+	block_func.blocks = mirac_blocks_vector_from_parts(arena, 1);
+	return block_func;
+}
+
+static mirac_ast_block_mem_s create_ast_block_mem(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_mem_s block_mem = {0};
+	return block_mem;
+}
+
+static mirac_ast_block_expr_s parse_ast_block_expr(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_expr_s block_expr = create_ast_block_expr(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+	block_expr.token = token;
+	return block_expr;
+}
+
+static mirac_ast_block_scope_s parse_ast_block_scope(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_scope_s block_scope = create_ast_block_scope(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	mirac_debug_assert(mirac_token_type_reserved_left_brace == token.type);
+
+	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+	while (!mirac_parser_should_stop_parsing(mirac_parser_parse_next(parser, &block)))
+	{
+		if ((mirac_ast_block_type_expr == block.type) &&
+			(mirac_token_type_reserved_right_brace == block.as.expr_block.token.type))
+		{
+			break;
+		}
+
+		mirac_blocks_vector_push(&block_scope.blocks, block);
+	}
+
+	return block_scope;
+}
+
+static mirac_ast_block_if_s parse_ast_block_if(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_if_s block_if = create_ast_block_if(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	mirac_debug_assert(mirac_token_type_reserved_if == token.type);
+
+	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+	(void)mirac_parser_parse_next(parser, &block);
+
+	if (mirac_ast_block_type_scope != block.type)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected 'scope' block after 'if' token, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	block_if.scope = block.as.scope_block;
+	return block_if;
+}
+
+static mirac_ast_block_elif_s parse_ast_block_elif(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_elif_s block_elif = create_ast_block_elif(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	mirac_debug_assert(mirac_token_type_reserved_elif == token.type);
+
+	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+	(void)mirac_parser_parse_next(parser, &block);
+
+	if (mirac_ast_block_type_scope != block.type)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected 'scope' block after 'elif' token, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	block_elif.scope = block.as.scope_block;
+	return block_elif;
+}
+
+static mirac_ast_block_else_s parse_ast_block_else(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_else_s block_else = create_ast_block_else(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	mirac_debug_assert(mirac_token_type_reserved_else == token.type);
+
+	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+	(void)mirac_parser_parse_next(parser, &block);
+
+	if (mirac_ast_block_type_scope != block.type)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected 'scope' block after 'else' token, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	block_else.scope = block.as.scope_block;
+	return block_else;
+}
+
+static mirac_ast_block_loop_s parse_ast_block_loop(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_loop_s block_loop = create_ast_block_loop(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	mirac_debug_assert(mirac_token_type_reserved_loop == token.type);
+
+	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+	(void)mirac_parser_parse_next(parser, &block);
+
+	if (mirac_ast_block_type_scope != block.type)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected 'scope' block after 'loop' token, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	block_loop.scope = block.as.scope_block;
+	return block_loop;
+}
+
+static mirac_ast_block_let_s parse_ast_block_let(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_let_s block_let = create_ast_block_let(parser->arena);
+	return block_let;
+}
+
+static mirac_ast_block_func_s parse_ast_block_func(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_func_s block_func = create_ast_block_func(parser->arena);
+	return block_func;
+}
+
+static mirac_ast_block_mem_s parse_ast_block_mem(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_mem_s block_mem = create_ast_block_mem(parser->arena);
+	return block_mem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// *********************************************** //
+
+#if 0
 static bool is_token_expr_block_token(
 	const mirac_token_s* const token)
 {
@@ -321,489 +865,6 @@ static bool is_token_expr_block_token(
 	);
 }
 
-static mirac_ast_block_expr_s create_ast_block_expr(
-	void)
-{
-	mirac_ast_block_expr_s expr_block = {0};
-	return expr_block;
-}
-
-static mirac_ast_block_begin_scope_s create_ast_block_begin_scope(
-	void)
-{
-	mirac_ast_block_begin_scope_s begin_scope_block = {0};
-	return begin_scope_block;
-}
-
-static mirac_ast_block_end_scope_s create_ast_block_end_scope(
-	void)
-{
-	mirac_ast_block_end_scope_s end_scope_block = {0};
-	return end_scope_block;
-}
-
-static mirac_ast_block_end_unit_s create_ast_block_end_unit(
-	void)
-{
-	mirac_ast_block_end_unit_s end_unit_block = {0};
-	return end_unit_block;
-}
-
-static mirac_ast_block_if_s create_ast_block_if(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_if_s if_block = {0};
-	if_block.condition_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	if_block.body_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return if_block;
-}
-
-static mirac_ast_block_elif_s create_ast_block_elif(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_elif_s elif_block = {0};
-	elif_block.condition_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	elif_block.body_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return elif_block;
-}
-
-static mirac_ast_block_else_s create_ast_block_else(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_else_s else_block = {0};
-	else_block.body_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return else_block;
-}
-
-static mirac_ast_block_loop_s create_ast_block_loop(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_loop_s loop_block = {0};
-	loop_block.condition_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	loop_block.body_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return loop_block;
-}
-
-static mirac_ast_block_let_s create_ast_block_let(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_let_s let_block = {0};
-	let_block.identifier_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	let_block.body_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return let_block;
-}
-
-static mirac_ast_block_req_s create_ast_block_req(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_req_s req_block = {0};
-	req_block.type_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return req_block;
-}
-
-static mirac_ast_block_ret_s create_ast_block_ret(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_ret_s ret_block = {0};
-	ret_block.type_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return ret_block;
-}
-
-static mirac_ast_block_func_s create_ast_block_func(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_func_s func_block = {0};
-	func_block.req_block = create_ast_block_req(arena);
-	func_block.ret_block = create_ast_block_ret(arena);
-	func_block.body_blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return func_block;
-}
-
-static mirac_ast_block_mem_s create_ast_block_mem(
-	void)
-{
-	mirac_ast_block_mem_s mem_block = {0};
-	return mem_block;
-}
-
-static mirac_ast_block_s create_ast_block(
-	void)
-{
-	mirac_ast_block_s block = {0};
-	return block;
-}
-
-static mirac_ast_unit_s create_ast_unit(
-	mirac_arena_s* const arena)
-{
-	mirac_debug_assert(arena != NULL);
-	mirac_ast_unit_s ast_unit = {0};
-	ast_unit.blocks = mirac_blocks_vector_from_parts(arena, 1);
-	ast_unit.strings = mirac_tokens_refs_vector_from_parts(arena, 1);
-	return ast_unit;
-}
-
-static void print_ast_block_expr(
-	const mirac_ast_block_expr_s* const expr_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(expr_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_expr\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_begin_scope(
-	const mirac_ast_block_begin_scope_s* const begin_scope_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(begin_scope_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_begin_scope\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&begin_scope_block->token)));
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_end_scope(
-	const mirac_ast_block_end_scope_s* const end_scope_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(end_scope_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_end_scope\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&end_scope_block->token)));
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_end_unit(
-	const mirac_ast_block_end_unit_s* const end_unit_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(end_unit_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_end_unit\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&end_unit_block->token)));
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_if(
-	const mirac_ast_block_if_s* const if_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(if_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_if\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("condition_blocks:\n");
-	for (uint64_t index = 0; index < if_block->condition_blocks.count; ++index)
-		print_ast_block(&if_block->condition_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("body_blocks:\n");
-	for (uint64_t index = 0; index < if_block->body_blocks.count; ++index)
-		print_ast_block(&if_block->body_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_elif(
-	const mirac_ast_block_elif_s* const elif_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(elif_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_elif\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("condition_blocks:\n");
-	for (uint64_t index = 0; index < elif_block->condition_blocks.count; ++index)
-		print_ast_block(&elif_block->condition_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("body_blocks:\n");
-	for (uint64_t index = 0; index < elif_block->body_blocks.count; ++index)
-		print_ast_block(&elif_block->body_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_else(
-	const mirac_ast_block_else_s* const else_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(else_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_else\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("body_blocks:\n");
-	for (uint64_t index = 0; index < else_block->body_blocks.count; ++index)
-		print_ast_block(&else_block->body_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_loop(
-	const mirac_ast_block_loop_s* const loop_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(loop_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_loop\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("condition_blocks:\n");
-	for (uint64_t index = 0; index < loop_block->condition_blocks.count; ++index)
-		print_ast_block(&loop_block->condition_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("body_blocks:\n");
-	for (uint64_t index = 0; index < loop_block->body_blocks.count; ++index)
-		print_ast_block(&loop_block->body_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_let(
-	const mirac_ast_block_let_s* const let_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(let_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_let\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("identifier_blocks:\n");
-	for (uint64_t index = 0; index < let_block->identifier_blocks.count; ++index)
-		print_ast_block(&let_block->identifier_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("body_blocks:\n");
-	for (uint64_t index = 0; index < let_block->body_blocks.count; ++index)
-		print_ast_block(&let_block->body_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_req(
-	const mirac_ast_block_req_s* const req_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(req_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_req\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("type_blocks:\n");
-	for (uint64_t index = 0; index < req_block->type_blocks.count; ++index)
-		print_ast_block(&req_block->type_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_ret(
-	const mirac_ast_block_ret_s* const ret_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(ret_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_ret\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("type_blocks:\n");
-	for (uint64_t index = 0; index < ret_block->type_blocks.count; ++index)
-		print_ast_block(&ret_block->type_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_func(
-	const mirac_ast_block_func_s* const func_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(func_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_func\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("identifier:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->identifier)));
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("req_block:\n");
-	print_ast_block_req(&func_block->req_block, indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("ret_block:\n");
-	print_ast_block_ret(&func_block->ret_block, indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("body_blocks:\n");
-	for (uint64_t index = 0; index < func_block->body_blocks.count; ++index)
-		print_ast_block(&func_block->body_blocks.data[index], indent + 2);
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("is_inlined: %s\n", func_block->is_inlined ? "yes" : "no");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("is_entry: %s\n", func_block->is_entry ? "yes" : "no");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("is_used: %s\n", func_block->is_used ? "yes" : "no");
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block_mem(
-	const mirac_ast_block_mem_s* const mem_block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(mem_block != NULL);
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("Block[type=ast_block_mem\n");
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("identifier:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("capacity:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->capacity)));
-
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
-	printf("]\n");
-}
-
-static void print_ast_block(
-	const mirac_ast_block_s* const block,
-	const uint8_t indent)
-{
-	mirac_debug_assert(block != NULL);
-
-	switch (block->type)
-	{
-		case mirac_ast_block_type_expr:
-		{
-			print_ast_block_expr(&block->as.expr_block, indent);
-		} break;
-
-		case mirac_ast_block_type_begin_scope:
-		{
-			print_ast_block_begin_scope(&block->as.begin_scope_block, indent);
-		} break;
-
-		case mirac_ast_block_type_end_scope:
-		{
-			print_ast_block_end_scope(&block->as.end_scope_block, indent);
-		} break;
-
-		case mirac_ast_block_type_end_unit:
-		{
-			print_ast_block_end_unit(&block->as.end_unit_block, indent);
-		} break;
-
-		case mirac_ast_block_type_if:
-		{
-			print_ast_block_if(&block->as.if_block, indent);
-		} break;
-
-		case mirac_ast_block_type_elif:
-		{
-			print_ast_block_elif(&block->as.elif_block, indent);
-		} break;
-
-		case mirac_ast_block_type_else:
-		{
-			print_ast_block_else(&block->as.else_block, indent);
-		} break;
-
-		case mirac_ast_block_type_loop:
-		{
-			print_ast_block_loop(&block->as.loop_block, indent);
-		} break;
-
-		case mirac_ast_block_type_let:
-		{
-			print_ast_block_let(&block->as.let_block, indent);
-		} break;
-
-		case mirac_ast_block_type_req:
-		{
-			print_ast_block_req(&block->as.req_block, indent);
-		} break;
-
-		case mirac_ast_block_type_ret:
-		{
-			print_ast_block_ret(&block->as.ret_block, indent);
-		} break;
-
-		case mirac_ast_block_type_func:
-		{
-			print_ast_block_func(&block->as.func_block, indent);
-		} break;
-
-		case mirac_ast_block_type_mem:
-		{
-			print_ast_block_mem(&block->as.mem_block, indent);
-		} break;
-
-		default:
-		{
-			mirac_debug_assert(!"Should never reach this block.");
-		} break;
-	}
-}
-
 static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser)
 {
@@ -826,136 +887,6 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 
 	expr_block.token = token;
 	return expr_block;
-}
-
-static mirac_ast_block_begin_scope_s parse_ast_block_begin_scope(
-	mirac_parser_s* const parser)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_ast_block_begin_scope_s begin_scope_block = create_ast_block_begin_scope();
-
-	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	(void)mirac_lexer_lex_next(parser->lexer, &token);
-
-	if (mirac_lexer_should_stop_lexing(token.type) ||
-		(mirac_token_type_reserved_left_brace != token.type))
-	{
-		log_parser_error_and_exit(token.location,
-			"encountered an invalid token '" mirac_sv_fmt "' while parsing 'begin-scope' block.",
-			mirac_sv_arg(token.text)
-		);
-	}
-
-	begin_scope_block.token = token;
-	return begin_scope_block;
-}
-
-static mirac_ast_block_end_scope_s parse_ast_block_end_scope(
-	mirac_parser_s* const parser)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_ast_block_end_scope_s end_scope_block = create_ast_block_end_scope();
-
-	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	(void)mirac_lexer_lex_next(parser->lexer, &token);
-
-	if (mirac_lexer_should_stop_lexing(token.type) ||
-		(mirac_token_type_reserved_right_brace != token.type))
-	{
-		log_parser_error_and_exit(token.location,
-			"encountered an invalid token '" mirac_sv_fmt "' while parsing 'end-scope' block.",
-			mirac_sv_arg(token.text)
-		);
-	}
-
-	end_scope_block.token = token;
-	return end_scope_block;
-}
-
-static mirac_ast_block_end_unit_s parse_ast_block_end_unit(
-	mirac_parser_s* const parser)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_ast_block_end_unit_s end_unit_block = create_ast_block_end_unit();
-
-	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	(void)mirac_lexer_lex_next(parser->lexer, &token);
-
-	if (token.type != mirac_token_type_eof)
-	{
-		log_parser_error_and_exit(token.location,
-			"encountered an invalid token '" mirac_sv_fmt "' while parsing 'end-unit' block.",
-			mirac_sv_arg(token.text)
-		);
-	}
-
-	end_unit_block.token = token;
-	return end_unit_block;
-}
-
-static mirac_ast_block_if_s parse_ast_block_if(
-	mirac_parser_s* const parser)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_ast_block_if_s if_block = create_ast_block_if(parser->arena);
-
-	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	(void)mirac_lexer_lex_next(parser->lexer, &token);
-	mirac_debug_assert(mirac_token_type_reserved_if == token.type);
-
-	while (1)
-	{
-		mirac_ast_block_s block = parse_ast_block(parser);
-
-		switch (block.type)
-		{
-			case mirac_ast_block_type_end_unit:
-			{
-				log_parser_error_and_exit(token.location,
-					"encountered an unexpected end of unit while parsing 'if' block's condition."
-				);
-			} break;
-
-			case mirac_ast_block_type_begin_scope:
-			{
-				goto after_if_condition_blocks;
-			} break;
-
-			default:
-			{
-				mirac_blocks_vector_push(&if_block.condition_blocks, block);
-			} break;
-		}
-	}
-
-after_if_condition_blocks:
-	while (1)
-	{
-		mirac_ast_block_s block = parse_ast_block(parser);
-
-		switch (block.type)
-		{
-			case mirac_ast_block_type_end_unit:
-			{
-				log_parser_error_and_exit(token.location,
-					"encountered an unexpected end of unit while parsing 'if' block's body."
-				);
-			} break;
-
-			case mirac_ast_block_type_end_scope:
-			{
-				goto after_if_body_blocks;
-			} break;
-
-			default:
-			{
-				mirac_blocks_vector_push(&if_block.body_blocks, block);
-			} break;
-		}
-	}
-
-after_if_body_blocks:
-	return if_block;
 }
 
 static mirac_ast_block_elif_s parse_ast_block_elif(
@@ -1014,7 +945,7 @@ after_elif_condition_blocks:
 
 			default:
 			{
-				mirac_blocks_vector_push(&elif_block.body_blocks, block);
+				mirac_blocks_vector_push(&elif_block.blocks, block);
 			} break;
 		}
 	}
@@ -1061,7 +992,7 @@ static mirac_ast_block_else_s parse_ast_block_else(
 
 			default:
 			{
-				mirac_blocks_vector_push(&else_block.body_blocks, block);
+				mirac_blocks_vector_push(&else_block.blocks, block);
 			} break;
 		}
 	}
@@ -1126,7 +1057,7 @@ after_loop_condition_blocks:
 
 			default:
 			{
-				mirac_blocks_vector_push(&loop_block.body_blocks, block);
+				mirac_blocks_vector_push(&loop_block.blocks, block);
 			} break;
 		}
 	}
@@ -1209,7 +1140,7 @@ after_let_identifier_blocks:
 
 			default:
 			{
-				mirac_blocks_vector_push(&let_block.body_blocks, block);
+				mirac_blocks_vector_push(&let_block.blocks, block);
 			} break;
 		}
 	}
@@ -1403,7 +1334,7 @@ static mirac_ast_block_func_s parse_ast_block_func(
 
 			default:
 			{
-				mirac_blocks_vector_push(&func_block.body_blocks, block);
+				mirac_blocks_vector_push(&func_block.blocks, block);
 			} break;
 		}
 	}
@@ -1573,6 +1504,7 @@ static void unparse_ast_block(
 	parser->block = *block;
 }
 
+/*
 static void parse_ast_unit(
 	mirac_parser_s* const parser,
 	mirac_ast_unit_s* const ast_unit)
@@ -1587,3 +1519,5 @@ static void parse_ast_unit(
 		mirac_blocks_vector_push(&ast_unit->blocks, block);
 	}
 }
+*/
+#endif

@@ -459,17 +459,17 @@ mirac_token_type_e mirac_lexer_lex_next(
 		lexer->locations[0], lexer->tokens_count++, mirac_string_view_from_parts(text_copy, text.length)
 	);
 
+	if (parse_reserved_token_from_text(lexer, token) != mirac_token_type_none)
+	{
+		return token->type;
+	}
+
 	if (parse_string_literal_token_from_text(lexer, token) != mirac_token_type_none)
 	{
 		return token->type;
 	}
 
 	if (parse_numeric_literal_token_from_text(lexer, token) != mirac_token_type_none)
-	{
-		return token->type;
-	}
-
-	if (parse_reserved_token_from_text(lexer, token) != mirac_token_type_none)
 	{
 		return token->type;
 	}
