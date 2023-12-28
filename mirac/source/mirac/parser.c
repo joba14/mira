@@ -834,5 +834,3 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	mem_block.capacity = token;
 	return mem_block;
 }
-
-#endif
