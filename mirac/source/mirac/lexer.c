@@ -74,7 +74,6 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_i64] = mirac_string_view_static("i64"),
 	[mirac_token_type_reserved_if] = mirac_string_view_static("if"),
 	[mirac_token_type_reserved_inl] = mirac_string_view_static("inl"),
-	[mirac_token_type_reserved_let] = mirac_string_view_static("let"),
 	[mirac_token_type_reserved_loop] = mirac_string_view_static("loop"),
 	[mirac_token_type_reserved_mem] = mirac_string_view_static("mem"),
 	[mirac_token_type_reserved_ptr] = mirac_string_view_static("ptr"),

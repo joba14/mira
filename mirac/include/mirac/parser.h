@@ -30,7 +30,7 @@ typedef struct
 
 void mirac_ast_block_expr_print(
 	const mirac_ast_block_expr_s* const expr_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -39,7 +39,7 @@ typedef struct
 
 void mirac_ast_block_scope_print(
 	const mirac_ast_block_scope_s* const scope_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -48,7 +48,7 @@ typedef struct
 
 void mirac_ast_block_if_print(
 	const mirac_ast_block_if_s* const if_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -57,7 +57,7 @@ typedef struct
 
 void mirac_ast_block_elif_print(
 	const mirac_ast_block_elif_s* const elif_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -66,7 +66,7 @@ typedef struct
 
 void mirac_ast_block_else_print(
 	const mirac_ast_block_else_s* const else_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -75,17 +75,7 @@ typedef struct
 
 void mirac_ast_block_loop_print(
 	const mirac_ast_block_loop_s* const loop_block,
-	const uint8_t indent);
-
-typedef struct
-{
-	mirac_tokens_vector_s identifier_tokens;
-	mirac_blocks_vector_s blocks;
-} mirac_ast_block_let_s;
-
-void mirac_ast_block_let_print(
-	const mirac_ast_block_let_s* const let_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -100,7 +90,7 @@ typedef struct
 
 void mirac_ast_block_func_print(
 	const mirac_ast_block_func_s* const func_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
@@ -111,7 +101,7 @@ typedef struct
 
 void mirac_ast_block_mem_print(
 	const mirac_ast_block_mem_s* const mem_block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef enum
 {
@@ -121,7 +111,6 @@ typedef enum
 	mirac_ast_block_type_elif,
 	mirac_ast_block_type_else,
 	mirac_ast_block_type_loop,
-	mirac_ast_block_type_let,
 	mirac_ast_block_type_func,
 	mirac_ast_block_type_mem,
 
@@ -145,7 +134,6 @@ struct mirac_ast_block_s
 		mirac_ast_block_elif_s  elif_block;
 		mirac_ast_block_else_s  else_block;
 		mirac_ast_block_loop_s  loop_block;
-		mirac_ast_block_let_s   let_block;
 		mirac_ast_block_func_s  func_block;
 		mirac_ast_block_mem_s   mem_block;
 	} as;
@@ -156,7 +144,7 @@ mirac_ast_block_s mirac_ast_block_from_type(
 
 void mirac_ast_block_print(
 	const mirac_ast_block_s* const block,
-	const uint8_t indent);
+	const uint64_t indent);
 
 typedef struct
 {
