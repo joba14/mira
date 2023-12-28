@@ -29,11 +29,6 @@ mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
-#if 0
-static bool is_token_expr_block_token(
-	const mirac_token_s* const token);
-#endif
-
 static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena);
 
@@ -475,64 +470,64 @@ static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_expr_s block_expr = {0};
-	return block_expr;
+	mirac_ast_block_expr_s expr_block = {0};
+	return expr_block;
 }
 
 static mirac_ast_block_scope_s create_ast_block_scope(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_scope_s block_scope = {0};
-	block_scope.blocks = mirac_blocks_vector_from_parts(arena, 1);
-	return block_scope;
+	mirac_ast_block_scope_s scope_block = {0};
+	scope_block.blocks = mirac_blocks_vector_from_parts(arena, 1);
+	return scope_block;
 }
 
 static mirac_ast_block_if_s create_ast_block_if(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_if_s block_if = {0};
-	block_if.scope = create_ast_block_scope(arena);
-	return block_if;
+	mirac_ast_block_if_s if_block = {0};
+	if_block.scope = create_ast_block_scope(arena);
+	return if_block;
 }
 
 static mirac_ast_block_elif_s create_ast_block_elif(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_elif_s block_elif = {0};
-	block_elif.scope = create_ast_block_scope(arena);
-	return block_elif;
+	mirac_ast_block_elif_s elif_block = {0};
+	elif_block.scope = create_ast_block_scope(arena);
+	return elif_block;
 }
 
 static mirac_ast_block_else_s create_ast_block_else(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_else_s block_else = {0};
-	block_else.scope = create_ast_block_scope(arena);
-	return block_else;
+	mirac_ast_block_else_s else_block = {0};
+	else_block.scope = create_ast_block_scope(arena);
+	return else_block;
 }
 
 static mirac_ast_block_loop_s create_ast_block_loop(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_loop_s block_loop = {0};
-	block_loop.scope = create_ast_block_scope(arena);
-	return block_loop;
+	mirac_ast_block_loop_s loop_block = {0};
+	loop_block.scope = create_ast_block_scope(arena);
+	return loop_block;
 }
 
 static mirac_ast_block_func_s create_ast_block_func(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_block_func_s block_func = {0};
-	block_func.req_tokens = mirac_tokens_vector_from_parts(arena, 1);
-	block_func.ret_tokens = mirac_tokens_vector_from_parts(arena, 1);
-	block_func.scope = create_ast_block_scope(arena);
-	return block_func;
+	mirac_ast_block_func_s func_block = {0};
+	func_block.req_tokens = mirac_tokens_vector_from_parts(arena, 1);
+	func_block.ret_tokens = mirac_tokens_vector_from_parts(arena, 1);
+	func_block.scope = create_ast_block_scope(arena);
+	return func_block;
 }
 
 static mirac_ast_block_mem_s create_ast_block_mem(
@@ -547,20 +542,20 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_expr_s block_expr = create_ast_block_expr(parser->arena);
+	mirac_ast_block_expr_s expr_block = create_ast_block_expr(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
-	block_expr.token = token;
-	return block_expr;
+	expr_block.token = token;
+	return expr_block;
 }
 
 static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_scope_s block_scope = create_ast_block_scope(parser->arena);
+	mirac_ast_block_scope_s scope_block = create_ast_block_scope(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -575,17 +570,17 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 			break;
 		}
 
-		mirac_blocks_vector_push(&block_scope.blocks, block);
+		mirac_blocks_vector_push(&scope_block.blocks, block);
 	}
 
-	return block_scope;
+	return scope_block;
 }
 
 static mirac_ast_block_if_s parse_ast_block_if(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_if_s block_if = create_ast_block_if(parser->arena);
+	mirac_ast_block_if_s if_block = create_ast_block_if(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -602,15 +597,15 @@ static mirac_ast_block_if_s parse_ast_block_if(
 		);
 	}
 
-	block_if.scope = block.as.scope_block;
-	return block_if;
+	if_block.scope = block.as.scope_block;
+	return if_block;
 }
 
 static mirac_ast_block_elif_s parse_ast_block_elif(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_elif_s block_elif = create_ast_block_elif(parser->arena);
+	mirac_ast_block_elif_s elif_block = create_ast_block_elif(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -627,15 +622,15 @@ static mirac_ast_block_elif_s parse_ast_block_elif(
 		);
 	}
 
-	block_elif.scope = block.as.scope_block;
-	return block_elif;
+	elif_block.scope = block.as.scope_block;
+	return elif_block;
 }
 
 static mirac_ast_block_else_s parse_ast_block_else(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_else_s block_else = create_ast_block_else(parser->arena);
+	mirac_ast_block_else_s else_block = create_ast_block_else(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -652,15 +647,15 @@ static mirac_ast_block_else_s parse_ast_block_else(
 		);
 	}
 
-	block_else.scope = block.as.scope_block;
-	return block_else;
+	else_block.scope = block.as.scope_block;
+	return else_block;
 }
 
 static mirac_ast_block_loop_s parse_ast_block_loop(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_loop_s block_loop = create_ast_block_loop(parser->arena);
+	mirac_ast_block_loop_s loop_block = create_ast_block_loop(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -677,15 +672,15 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 		);
 	}
 
-	block_loop.scope = block.as.scope_block;
-	return block_loop;
+	loop_block.scope = block.as.scope_block;
+	return loop_block;
 }
 
 static mirac_ast_block_func_s parse_ast_block_func(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser);
-	mirac_ast_block_func_s block_func = create_ast_block_func(parser->arena);
+	mirac_ast_block_func_s func_block = create_ast_block_func(parser->arena);
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -694,7 +689,7 @@ static mirac_ast_block_func_s parse_ast_block_func(
 
 	if (mirac_token_type_reserved_inl == token.type)
 	{
-		block_func.is_inlined = true;
+		func_block.is_inlined = true;
 		mirac_token_from_type(mirac_token_type_none);
 		(void)mirac_lexer_lex_next(parser->lexer, &token);
 	}
@@ -707,7 +702,6 @@ static mirac_ast_block_func_s parse_ast_block_func(
 		);
 	}
 
-	token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
 	if (token.type != mirac_token_type_identifier)
@@ -718,8 +712,7 @@ static mirac_ast_block_func_s parse_ast_block_func(
 		);
 	}
 
-	block_func.identifier = token;
-	token = mirac_token_from_type(mirac_token_type_none);
+	func_block.identifier = token;
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
 	if (mirac_token_type_reserved_req == token.type)
@@ -728,14 +721,13 @@ static mirac_ast_block_func_s parse_ast_block_func(
 		{
 			if (!mirac_token_is_type_token(&token))
 			{
-				// mirac_lexer_unlex(parser->lexer, &token);
 				break;
 			}
 
-			mirac_tokens_vector_push(&block_func.req_tokens, token);
+			mirac_tokens_vector_push(&func_block.req_tokens, token);
 		}
 
-		if (block_func.req_tokens.count <= 0)
+		if (func_block.req_tokens.count <= 0)
 		{
 			log_parser_error_and_exit(token.location,
 				"no type specifiers were provided after 'req' token."
@@ -749,14 +741,13 @@ static mirac_ast_block_func_s parse_ast_block_func(
 		{
 			if (!mirac_token_is_type_token(&token))
 			{
-				// mirac_lexer_unlex(parser->lexer, &token);
 				break;
 			}
 
-			mirac_tokens_vector_push(&block_func.ret_tokens, token);
+			mirac_tokens_vector_push(&func_block.ret_tokens, token);
 		}
 
-		if (block_func.ret_tokens.count <= 0)
+		if (func_block.ret_tokens.count <= 0)
 		{
 			log_parser_error_and_exit(token.location,
 				"no type specifiers were provided after 'ret' token."
@@ -784,8 +775,8 @@ static mirac_ast_block_func_s parse_ast_block_func(
 		);
 	}
 
-	block_func.scope = block.as.scope_block;
-	return block_func;
+	func_block.scope = block.as.scope_block;
+	return func_block;
 }
 
 static mirac_ast_block_mem_s parse_ast_block_mem(
@@ -798,7 +789,6 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_reserved_mem == token.type);
 
-	token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
 	if (token.type != mirac_token_type_identifier)
@@ -810,7 +800,6 @@ static mirac_ast_block_mem_s parse_ast_block_mem(
 	}
 
 	mem_block.identifier = token;
-	token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
 	if (!mirac_token_is_signed_numeric_literal(&token) &&
