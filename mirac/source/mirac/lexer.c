@@ -226,10 +226,10 @@ mirac_token_s mirac_token_from_parts(
 }
 
 mirac_token_s mirac_token_from_type(
-	const mirac_token_type_e token_type)
+	const mirac_token_type_e type)
 {
 	mirac_token_s token = {0};
-	token.type = token_type;
+	token.type = type;
 	return token;
 }
 

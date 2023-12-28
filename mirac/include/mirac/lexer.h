@@ -186,12 +186,12 @@ mirac_token_s mirac_token_from_parts(
  * 
  * @note All the rest of the fields will be initialized to 0.
  * 
- * @param token_type[in] token type to assign to the new token
+ * @param type[in] token type to assign to the new token
  * 
  * @return mirac_token_s
  */
 mirac_token_s mirac_token_from_type(
-	const mirac_token_type_e token_type);
+	const mirac_token_type_e type);
 
 // TODO: write unit tests!
 /**
