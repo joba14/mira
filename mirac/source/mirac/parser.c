@@ -17,6 +17,7 @@
 
 mirac_implement_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
+mirac_implement_heap_array_type(mirac_blocks_ref_vector, mirac_ast_block_s*);
 
 #define log_parser_error_and_exit(_location, _format, ...)                     \
 	do                                                                         \
@@ -489,6 +490,32 @@ void mirac_parser_unparse(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(block != NULL);
 	parser->block = *block;
+}
+
+mirac_ast_unit_s mirac_parser_parse_ast_unit(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser != NULL);
+	mirac_ast_unit_s ast_unit = mirac_ast_unit_from_parts(parser->arena);
+
+	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+	while (!mirac_parser_should_stop_parsing(mirac_parser_parse_next(parser, &block)))
+	{
+		mirac_blocks_vector_push(&ast_unit.blocks, block);
+	}
+
+	return ast_unit;
+}
+
+void mirac_parser_cross_reference_ast_unit(
+	mirac_ast_unit_s* const ast_unit)
+{
+	mirac_debug_assert(ast_unit != NULL);
+
+	for (ast_unit)
+	{
+
+	}
 }
 
 static mirac_ast_block_expr_s create_ast_block_expr(

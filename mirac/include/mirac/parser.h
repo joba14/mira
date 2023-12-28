@@ -22,6 +22,7 @@
 typedef struct mirac_ast_block_s mirac_ast_block_s;
 mirac_define_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
+mirac_define_heap_array_type(mirac_blocks_ref_vector, mirac_ast_block_s*);
 
 typedef struct
 {
@@ -160,6 +161,8 @@ void mirac_ast_block_print(
 typedef struct
 {
 	mirac_blocks_vector_s blocks;
+	// TODO: add cross reference tables for blocks with identifiers (for now, func and mem?).
+
 } mirac_ast_unit_s;
 
 // TODO: document!
@@ -197,5 +200,13 @@ bool mirac_parser_should_stop_parsing(
 void mirac_parser_unparse(
 	mirac_parser_s* const parser,
 	mirac_ast_block_s* const block);
+
+// TODO: document!
+mirac_ast_unit_s mirac_parser_parse_ast_unit(
+	mirac_parser_s* const parser);
+
+// TODO: document!
+void mirac_parser_cross_reference_ast_unit(
+	mirac_ast_unit_s* const ast_unit);
 
 #endif

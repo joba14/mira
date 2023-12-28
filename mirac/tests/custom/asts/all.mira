@@ -4,11 +4,17 @@
 ; --- 
 mem my_mem_1 10 ; of size = 10 bytes
 
+func test_func {
+	10 putu
+}
+
 ; --- 
 ; :brief function (can be marked as inlined with 'inl' keyword before 'func' keyword)
 ; --- 
 func my_func_1 {
 	; code goes here...
+
+	test_func
 
 	; --- 
 	; :brief branching blocks
