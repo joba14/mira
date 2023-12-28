@@ -59,6 +59,12 @@ void mirac_arena_destroy(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
+
+	if (!arena->is_used)
+	{
+		return;
+	}
+
 	const mirac_node_s* node_iterator = arena->begin;
 	mirac_debug_assert(node_iterator != NULL);
 
@@ -79,6 +85,7 @@ void* mirac_arena_malloc(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_debug_assert(size > 0);
+	arena->is_used = true;
 
 	if (NULL == arena->end)
 	{

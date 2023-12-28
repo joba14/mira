@@ -48,6 +48,7 @@ typedef struct
 {
 	mirac_node_s* begin;
 	mirac_node_s* end;
+	bool is_used;
 } mirac_arena_s;
 
 // TODO: write unit tests!
