@@ -43,7 +43,7 @@ int32_t main(
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_files[source_file_index]);
 
 		mirac_arena_s arena = mirac_arena_from_parts();
-		mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path);
+		mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 		mirac_ast_unit_s ast_unit = mirac_parser_parse_ast_unit(&parser);
 		mirac_parser_print_ast_unit(&ast_unit);

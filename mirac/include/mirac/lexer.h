@@ -275,6 +275,21 @@ typedef struct
 
 // TODO: write unit tests!
 /**
+ * @brief Create a lexer with provided source string.
+ * 
+ * @param config[in]      config instance
+ * @param arena[in]       arena instance for memory management
+ * @param string_view[in] source string to lex
+ * 
+ * @return mirac_lexer_s
+ */
+mirac_lexer_s mirac_lexer_from_string_view(
+	mirac_config_s* const config,
+	mirac_arena_s* const arena,
+	const mirac_string_view_s string_view);
+
+// TODO: write unit tests!
+/**
  * @brief Create a lexer with provided file and its path.
  * 
  * @param config[in]    config instance
@@ -283,7 +298,7 @@ typedef struct
  * 
  * @return mirac_lexer_s
  */
-mirac_lexer_s mirac_lexer_from_parts(
+mirac_lexer_s mirac_lexer_from_file_path(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	const mirac_string_view_s file_path);
