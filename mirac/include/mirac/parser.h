@@ -159,6 +159,15 @@ void mirac_ast_block_print(
 
 typedef struct
 {
+	mirac_blocks_vector_s blocks;
+} mirac_ast_unit_s;
+
+// TODO: document!
+mirac_ast_unit_s mirac_ast_unit_from_parts(
+	mirac_arena_s* const arena);
+
+typedef struct
+{
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;

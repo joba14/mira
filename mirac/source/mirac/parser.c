@@ -353,6 +353,15 @@ void mirac_ast_block_print(
 	}
 }
 
+mirac_ast_unit_s mirac_ast_unit_from_parts(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_unit_s ast_unit = {0};
+	ast_unit.blocks = mirac_blocks_vector_from_parts(arena, 1);
+	return ast_unit;
+}
+
 mirac_parser_s mirac_parser_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,

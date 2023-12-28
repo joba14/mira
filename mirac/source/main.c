@@ -48,16 +48,16 @@ int32_t main(
 		mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 
-		mirac_blocks_vector_s blocks = mirac_blocks_vector_from_parts(&arena, 1);
+		mirac_ast_unit_s ast_unit = mirac_ast_unit_from_parts(&arena);
 		mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
 		while (!mirac_parser_should_stop_parsing(mirac_parser_parse_next(&parser, &block)))
 		{
-			mirac_blocks_vector_push(&blocks, block);
+			mirac_blocks_vector_push(&ast_unit.blocks, block);
 		}
 
-		for (uint64_t block_index = 0; block_index < blocks.count; ++block_index)
+		for (uint64_t block_index = 0; block_index < ast_unit.blocks.count; ++block_index)
 		{
-			mirac_ast_block_print(&blocks.data[block_index], 0);
+			mirac_ast_block_print(&ast_unit.blocks.data[block_index], 0);
 		}
 
 		mirac_arena_destroy(&arena);
