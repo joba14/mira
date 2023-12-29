@@ -44,15 +44,9 @@ int32_t main(
 		mirac_arena_s arena = mirac_arena_from_parts();
 		mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
-		mirac_ast_unit_s ast_unit = mirac_parser_parse_ast_unit(&parser);
-
-		// TODO: remove:
-		// [
-			for (uint64_t block_index = 0; block_index < ast_unit.blocks.count; ++block_index)
-			{
-				mirac_ast_block_print(&ast_unit.blocks.data[block_index], 0);
-			}
-		// ]
+		mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
+		mirac_ast_unit_cross_reference(&unit);
+		mirac_ast_unit_print(&unit, 0);
 
 		// TODO: implement the checker!
 		mirac_checker_s checker = mirac_checker_from_parts();

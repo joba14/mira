@@ -20,14 +20,21 @@
 #include <mirac/lexer.h>
 
 typedef struct mirac_ast_block_s mirac_ast_block_s;
+typedef struct mirac_ast_block_expr_s mirac_ast_block_expr_s;
+typedef struct mirac_ast_block_func_s mirac_ast_block_func_s;
+typedef struct mirac_ast_block_mem_s mirac_ast_block_mem_s;
+
 mirac_define_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
-mirac_define_heap_array_type(mirac_blocks_ref_vector, mirac_ast_block_s*);
 
-typedef struct
+mirac_define_heap_array_type(mirac_expr_blocks_refs_vector, mirac_ast_block_expr_s*);
+mirac_define_heap_array_type(mirac_func_blocks_refs_vector, mirac_ast_block_func_s*);
+mirac_define_heap_array_type(mirac_mem_blocks_refs_vector, mirac_ast_block_mem_s*);
+
+struct mirac_ast_block_expr_s
 {
 	mirac_token_s token;
-} mirac_ast_block_expr_s;
+};
 
 // TODO: document!
 void mirac_ast_block_expr_print(
@@ -94,7 +101,7 @@ void mirac_ast_block_loop_print(
 	const mirac_ast_block_loop_s* const loop_block,
 	const uint64_t indent);
 
-typedef struct
+struct mirac_ast_block_func_s
 {
 	mirac_token_s identifier;
 	mirac_tokens_vector_s req_tokens;
@@ -103,19 +110,19 @@ typedef struct
 	bool is_inlined;
 	bool is_entry;
 	bool is_used;
-} mirac_ast_block_func_s;
+};
 
 // TODO: document!
 void mirac_ast_block_func_print(
 	const mirac_ast_block_func_s* const func_block,
 	const uint64_t indent);
 
-typedef struct
+struct mirac_ast_block_mem_s
 {
 	mirac_token_s identifier;
 	mirac_token_s capacity;
 	bool is_used;
-} mirac_ast_block_mem_s;
+};
 
 // TODO: document!
 void mirac_ast_block_mem_print(
@@ -173,12 +180,23 @@ void mirac_ast_block_print(
 typedef struct
 {
 	mirac_blocks_vector_s blocks;
-	// TODO: add cross reference tables for blocks with identifiers (for now, func and mem?).
+	mirac_expr_blocks_refs_vector_s str_refs;
+	mirac_func_blocks_refs_vector_s func_refs;
+	mirac_mem_blocks_refs_vector_s mem_refs;
 } mirac_ast_unit_s;
 
 // TODO: document!
 mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_arena_s* const arena);
+
+// TODO: document!
+void mirac_ast_unit_cross_reference(
+	mirac_ast_unit_s* const unit);
+
+// TODO: document!
+void mirac_ast_unit_print(
+	const mirac_ast_unit_s* const unit,
+	const uint64_t indent);
 
 typedef struct
 {
@@ -186,6 +204,7 @@ typedef struct
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;
 	mirac_ast_block_s block;
+	mirac_ast_unit_s unit;
 } mirac_parser_s;
 
 // TODO: document!
@@ -197,20 +216,6 @@ mirac_parser_s mirac_parser_from_parts(
 // TODO: document!
 void mirac_parser_destroy(
 	mirac_parser_s* const parser);
-
-// TODO: document!
-mirac_ast_block_type_e mirac_parser_parse_next(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block);
-
-// TODO: document!
-bool mirac_parser_should_stop_parsing(
-	const mirac_ast_block_type_e type);
-
-// TODO: document!
-void mirac_parser_unparse(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block);
 
 // TODO: document!
 mirac_ast_unit_s mirac_parser_parse_ast_unit(
