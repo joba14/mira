@@ -4,6 +4,17 @@ func b { 2 }
 func c { 3 }
 func d { 4 }
 
+"labas1"
+func e {
+	5
+	func inner {
+		"labas3"
+		6
+	}
+	inner
+	"labas2"
+}
+
 // func task1 {
 // 	10 ; putu
 // }
