@@ -36,6 +36,16 @@ void mirac_ast_block_expr_print(
 
 typedef struct
 {
+	mirac_tokens_vector_s type_tokens;
+} mirac_ast_block_as_s;
+
+// TODO: document!
+void mirac_ast_block_as_print(
+	const mirac_ast_block_as_s* const as_block,
+	const uint64_t indent);
+
+typedef struct
+{
 	mirac_blocks_vector_s blocks;
 } mirac_ast_block_scope_s;
 
@@ -115,6 +125,7 @@ void mirac_ast_block_mem_print(
 typedef enum
 {
 	mirac_ast_block_type_expr = 0,
+	mirac_ast_block_type_as,
 	mirac_ast_block_type_scope,
 	mirac_ast_block_type_if,
 	mirac_ast_block_type_elif,
@@ -139,6 +150,7 @@ struct mirac_ast_block_s
 	union
 	{
 		mirac_ast_block_expr_s  expr_block;
+		mirac_ast_block_as_s    as_block;
 		mirac_ast_block_scope_s scope_block;
 		mirac_ast_block_if_s    if_block;
 		mirac_ast_block_elif_s  elif_block;
@@ -162,7 +174,6 @@ typedef struct
 {
 	mirac_blocks_vector_s blocks;
 	// TODO: add cross reference tables for blocks with identifiers (for now, func and mem?).
-
 } mirac_ast_unit_s;
 
 // TODO: document!
@@ -204,9 +215,5 @@ void mirac_parser_unparse(
 // TODO: document!
 mirac_ast_unit_s mirac_parser_parse_ast_unit(
 	mirac_parser_s* const parser);
-
-// TODO: document!
-void mirac_parser_cross_reference_ast_unit(
-	mirac_ast_unit_s* const ast_unit);
 
 #endif
