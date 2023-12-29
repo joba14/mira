@@ -22,6 +22,7 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/lexer.c
 	$PROJECT_DIR/source/mirac/parser.c
 	$PROJECT_DIR/source/mirac/checker.c
+	$PROJECT_DIR/source/mirac/compiler.c
 	$PROJECT_DIR/source/main.c
 "
 

@@ -18,6 +18,7 @@
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
 #include <mirac/checker.h>
+#include <mirac/compiler.h>
 
 int32_t main(
 	const int32_t argc,
@@ -45,11 +46,17 @@ int32_t main(
 		mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 		mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
-		mirac_ast_unit_print(&unit, 0);
 
 		// TODO: implement the checker!
-		// mirac_checker_s checker = mirac_checker_from_parts(&config, &arena);
-		// mirac_checker_type_check_ast_unit(&checker, &unit);
+		mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
+		mirac_checker_type_check_ast_unit(&checker);
+
+		// TODO: implement the compiler!
+		mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit);
+		mirac_compiler_compile_ast_unit(&compiler);
+
+		// TODO: remove:
+		mirac_ast_unit_print(&unit, 0);
 
 		mirac_arena_destroy(&arena);
 	}
