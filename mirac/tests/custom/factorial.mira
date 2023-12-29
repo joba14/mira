@@ -1,11 +1,14 @@
 
+func putu { }
+
 func factorial1
 	req u64
 	ret u64
 {
-	\+. loop \+. 0 > {
+	\+. \+. 0 > loop {
 		1 -
 		\>< \>. * \><
+		\+. 0 >
 	} \!.
 }
 
@@ -13,7 +16,7 @@ func factorial2
 	req u64
 	ret u64
 {
-	if \+. 1 < {
+	\+. 1 < if {
 		\!. 1
 	} else {
 		\+. 1 - factorial2 *

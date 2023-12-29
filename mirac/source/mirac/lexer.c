@@ -811,10 +811,7 @@ static int32_t compare_text_with_reserved_token(
 {
 	const mirac_string_view_s* left_string_view = (const mirac_string_view_s*)left;
 	const mirac_string_view_s* right_string_view = (const mirac_string_view_s*)right;
-	return mirac_c_strncmp(left_string_view->data, right_string_view->data,
-		(left_string_view->length > right_string_view->length ?
-			left_string_view->length : right_string_view->length)
-	);
+	return mirac_c_strncmp(left_string_view->data, right_string_view->data, left_string_view->length);
 }
 
 static mirac_token_type_e parse_reserved_token_from_text(
