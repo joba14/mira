@@ -493,7 +493,7 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 	return unit;
 }
 
-void mirac_ast_unit_cross_reference(
+void mirac_ast_unit_cross_reference_and_validate(
 	mirac_ast_unit_s* const unit)
 {
 	mirac_debug_assert(unit != NULL);
@@ -502,12 +502,6 @@ void mirac_ast_unit_cross_reference(
 	{
 		cross_reference_ast_block(unit, &unit->blocks.data[block_index]);
 	}
-}
-
-void mirac_ast_unit_validate(
-	mirac_ast_unit_s* const unit)
-{
-	mirac_debug_assert(unit != NULL);
 
 	for (uint64_t block_index = 0; block_index < unit->blocks.count; ++block_index)
 	{
@@ -543,12 +537,6 @@ void mirac_ast_unit_print(
 	printf("func_refs:\n");
 	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
 	{
-		// TODO: remove:
-		// const mirac_ast_block_func_s* const func_block_ref = unit->func_refs.data[func_ref_index];
-		// const mirac_token_s* const identifier = &(func_block_ref->identifier);
-		// mirac_logger_debug("type='%u'", identifier->type);
-		// mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(identifier)));
-
 		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
 		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&(unit->func_refs.data[func_ref_index])->identifier)));
 	}

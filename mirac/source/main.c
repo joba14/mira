@@ -45,8 +45,8 @@ int32_t main(
 		mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
 		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 		mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
-		mirac_ast_unit_cross_reference(&unit);
-		mirac_ast_unit_validate(&unit);
+		mirac_ast_unit_cross_reference_and_validate(&unit);
+
 		mirac_ast_unit_print(&unit, 0);
 
 		// TODO: implement the checker!
