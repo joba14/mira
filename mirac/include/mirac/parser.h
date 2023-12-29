@@ -190,10 +190,6 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_arena_s* const arena);
 
 // TODO: document!
-void mirac_ast_unit_cross_reference_and_validate(
-	mirac_ast_unit_s* const unit);
-
-// TODO: document!
 void mirac_ast_unit_print(
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent);

@@ -493,22 +493,6 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 	return unit;
 }
 
-void mirac_ast_unit_cross_reference_and_validate(
-	mirac_ast_unit_s* const unit)
-{
-	mirac_debug_assert(unit != NULL);
-
-	for (uint64_t block_index = 0; block_index < unit->blocks.count; ++block_index)
-	{
-		cross_reference_ast_block(unit, &unit->blocks.data[block_index]);
-	}
-
-	for (uint64_t block_index = 0; block_index < unit->blocks.count; ++block_index)
-	{
-		validate_ast_block(unit, &unit->blocks.data[block_index], 0);
-	}
-}
-
 void mirac_ast_unit_print(
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent)
@@ -586,6 +570,16 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 	while (!should_stop_parsing(parse_ast_block(parser, &block)))
 	{
 		mirac_blocks_vector_push(&parser->unit.blocks, block);
+	}
+
+	for (uint64_t block_index = 0; block_index < parser->unit.blocks.count; ++block_index)
+	{
+		cross_reference_ast_block(&parser->unit, &parser->unit.blocks.data[block_index]);
+	}
+
+	for (uint64_t block_index = 0; block_index < parser->unit.blocks.count; ++block_index)
+	{
+		validate_ast_block(&parser->unit, &parser->unit.blocks.data[block_index], 0);
 	}
 
 	return parser->unit;
