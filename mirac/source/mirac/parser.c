@@ -1294,13 +1294,14 @@ static bool is_identifier_token_valid_by_ast_unit_refs(
 
 	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
 	{
-		const mirac_ast_block_func_s* const func_ref = unit->func_refs.data[func_ref_index];
+		mirac_ast_block_func_s* const func_ref = unit->func_refs.data[func_ref_index];
 		mirac_debug_assert(func_ref != NULL);
 
 		if (mirac_string_view_equal(func_ref->identifier.as.ident, token->as.ident))
 		{
 			if (func_ref->identifier.index < token->index)
 			{
+				func_ref->is_used = true;
 				return true;
 			}
 		}
@@ -1308,13 +1309,14 @@ static bool is_identifier_token_valid_by_ast_unit_refs(
 
 	for (uint64_t mem_ref_index = 0; mem_ref_index < unit->mem_refs.count; ++mem_ref_index)
 	{
-		const mirac_ast_block_mem_s* const mem_ref = unit->mem_refs.data[mem_ref_index];
+		mirac_ast_block_mem_s* const mem_ref = unit->mem_refs.data[mem_ref_index];
 		mirac_debug_assert(mem_ref != NULL);
 
 		if (mirac_string_view_equal(mem_ref->identifier.as.ident, token->as.ident))
 		{
 			if (mem_ref->identifier.index < token->index)
 			{
+				mem_ref->is_used = true;
 				return true;
 			}
 		}
