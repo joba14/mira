@@ -1221,50 +1221,15 @@ static void cross_reference_ast_block(
 
 	switch (block->type)
 	{
-		case mirac_ast_block_type_expr:
-		{
-			cross_reference_ast_block_expr(unit, &block->as.expr_block);
-		} break;
-
-		case mirac_ast_block_type_as:
-		{
-			cross_reference_ast_block_as(unit, &block->as.as_block);
-		} break;
-
-		case mirac_ast_block_type_scope:
-		{
-			cross_reference_ast_block_scope(unit, &block->as.scope_block);
-		} break;
-
-		case mirac_ast_block_type_if:
-		{
-			cross_reference_ast_block_if(unit, &block->as.if_block);
-		} break;
-
-		case mirac_ast_block_type_elif:
-		{
-			cross_reference_ast_block_elif(unit, &block->as.elif_block);
-		} break;
-
-		case mirac_ast_block_type_else:
-		{
-			cross_reference_ast_block_else(unit, &block->as.else_block);
-		} break;
-
-		case mirac_ast_block_type_loop:
-		{
-			cross_reference_ast_block_loop(unit, &block->as.loop_block);
-		} break;
-
-		case mirac_ast_block_type_func:
-		{
-			cross_reference_ast_block_func(unit, &block->as.func_block);
-		} break;
-
-		case mirac_ast_block_type_mem:
-		{
-			cross_reference_ast_block_mem(unit, &block->as.mem_block);
-		} break;
+		case mirac_ast_block_type_expr:  { cross_reference_ast_block_expr(unit, &block->as.expr_block);   } break;
+		case mirac_ast_block_type_as:    { cross_reference_ast_block_as(unit, &block->as.as_block);       } break;
+		case mirac_ast_block_type_scope: { cross_reference_ast_block_scope(unit, &block->as.scope_block); } break;
+		case mirac_ast_block_type_if:    { cross_reference_ast_block_if(unit, &block->as.if_block);       } break;
+		case mirac_ast_block_type_elif:  { cross_reference_ast_block_elif(unit, &block->as.elif_block);   } break;
+		case mirac_ast_block_type_else:  { cross_reference_ast_block_else(unit, &block->as.else_block);   } break;
+		case mirac_ast_block_type_loop:  { cross_reference_ast_block_loop(unit, &block->as.loop_block);   } break;
+		case mirac_ast_block_type_func:  { cross_reference_ast_block_func(unit, &block->as.func_block);   } break;
+		case mirac_ast_block_type_mem:   { cross_reference_ast_block_mem(unit, &block->as.mem_block);     } break;
 
 		default:
 		{
@@ -1470,50 +1435,15 @@ static void validate_ast_block(
 
 	switch (block->type)
 	{
-		case mirac_ast_block_type_expr:
-		{
-			validate_ast_block_expr(unit, &block->as.expr_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_as:
-		{
-			validate_ast_block_as(unit, &block->as.as_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_scope:
-		{
-			validate_ast_block_scope(unit, &block->as.scope_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_if:
-		{
-			validate_ast_block_if(unit, &block->as.if_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_elif:
-		{
-			validate_ast_block_elif(unit, &block->as.elif_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_else:
-		{
-			validate_ast_block_else(unit, &block->as.else_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_loop:
-		{
-			validate_ast_block_loop(unit, &block->as.loop_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_func:
-		{
-			validate_ast_block_func(unit, &block->as.func_block, depth + 1);
-		} break;
-
-		case mirac_ast_block_type_mem:
-		{
-			validate_ast_block_mem(unit, &block->as.mem_block, depth + 1);
-		} break;
+		case mirac_ast_block_type_expr:  { validate_ast_block_expr(unit, &block->as.expr_block, depth + 1);   } break;
+		case mirac_ast_block_type_as:    { validate_ast_block_as(unit, &block->as.as_block, depth + 1);       } break;
+		case mirac_ast_block_type_scope: { validate_ast_block_scope(unit, &block->as.scope_block, depth + 1); } break;
+		case mirac_ast_block_type_if:    { validate_ast_block_if(unit, &block->as.if_block, depth + 1);       } break;
+		case mirac_ast_block_type_elif:  { validate_ast_block_elif(unit, &block->as.elif_block, depth + 1);   } break;
+		case mirac_ast_block_type_else:  { validate_ast_block_else(unit, &block->as.else_block, depth + 1);   } break;
+		case mirac_ast_block_type_loop:  { validate_ast_block_loop(unit, &block->as.loop_block, depth + 1);   } break;
+		case mirac_ast_block_type_func:  { validate_ast_block_func(unit, &block->as.func_block, depth + 1);   } break;
+		case mirac_ast_block_type_mem:   { validate_ast_block_mem(unit, &block->as.mem_block, depth + 1);     } break;
 
 		default:
 		{
