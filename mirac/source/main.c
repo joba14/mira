@@ -13,6 +13,7 @@
 #include <main.h>
 
 #include <mirac/logger.h>
+#include <mirac/timer.h>
 #include <mirac/config.h>
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
@@ -41,23 +42,28 @@ int32_t main(
 		const char* const source_file_pointer = source_files[source_file_index];
 		mirac_debug_assert(source_file_pointer != NULL);
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_file_pointer);
-
 		mirac_arena_s arena = mirac_arena_from_parts();
-		mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
-		mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
-		mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
-		// TODO: implement the checker!
-		mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
-		mirac_checker_type_check_ast_unit(&checker);
+		const mirac_seconds_t start_time = mirac_timer_get_time_in_seconds();
+		{
+			mirac_lexer_s lexer = mirac_lexer_from_file_path(&config, &arena, source_file_path);
+			mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
+			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
-		// TODO: implement the compiler!
-		mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit);
-		mirac_compiler_compile_ast_unit(&compiler);
+			// TODO: implement the checker!
+			mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
+			mirac_checker_type_check_ast_unit(&checker);
 
-		// TODO: remove:
-		mirac_ast_unit_print(&unit, 0);
+			// TODO: implement the compiler!
+			mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit);
+			mirac_compiler_compile_ast_unit(&compiler);
 
+			// TODO: remove:
+			mirac_ast_unit_print(&unit, 0);
+		}
+		const mirac_seconds_t elapsed_time = mirac_timer_get_elapsed_time_in_seconds(start_time);
+
+		mirac_logger_info("file '" mirac_sv_fmt "' was compiled in %.3Lf secs.", mirac_sv_arg(source_file_path), elapsed_time);
 		mirac_arena_destroy(&arena);
 	}
 

@@ -3,7 +3,7 @@
 	<img src="./logo.svg" alt="Logo" width="400">
 </a>
 
-[![License](https://img.shields.io/badge/license-Prime_GPLv1-brightgreen.svg?style=for-the-badge)](./license.md)
+[![License](https://img.shields.io/badge/license-Mira_GPLv1-brightgreen.svg?style=for-the-badge)](./license.md)
 ![Language Support](https://img.shields.io/badge/languages-C-brightgreen.svg?style=for-the-badge)
 ![Platform Support](https://img.shields.io/badge/platforms-Linux-brightgreen.svg?style=for-the-badge)
 

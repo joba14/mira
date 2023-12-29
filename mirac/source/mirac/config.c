@@ -37,7 +37,7 @@ static const char* const g_usage_banner =
 	"    -o, --output <path>        set output file name\n"
 	"\n"
 	"notice:\n"
-	"    this executable is distributed under the \"prime gplv1\" license.\n";
+	"    this executable is distributed under the \"mira gplv1\" license.\n";
 
 mirac_config_s mirac_config_from_cli(
 	const int32_t argc,
