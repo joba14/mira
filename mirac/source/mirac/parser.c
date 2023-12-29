@@ -160,6 +160,77 @@ static void cross_reference_ast_block(
 	mirac_ast_unit_s* const unit,
 	mirac_ast_block_s* const block);
 
+
+
+
+
+
+
+
+// TODO: document!
+static void validate_ast_block_expr(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_expr_s* const expr_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_as(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_as_s* const as_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_scope(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_scope_s* const scope_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_if(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_if_s* const if_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_elif(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_elif_s* const elif_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_else(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_else_s* const else_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_loop(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_loop_s* const loop_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_func(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_func_s* const func_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_mem(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_mem_s* const mem_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_s* const block,
+	const uint64_t depth);
+
+
+
+
+
 // TODO: document!
 static bool should_stop_parsing(
 	const mirac_ast_block_type_e type);
@@ -446,8 +517,7 @@ void mirac_ast_unit_validate(
 
 	for (uint64_t block_index = 0; block_index < unit->blocks.count; ++block_index)
 	{
-		// TODO: add block validation logic!
-		// validate_ast_block(unit, &unit->blocks.data[block_index], 0);
+		validate_ast_block(unit, &unit->blocks.data[block_index], 0);
 	}
 }
 
@@ -1182,6 +1252,215 @@ static void cross_reference_ast_block(
 		case mirac_ast_block_type_mem:
 		{
 			cross_reference_ast_block_mem(unit, &block->as.mem_block);
+		} break;
+
+		default:
+		{
+		} break;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static void validate_ast_block_expr(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_expr_s* const expr_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(expr_block != NULL);
+
+	// TODO: handle identifiers!
+}
+
+static void validate_ast_block_as(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_as_s* const as_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(as_block != NULL);
+}
+
+static void validate_ast_block_scope(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_scope_s* const scope_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(scope_block != NULL);
+
+	for (uint64_t block_index = 0; block_index < scope_block->blocks.count; ++block_index)
+	{
+		validate_ast_block(unit, &scope_block->blocks.data[block_index], depth);
+	}
+}
+
+static void validate_ast_block_if(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_if_s* const if_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(if_block != NULL);
+
+	validate_ast_block_scope(unit, &if_block->scope, depth);
+}
+
+static void validate_ast_block_elif(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_elif_s* const elif_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(elif_block != NULL);
+
+	validate_ast_block_scope(unit, &elif_block->scope, depth);
+}
+
+static void validate_ast_block_else(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_else_s* const else_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(else_block != NULL);
+
+	validate_ast_block_scope(unit, &else_block->scope, depth);
+}
+
+static void validate_ast_block_loop(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_loop_s* const loop_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(loop_block != NULL);
+
+	validate_ast_block_scope(unit, &loop_block->scope, depth);
+}
+
+static void validate_ast_block_func(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_func_s* const func_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(func_block != NULL);
+
+	// TODO: handle identifiers!
+
+	validate_ast_block_scope(unit, &func_block->scope, depth);
+}
+
+static void validate_ast_block_mem(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_mem_s* const mem_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(mem_block != NULL);
+
+	// TODO: handle identifiers!
+}
+
+static void validate_ast_block(
+	mirac_ast_unit_s* const unit,
+	mirac_ast_block_s* const block,
+	const uint64_t depth)
+{
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(block != NULL);
+
+	if (depth <= 0)
+	{
+		if ((block->type != mirac_ast_block_type_func) &&
+			(block->type != mirac_ast_block_type_mem))
+		{
+			log_parser_error_and_exit(block->location,
+				"encountered an invalid global '" mirac_sv_fmt "' block.",
+				mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
+			);
+		}
+	}
+	else
+	{
+		if ((mirac_ast_block_type_func == block->type) ||
+			(mirac_ast_block_type_mem  == block->type))
+		{
+			log_parser_error_and_exit(block->location,
+				"encountered an invalid local '" mirac_sv_fmt "' block.",
+				mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
+			);
+		}
+	}
+
+	switch (block->type)
+	{
+		case mirac_ast_block_type_expr:
+		{
+			validate_ast_block_expr(unit, &block->as.expr_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_as:
+		{
+			validate_ast_block_as(unit, &block->as.as_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_scope:
+		{
+			validate_ast_block_scope(unit, &block->as.scope_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_if:
+		{
+			validate_ast_block_if(unit, &block->as.if_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_elif:
+		{
+			validate_ast_block_elif(unit, &block->as.elif_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_else:
+		{
+			validate_ast_block_else(unit, &block->as.else_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_loop:
+		{
+			validate_ast_block_loop(unit, &block->as.loop_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_func:
+		{
+			validate_ast_block_func(unit, &block->as.func_block, depth + 1);
+		} break;
+
+		case mirac_ast_block_type_mem:
+		{
+			validate_ast_block_mem(unit, &block->as.mem_block, depth + 1);
 		} break;
 
 		default:
