@@ -160,12 +160,10 @@ static void cross_reference_ast_block(
 	mirac_ast_unit_s* const unit,
 	mirac_ast_block_s* const block);
 
-
-
-
-
-
-
+// TODO: document!
+static bool is_identifier_token_valid_by_ast_unit_refs(
+	mirac_ast_unit_s* const unit,
+	const mirac_token_s* const token);
 
 // TODO: document!
 static void validate_ast_block_expr(
@@ -226,10 +224,6 @@ static void validate_ast_block(
 	mirac_ast_unit_s* const unit,
 	mirac_ast_block_s* const block,
 	const uint64_t depth);
-
-
-
-
 
 // TODO: document!
 static bool should_stop_parsing(
@@ -1110,6 +1104,14 @@ static void cross_reference_ast_block_expr(
 
 	if (mirac_token_type_literal_str == expr_block->token.type)
 	{
+		for (uint64_t str_ref_index = 0; str_ref_index < unit->str_refs.count; ++str_ref_index)
+		{
+			if (mirac_string_view_equal(expr_block->token.as.str, (unit->str_refs.data[str_ref_index])->token.as.str))
+			{
+				return;
+			}
+		}
+
 		mirac_expr_blocks_refs_vector_push(&unit->str_refs, expr_block);
 	}
 }
@@ -1182,6 +1184,17 @@ static void cross_reference_ast_block_func(
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(func_block != NULL);
 
+	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
+	{
+		if (mirac_string_view_equal(func_block->identifier.as.str, (unit->func_refs.data[func_ref_index])->identifier.as.str))
+		{
+			log_parser_error_and_exit(func_block->identifier.location,
+				"encountered a redefinition of a function '" mirac_sv_fmt "'.",
+				mirac_sv_arg(func_block->identifier.text)
+			);
+		}
+	}
+
 	mirac_func_blocks_refs_vector_push(&unit->func_refs, func_block);
 
 	for (uint64_t block_index = 0; block_index < func_block->scope.blocks.count; ++block_index)
@@ -1196,6 +1209,17 @@ static void cross_reference_ast_block_mem(
 {
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(mem_block != NULL);
+
+	for (uint64_t mem_ref_index = 0; mem_ref_index < unit->mem_refs.count; ++mem_ref_index)
+	{
+		if (mirac_string_view_equal(mem_block->identifier.as.str, (unit->mem_refs.data[mem_ref_index])->identifier.as.str))
+		{
+			log_parser_error_and_exit(mem_block->identifier.location,
+				"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
+				mirac_sv_arg(mem_block->identifier.text)
+			);
+		}
+	}
 
 	mirac_mem_blocks_refs_vector_push(&unit->mem_refs, mem_block);
 }
@@ -1260,19 +1284,44 @@ static void cross_reference_ast_block(
 	}
 }
 
+static bool is_identifier_token_valid_by_ast_unit_refs(
+	mirac_ast_unit_s* const unit,
+	const mirac_token_s* const token)
+{
+	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(mirac_token_type_identifier == token->type);
 
+	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
+	{
+		const mirac_ast_block_func_s* const func_ref = unit->func_refs.data[func_ref_index];
+		mirac_debug_assert(func_ref != NULL);
 
+		if (mirac_string_view_equal(func_ref->identifier.as.ident, token->as.ident))
+		{
+			if (func_ref->identifier.index < token->index)
+			{
+				return true;
+			}
+		}
+	}
 
+	for (uint64_t mem_ref_index = 0; mem_ref_index < unit->mem_refs.count; ++mem_ref_index)
+	{
+		const mirac_ast_block_mem_s* const mem_ref = unit->mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_ref != NULL);
 
+		if (mirac_string_view_equal(mem_ref->identifier.as.ident, token->as.ident))
+		{
+			if (mem_ref->identifier.index < token->index)
+			{
+				return true;
+			}
+		}
+	}
 
-
-
-
-
-
-
-
-
+	return false;
+}
 
 static void validate_ast_block_expr(
 	mirac_ast_unit_s* const unit,
@@ -1283,7 +1332,16 @@ static void validate_ast_block_expr(
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(expr_block != NULL);
 
-	// TODO: handle identifiers!
+	if (mirac_token_type_identifier == expr_block->token.type)
+	{
+		if (!is_identifier_token_valid_by_ast_unit_refs(unit, &expr_block->token))
+		{
+			log_parser_error_and_exit(expr_block->token.location,
+				"encountered an undefined identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(expr_block->token.text)
+			);
+		}
+	}
 }
 
 static void validate_ast_block_as(
@@ -1301,7 +1359,6 @@ static void validate_ast_block_scope(
 	mirac_ast_block_scope_s* const scope_block,
 	const uint64_t depth)
 {
-	(void)depth;
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(scope_block != NULL);
 
@@ -1316,7 +1373,6 @@ static void validate_ast_block_if(
 	mirac_ast_block_if_s* const if_block,
 	const uint64_t depth)
 {
-	(void)depth;
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(if_block != NULL);
 
@@ -1328,7 +1384,6 @@ static void validate_ast_block_elif(
 	mirac_ast_block_elif_s* const elif_block,
 	const uint64_t depth)
 {
-	(void)depth;
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(elif_block != NULL);
 
@@ -1340,7 +1395,6 @@ static void validate_ast_block_else(
 	mirac_ast_block_else_s* const else_block,
 	const uint64_t depth)
 {
-	(void)depth;
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(else_block != NULL);
 
@@ -1352,7 +1406,6 @@ static void validate_ast_block_loop(
 	mirac_ast_block_loop_s* const loop_block,
 	const uint64_t depth)
 {
-	(void)depth;
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(loop_block != NULL);
 
@@ -1364,11 +1417,15 @@ static void validate_ast_block_func(
 	mirac_ast_block_func_s* const func_block,
 	const uint64_t depth)
 {
-	(void)depth;
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(func_block != NULL);
 
-	// TODO: handle identifiers!
+	if (is_identifier_token_valid_by_ast_unit_refs(unit, &func_block->identifier))
+	{
+		log_parser_error_and_exit(func_block->identifier.location,
+			"ERROR X4"
+		);
+	}
 
 	validate_ast_block_scope(unit, &func_block->scope, depth);
 }
@@ -1382,7 +1439,12 @@ static void validate_ast_block_mem(
 	mirac_debug_assert(unit != NULL);
 	mirac_debug_assert(mem_block != NULL);
 
-	// TODO: handle identifiers!
+	if (is_identifier_token_valid_by_ast_unit_refs(unit, &mem_block->identifier))
+	{
+		log_parser_error_and_exit(mem_block->identifier.location,
+			"ERROR X5"
+		);
+	}
 }
 
 static void validate_ast_block(
