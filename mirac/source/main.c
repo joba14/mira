@@ -48,8 +48,8 @@ int32_t main(
 		mirac_ast_unit_print(&unit, 0);
 
 		// TODO: implement the checker!
-		mirac_checker_s checker = mirac_checker_from_parts(&config, &arena);
-		mirac_checker_type_check_ast_unit(&checker, &unit);
+		// mirac_checker_s checker = mirac_checker_from_parts(&config, &arena);
+		// mirac_checker_type_check_ast_unit(&checker, &unit);
 
 		mirac_arena_destroy(&arena);
 	}

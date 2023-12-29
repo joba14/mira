@@ -2,5 +2,5 @@
 # !/bin/sh
 
 clear
-./build.sh
+./build.sh debug
 time ./../build/mirac -a fasm_x86_64_linux $1

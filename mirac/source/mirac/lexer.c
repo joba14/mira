@@ -414,7 +414,8 @@ mirac_lexer_s mirac_lexer_from_file_path(
 	const uint64_t length = (uint64_t)ftell(file) + 1;
 	(void)fseek(file, 0, SEEK_SET);
 	char* const buffer = (char* const)mirac_c_malloc((length + 1) * sizeof(char));
-	(void)fread(buffer, length, 1, file);
+	const size_t read = fread(buffer, 1, length, file);
+	mirac_debug_assert(read == (length - 1));
 	buffer[length - 1] = '\n';
 	buffer[length] = '\0';
 	(void)fclose(file);

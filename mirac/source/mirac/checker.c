@@ -76,6 +76,7 @@ mirac_checker_s mirac_checker_from_parts(
 	mirac_checker_s checker = {0};
 	checker.config = config;
 	checker.arena = arena;
+	checker.stack = mirac_types_stack_from_parts(arena, 64);
 	return checker;
 }
 
