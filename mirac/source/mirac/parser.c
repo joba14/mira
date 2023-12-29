@@ -439,6 +439,18 @@ void mirac_ast_unit_cross_reference(
 	}
 }
 
+void mirac_ast_unit_validate(
+	mirac_ast_unit_s* const unit)
+{
+	mirac_debug_assert(unit != NULL);
+
+	for (uint64_t block_index = 0; block_index < unit->blocks.count; ++block_index)
+	{
+		// TODO: add block validation logic!
+		// validate_ast_block(unit, &unit->blocks.data[block_index], 0);
+	}
+}
+
 void mirac_ast_unit_print(
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent)
