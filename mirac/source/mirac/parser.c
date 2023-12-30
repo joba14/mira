@@ -387,15 +387,15 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_ast_block_type_expr:  { return mirac_string_view_from_cstring("ast_block_type_expr");  } break;
-		case mirac_ast_block_type_as:    { return mirac_string_view_from_cstring("ast_block_type_as");    } break;
-		case mirac_ast_block_type_scope: { return mirac_string_view_from_cstring("ast_block_type_scope"); } break;
-		case mirac_ast_block_type_if:    { return mirac_string_view_from_cstring("ast_block_type_if");    } break;
-		case mirac_ast_block_type_elif:  { return mirac_string_view_from_cstring("ast_block_type_elif");  } break;
-		case mirac_ast_block_type_else:  { return mirac_string_view_from_cstring("ast_block_type_else");  } break;
-		case mirac_ast_block_type_loop:  { return mirac_string_view_from_cstring("ast_block_type_loop");  } break;
-		case mirac_ast_block_type_func:  { return mirac_string_view_from_cstring("ast_block_type_func");  } break;
-		case mirac_ast_block_type_mem:   { return mirac_string_view_from_cstring("ast_block_type_mem");   } break;
+		case mirac_ast_block_type_expr:  { return mirac_string_view_from_cstring("expr");  } break;
+		case mirac_ast_block_type_as:    { return mirac_string_view_from_cstring("as");    } break;
+		case mirac_ast_block_type_scope: { return mirac_string_view_from_cstring("scope"); } break;
+		case mirac_ast_block_type_if:    { return mirac_string_view_from_cstring("if");    } break;
+		case mirac_ast_block_type_elif:  { return mirac_string_view_from_cstring("elif");  } break;
+		case mirac_ast_block_type_else:  { return mirac_string_view_from_cstring("else");  } break;
+		case mirac_ast_block_type_loop:  { return mirac_string_view_from_cstring("loop");  } break;
+		case mirac_ast_block_type_func:  { return mirac_string_view_from_cstring("func");  } break;
+		case mirac_ast_block_type_mem:   { return mirac_string_view_from_cstring("mem");   } break;
 
 		default:
 		{
@@ -1105,10 +1105,10 @@ static void validate_ast_block_scope(
 	{
 		mirac_ast_block_s* const block = &scope_block->blocks.data[block_index];
 		mirac_debug_assert(block != NULL);
-
 		mirac_ast_block_s* const prev_block = (block_index > 0 ? &scope_block->blocks.data[block_index - 1] : NULL);
 
-		if (mirac_ast_block_type_elif == block->type)
+		if ((mirac_ast_block_type_elif == block->type) ||
+			(mirac_ast_block_type_else == block->type))
 		{
 			if (NULL == prev_block)
 			{
@@ -1119,32 +1119,11 @@ static void validate_ast_block_scope(
 			}
 			else
 			{
-				if (prev_block->type != mirac_ast_block_type_if)
-				{
-					log_parser_error_and_exit(block->location,
-						"expected 'if' block prior to '" mirac_sv_fmt "' block, but found '" mirac_sv_fmt"' block.",
-						mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type)),
-						mirac_sv_arg(mirac_ast_block_type_to_string_view(prev_block->type))
-					);
-				}
-			}
-		}
-		else if (mirac_ast_block_type_else == block->type)
-		{
-			if (NULL == prev_block)
-			{
-				log_parser_error_and_exit(block->location,
-					"missing 'if' or 'elif' block prior to '" mirac_sv_fmt "' block.",
-					mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
-				);
-			}
-			else
-			{
 				if ((prev_block->type != mirac_ast_block_type_if) &&
 					(prev_block->type != mirac_ast_block_type_elif))
 				{
 					log_parser_error_and_exit(block->location,
-						"expected 'if' or 'elif' block prior to '" mirac_sv_fmt "' block, but found '" mirac_sv_fmt"' block.",
+						"expected 'if' block prior to '" mirac_sv_fmt "' block, but found '" mirac_sv_fmt"' block.",
 						mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type)),
 						mirac_sv_arg(mirac_ast_block_type_to_string_view(prev_block->type))
 					);
