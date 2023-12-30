@@ -63,7 +63,8 @@ void mirac_ast_block_scope_print(
 
 typedef struct
 {
-	mirac_ast_block_scope_s scope;
+	mirac_ast_block_scope_s cond_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_if_s;
 
 // TODO: document!
@@ -73,7 +74,8 @@ void mirac_ast_block_if_print(
 
 typedef struct
 {
-	mirac_ast_block_scope_s scope;
+	mirac_ast_block_scope_s cond_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_elif_s;
 
 // TODO: document!
@@ -83,7 +85,7 @@ void mirac_ast_block_elif_print(
 
 typedef struct
 {
-	mirac_ast_block_scope_s scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_else_s;
 
 // TODO: document!
@@ -93,7 +95,8 @@ void mirac_ast_block_else_print(
 
 typedef struct
 {
-	mirac_ast_block_scope_s scope;
+	mirac_ast_block_scope_s cond_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_loop_s;
 
 // TODO: document!
@@ -106,7 +109,7 @@ struct mirac_ast_block_func_s
 	mirac_token_s identifier;
 	mirac_tokens_vector_s req_tokens;
 	mirac_tokens_vector_s ret_tokens;
-	mirac_ast_block_scope_s scope;
+	mirac_ast_block_scope_s body_scope;
 	bool is_inlined;
 	bool is_entry;
 	bool is_used;
@@ -199,7 +202,6 @@ typedef struct
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;
-	mirac_ast_block_s block;
 	mirac_ast_unit_s unit;
 } mirac_parser_s;
 

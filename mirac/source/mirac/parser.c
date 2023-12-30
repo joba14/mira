@@ -111,61 +111,6 @@ static mirac_ast_block_type_e parse_ast_block(
 	mirac_ast_block_s* const block);
 
 // TODO: document!
-static void cross_reference_ast_block_expr(
-	mirac_parser_s* const parser,
-	mirac_ast_block_expr_s* const expr_block);
-
-// TODO: document!
-static void cross_reference_ast_block_as(
-	mirac_parser_s* const parser,
-	mirac_ast_block_as_s* const as_block);
-
-// TODO: document!
-static void cross_reference_ast_block_scope(
-	mirac_parser_s* const parser,
-	mirac_ast_block_scope_s* const scope_block);
-
-// TODO: document!
-static void cross_reference_ast_block_if(
-	mirac_parser_s* const parser,
-	mirac_ast_block_if_s* const if_block);
-
-// TODO: document!
-static void cross_reference_ast_block_elif(
-	mirac_parser_s* const parser,
-	mirac_ast_block_elif_s* const elif_block);
-
-// TODO: document!
-static void cross_reference_ast_block_else(
-	mirac_parser_s* const parser,
-	mirac_ast_block_else_s* const else_block);
-
-// TODO: document!
-static void cross_reference_ast_block_loop(
-	mirac_parser_s* const parser,
-	mirac_ast_block_loop_s* const loop_block);
-
-// TODO: document!
-static void cross_reference_ast_block_func(
-	mirac_parser_s* const parser,
-	mirac_ast_block_func_s* const func_block);
-
-// TODO: document!
-static void cross_reference_ast_block_mem(
-	mirac_parser_s* const parser,
-	mirac_ast_block_mem_s* const mem_block);
-
-// TODO: document!
-static void cross_reference_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block);
-
-// TODO: document!
-static bool is_identifier_token_valid_by_ast_unit_refs(
-	mirac_ast_unit_s* const unit,
-	const mirac_token_s* const token);
-
-// TODO: document!
 static void validate_ast_block_expr(
 	mirac_parser_s* const parser,
 	mirac_ast_block_expr_s* const expr_block,
@@ -294,8 +239,12 @@ void mirac_ast_block_if_print(
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_if)));
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("blocks:\n");
-	mirac_ast_block_scope_print(&if_block->scope, indent + 2);
+	printf("cond_scope:\n");
+	mirac_ast_block_scope_print(&if_block->cond_scope, indent + 2);
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("body_scope:\n");
+	mirac_ast_block_scope_print(&if_block->body_scope, indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -311,8 +260,12 @@ void mirac_ast_block_elif_print(
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_elif)));
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("scope:\n");
-	mirac_ast_block_scope_print(&elif_block->scope, indent + 2);
+	printf("cond_scope:\n");
+	mirac_ast_block_scope_print(&elif_block->cond_scope, indent + 2);
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("body_scope:\n");
+	mirac_ast_block_scope_print(&elif_block->body_scope, indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -328,8 +281,8 @@ void mirac_ast_block_else_print(
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_else)));
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("blocks:\n");
-	mirac_ast_block_scope_print(&else_block->scope, indent + 2);
+	printf("body_scope:\n");
+	mirac_ast_block_scope_print(&else_block->body_scope, indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -345,8 +298,12 @@ void mirac_ast_block_loop_print(
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_loop)));
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("scope:\n");
-	mirac_ast_block_scope_print(&loop_block->scope, indent + 2);
+	printf("cond_scope:\n");
+	mirac_ast_block_scope_print(&loop_block->cond_scope, indent + 2);
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("body_scope:\n");
+	mirac_ast_block_scope_print(&loop_block->body_scope, indent + 2);
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
 	printf("]\n");
@@ -384,7 +341,7 @@ void mirac_ast_block_func_print(
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("scope:\n");
-	mirac_ast_block_scope_print(&func_block->scope, indent + 2);
+	mirac_ast_block_scope_print(&func_block->body_scope, indent + 2);
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("is_inlined: %s\n", func_block->is_inlined ? "yes" : "no");
@@ -549,7 +506,6 @@ mirac_parser_s mirac_parser_from_parts(
 	parser.config = config;
 	parser.arena = arena;
 	parser.lexer = lexer;
-	parser.block = mirac_ast_block_from_type(mirac_ast_block_type_none);
 	parser.unit = mirac_ast_unit_from_parts(arena);
 	return parser;
 }
@@ -567,14 +523,10 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 	mirac_debug_assert(parser != NULL);
 
 	mirac_ast_block_s block = mirac_ast_block_from_type(mirac_ast_block_type_none);
+
 	while (!should_stop_parsing(parse_ast_block(parser, &block)))
 	{
 		mirac_blocks_vector_push(&parser->unit.blocks, block);
-	}
-
-	for (uint64_t block_index = 0; block_index < parser->unit.blocks.count; ++block_index)
-	{
-		cross_reference_ast_block(parser, &parser->unit.blocks.data[block_index]);
 	}
 
 	for (uint64_t block_index = 0; block_index < parser->unit.blocks.count; ++block_index)
@@ -616,7 +568,8 @@ static mirac_ast_block_if_s create_ast_block_if(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_if_s if_block = {0};
-	if_block.scope = create_ast_block_scope(arena);
+	if_block.cond_scope = create_ast_block_scope(arena);
+	if_block.body_scope = create_ast_block_scope(arena);
 	return if_block;
 }
 
@@ -625,7 +578,8 @@ static mirac_ast_block_elif_s create_ast_block_elif(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_elif_s elif_block = {0};
-	elif_block.scope = create_ast_block_scope(arena);
+	elif_block.cond_scope = create_ast_block_scope(arena);
+	elif_block.body_scope = create_ast_block_scope(arena);
 	return elif_block;
 }
 
@@ -634,7 +588,7 @@ static mirac_ast_block_else_s create_ast_block_else(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_else_s else_block = {0};
-	else_block.scope = create_ast_block_scope(arena);
+	else_block.body_scope = create_ast_block_scope(arena);
 	return else_block;
 }
 
@@ -643,7 +597,8 @@ static mirac_ast_block_loop_s create_ast_block_loop(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_loop_s loop_block = {0};
-	loop_block.scope = create_ast_block_scope(arena);
+	loop_block.cond_scope = create_ast_block_scope(arena);
+	loop_block.body_scope = create_ast_block_scope(arena);
 	return loop_block;
 }
 
@@ -654,7 +609,7 @@ static mirac_ast_block_func_s create_ast_block_func(
 	mirac_ast_block_func_s func_block = {0};
 	func_block.req_tokens = mirac_tokens_vector_from_parts(arena, 1);
 	func_block.ret_tokens = mirac_tokens_vector_from_parts(arena, 1);
-	func_block.scope = create_ast_block_scope(arena);
+	func_block.body_scope = create_ast_block_scope(arena);
 	return func_block;
 }
 
@@ -751,12 +706,23 @@ static mirac_ast_block_if_s parse_ast_block_if(
 	if (block.type != mirac_ast_block_type_scope)
 	{
 		log_parser_error_and_exit(block.location,
-			"expected 'scope' block after 'if' token, but encountered '" mirac_sv_fmt "' block.",
+			"expected condition 'scope' block after 'if' token, but encountered '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
 		);
 	}
 
-	if_block.scope = block.as.scope_block;
+	if_block.cond_scope = block.as.scope_block;
+	(void)parse_ast_block(parser, &block);
+
+	if (block.type != mirac_ast_block_type_scope)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected body 'scope' block after 'if''s condition scope, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	if_block.body_scope = block.as.scope_block;
 	return if_block;
 }
 
@@ -776,12 +742,23 @@ static mirac_ast_block_elif_s parse_ast_block_elif(
 	if (block.type != mirac_ast_block_type_scope)
 	{
 		log_parser_error_and_exit(block.location,
-			"expected 'scope' block after 'elif' token, but encountered '" mirac_sv_fmt "' block.",
+			"expected condition 'scope' block after 'elif' token, but encountered '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
 		);
 	}
 
-	elif_block.scope = block.as.scope_block;
+	elif_block.cond_scope = block.as.scope_block;
+	(void)parse_ast_block(parser, &block);
+
+	if (block.type != mirac_ast_block_type_scope)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected body 'scope' block after 'elif''s condition scope, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	elif_block.body_scope = block.as.scope_block;
 	return elif_block;
 }
 
@@ -801,12 +778,12 @@ static mirac_ast_block_else_s parse_ast_block_else(
 	if (block.type != mirac_ast_block_type_scope)
 	{
 		log_parser_error_and_exit(block.location,
-			"expected 'scope' block after 'else' token, but encountered '" mirac_sv_fmt "' block.",
+			"expected body 'scope' block after 'else' token, but encountered '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
 		);
 	}
 
-	else_block.scope = block.as.scope_block;
+	else_block.body_scope = block.as.scope_block;
 	return else_block;
 }
 
@@ -826,12 +803,23 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 	if (block.type != mirac_ast_block_type_scope)
 	{
 		log_parser_error_and_exit(block.location,
-			"expected 'scope' block after 'loop' token, but encountered '" mirac_sv_fmt "' block.",
+			"expected condition 'scope' block after 'loop' token, but encountered '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
 		);
 	}
 
-	loop_block.scope = block.as.scope_block;
+	loop_block.cond_scope = block.as.scope_block;
+	(void)parse_ast_block(parser, &block);
+
+	if (block.type != mirac_ast_block_type_scope)
+	{
+		log_parser_error_and_exit(block.location,
+			"expected body 'scope' block after 'loop''s condition scope, but encountered '" mirac_sv_fmt "' block.",
+			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
+		);
+	}
+
+	loop_block.body_scope = block.as.scope_block;
 	return loop_block;
 }
 
@@ -929,12 +917,12 @@ static mirac_ast_block_func_s parse_ast_block_func(
 	if (block.type != mirac_ast_block_type_scope)
 	{
 		log_parser_error_and_exit(block.location,
-			"expected 'scope' block after function identifier, req, or ret specifiers, but encountered '" mirac_sv_fmt "' block.",
+			"expected body 'scope' block after function identifier, req, or ret specifiers, but encountered '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block.type))
 		);
 	}
 
-	func_block.scope = block.as.scope_block;
+	func_block.body_scope = block.as.scope_block;
 	return func_block;
 }
 
@@ -989,13 +977,6 @@ static mirac_ast_block_type_e parse_ast_block(
 {
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(block != NULL);
-
-	if (parser->block.type != mirac_ast_block_type_none)
-	{
-		*block = parser->block;
-		parser->block.type = mirac_ast_block_type_none;
-		return block->type;
-	}
 
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
@@ -1077,13 +1058,16 @@ static mirac_ast_block_type_e parse_ast_block(
 	return block->type;
 }
 
-static void cross_reference_ast_block_expr(
+static void validate_ast_block_expr(
 	mirac_parser_s* const parser,
-	mirac_ast_block_expr_s* const expr_block)
+	mirac_ast_block_expr_s* const expr_block,
+	const uint64_t depth)
 {
+	(void)depth;
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(expr_block != NULL);
 
+	/*
 	if (mirac_token_type_literal_str == expr_block->token.type)
 	{
 		for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
@@ -1096,201 +1080,7 @@ static void cross_reference_ast_block_expr(
 
 		mirac_expr_blocks_refs_vector_push(&parser->unit.str_refs, expr_block);
 	}
-}
-
-static void cross_reference_ast_block_as(
-	mirac_parser_s* const parser,
-	mirac_ast_block_as_s* const as_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(as_block != NULL);
-}
-
-static void cross_reference_ast_block_scope(
-	mirac_parser_s* const parser,
-	mirac_ast_block_scope_s* const scope_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(scope_block != NULL);
-
-	for (uint64_t block_index = 0; block_index < scope_block->blocks.count; ++block_index)
-	{
-		cross_reference_ast_block(parser, &scope_block->blocks.data[block_index]);
-	}
-}
-
-static void cross_reference_ast_block_if(
-	mirac_parser_s* const parser,
-	mirac_ast_block_if_s* const if_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(if_block != NULL);
-
-	cross_reference_ast_block_scope(parser, &if_block->scope);
-}
-
-static void cross_reference_ast_block_elif(
-	mirac_parser_s* const parser,
-	mirac_ast_block_elif_s* const elif_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(elif_block != NULL);
-
-	cross_reference_ast_block_scope(parser, &elif_block->scope);
-}
-
-static void cross_reference_ast_block_else(
-	mirac_parser_s* const parser,
-	mirac_ast_block_else_s* const else_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(else_block != NULL);
-
-	cross_reference_ast_block_scope(parser, &else_block->scope);
-}
-
-static void cross_reference_ast_block_loop(
-	mirac_parser_s* const parser,
-	mirac_ast_block_loop_s* const loop_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(loop_block != NULL);
-
-	cross_reference_ast_block_scope(parser, &loop_block->scope);
-}
-
-static void cross_reference_ast_block_func(
-	mirac_parser_s* const parser,
-	mirac_ast_block_func_s* const func_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(func_block != NULL);
-
-	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
-	{
-		if (mirac_string_view_equal(func_block->identifier.as.str, (parser->unit.func_refs.data[func_ref_index])->identifier.as.str))
-		{
-			log_parser_error_and_exit(func_block->identifier.location,
-				"encountered a redefinition of a function '" mirac_sv_fmt "'.",
-				mirac_sv_arg(func_block->identifier.text)
-			);
-		}
-	}
-
-	mirac_func_blocks_refs_vector_push(&parser->unit.func_refs, func_block);
-
-	for (uint64_t block_index = 0; block_index < func_block->scope.blocks.count; ++block_index)
-	{
-		cross_reference_ast_block(parser, &func_block->scope.blocks.data[block_index]);
-	}
-}
-
-static void cross_reference_ast_block_mem(
-	mirac_parser_s* const parser,
-	mirac_ast_block_mem_s* const mem_block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(mem_block != NULL);
-
-	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
-	{
-		if (mirac_string_view_equal(mem_block->identifier.as.str, (parser->unit.mem_refs.data[mem_ref_index])->identifier.as.str))
-		{
-			log_parser_error_and_exit(mem_block->identifier.location,
-				"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
-				mirac_sv_arg(mem_block->identifier.text)
-			);
-		}
-	}
-
-	mirac_mem_blocks_refs_vector_push(&parser->unit.mem_refs, mem_block);
-}
-
-static void cross_reference_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(block != NULL);
-
-	switch (block->type)
-	{
-		case mirac_ast_block_type_expr:  { cross_reference_ast_block_expr(parser, &block->as.expr_block);   } break;
-		case mirac_ast_block_type_as:    { cross_reference_ast_block_as(parser, &block->as.as_block);       } break;
-		case mirac_ast_block_type_scope: { cross_reference_ast_block_scope(parser, &block->as.scope_block); } break;
-		case mirac_ast_block_type_if:    { cross_reference_ast_block_if(parser, &block->as.if_block);       } break;
-		case mirac_ast_block_type_elif:  { cross_reference_ast_block_elif(parser, &block->as.elif_block);   } break;
-		case mirac_ast_block_type_else:  { cross_reference_ast_block_else(parser, &block->as.else_block);   } break;
-		case mirac_ast_block_type_loop:  { cross_reference_ast_block_loop(parser, &block->as.loop_block);   } break;
-		case mirac_ast_block_type_func:  { cross_reference_ast_block_func(parser, &block->as.func_block);   } break;
-		case mirac_ast_block_type_mem:   { cross_reference_ast_block_mem(parser, &block->as.mem_block);     } break;
-
-		default:
-		{
-		} break;
-	}
-}
-
-static bool is_identifier_token_valid_by_ast_unit_refs(
-	mirac_ast_unit_s* const unit,
-	const mirac_token_s* const token)
-{
-	mirac_debug_assert(unit != NULL);
-	mirac_debug_assert(token != NULL);
-	mirac_debug_assert(mirac_token_type_identifier == token->type);
-
-	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
-	{
-		mirac_ast_block_func_s* const func_ref = unit->func_refs.data[func_ref_index];
-		mirac_debug_assert(func_ref != NULL);
-
-		if (mirac_string_view_equal(func_ref->identifier.as.ident, token->as.ident))
-		{
-			if (func_ref->identifier.index < token->index)
-			{
-				func_ref->is_used = true;
-				return true;
-			}
-		}
-	}
-
-	for (uint64_t mem_ref_index = 0; mem_ref_index < unit->mem_refs.count; ++mem_ref_index)
-	{
-		mirac_ast_block_mem_s* const mem_ref = unit->mem_refs.data[mem_ref_index];
-		mirac_debug_assert(mem_ref != NULL);
-
-		if (mirac_string_view_equal(mem_ref->identifier.as.ident, token->as.ident))
-		{
-			if (mem_ref->identifier.index < token->index)
-			{
-				mem_ref->is_used = true;
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
-
-static void validate_ast_block_expr(
-	mirac_parser_s* const parser,
-	mirac_ast_block_expr_s* const expr_block,
-	const uint64_t depth)
-{
-	(void)depth;
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(expr_block != NULL);
-
-	if (mirac_token_type_identifier == expr_block->token.type)
-	{
-		if (!is_identifier_token_valid_by_ast_unit_refs(&parser->unit, &expr_block->token))
-		{
-			log_parser_error_and_exit(expr_block->token.location,
-				"encountered an undefined identifier '" mirac_sv_fmt "'.",
-				mirac_sv_arg(expr_block->token.text)
-			);
-		}
-	}
+	*/
 }
 
 static void validate_ast_block_as(
@@ -1313,11 +1103,58 @@ static void validate_ast_block_scope(
 
 	for (uint64_t block_index = 0; block_index < scope_block->blocks.count; ++block_index)
 	{
-		validate_ast_block(parser, &scope_block->blocks.data[block_index], depth);
+		mirac_ast_block_s* const block = &scope_block->blocks.data[block_index];
+		mirac_debug_assert(block != NULL);
+
+		mirac_ast_block_s* const prev_block = (block_index > 0 ? &scope_block->blocks.data[block_index - 1] : NULL);
+
+		if (mirac_ast_block_type_elif == block->type)
+		{
+			if (NULL == prev_block)
+			{
+				log_parser_error_and_exit(block->location,
+					"missing 'if' block prior to '" mirac_sv_fmt "' block.",
+					mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
+				);
+			}
+			else
+			{
+				if (prev_block->type != mirac_ast_block_type_if)
+				{
+					log_parser_error_and_exit(block->location,
+						"expected 'if' block prior to '" mirac_sv_fmt "' block, but found '" mirac_sv_fmt"' block.",
+						mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type)),
+						mirac_sv_arg(mirac_ast_block_type_to_string_view(prev_block->type))
+					);
+				}
+			}
+		}
+		else if (mirac_ast_block_type_else == block->type)
+		{
+			if (NULL == prev_block)
+			{
+				log_parser_error_and_exit(block->location,
+					"missing 'if' or 'elif' block prior to '" mirac_sv_fmt "' block.",
+					mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
+				);
+			}
+			else
+			{
+				if ((prev_block->type != mirac_ast_block_type_if) &&
+					(prev_block->type != mirac_ast_block_type_elif))
+				{
+					log_parser_error_and_exit(block->location,
+						"expected 'if' or 'elif' block prior to '" mirac_sv_fmt "' block, but found '" mirac_sv_fmt"' block.",
+						mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type)),
+						mirac_sv_arg(mirac_ast_block_type_to_string_view(prev_block->type))
+					);
+				}
+			}
+		}
+
+		validate_ast_block(parser, block, depth);
 	}
 }
-
-// TODO: add the if, elif, and else order validation to the ast!
 
 static void validate_ast_block_if(
 	mirac_parser_s* const parser,
@@ -1327,7 +1164,8 @@ static void validate_ast_block_if(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(if_block != NULL);
 
-	validate_ast_block_scope(parser, &if_block->scope, depth);
+	validate_ast_block_scope(parser, &if_block->cond_scope, depth);
+	validate_ast_block_scope(parser, &if_block->body_scope, depth);
 }
 
 static void validate_ast_block_elif(
@@ -1338,7 +1176,8 @@ static void validate_ast_block_elif(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(elif_block != NULL);
 
-	validate_ast_block_scope(parser, &elif_block->scope, depth);
+	validate_ast_block_scope(parser, &elif_block->cond_scope, depth);
+	validate_ast_block_scope(parser, &elif_block->body_scope, depth);
 }
 
 static void validate_ast_block_else(
@@ -1349,7 +1188,7 @@ static void validate_ast_block_else(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(else_block != NULL);
 
-	validate_ast_block_scope(parser, &else_block->scope, depth);
+	validate_ast_block_scope(parser, &else_block->body_scope, depth);
 }
 
 static void validate_ast_block_loop(
@@ -1360,7 +1199,8 @@ static void validate_ast_block_loop(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(loop_block != NULL);
 
-	validate_ast_block_scope(parser, &loop_block->scope, depth);
+	validate_ast_block_scope(parser, &loop_block->cond_scope, depth);
+	validate_ast_block_scope(parser, &loop_block->body_scope, depth);
 }
 
 static void validate_ast_block_func(
@@ -1371,14 +1211,22 @@ static void validate_ast_block_func(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(func_block != NULL);
 
-	if (is_identifier_token_valid_by_ast_unit_refs(&parser->unit, &func_block->identifier))
+	/*
+	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
 	{
-		log_parser_error_and_exit(func_block->identifier.location,
-			"ERROR X4"
-		);
+		if (mirac_string_view_equal(func_block->identifier.as.str, (parser->unit.func_refs.data[func_ref_index])->identifier.as.str))
+		{
+			log_parser_error_and_exit(func_block->identifier.location,
+				"encountered a redefinition of a function '" mirac_sv_fmt "'.",
+				mirac_sv_arg(func_block->identifier.text)
+			);
+		}
 	}
 
-	validate_ast_block_scope(parser, &func_block->scope, depth);
+	mirac_func_blocks_refs_vector_push(&parser->unit.func_refs, func_block);
+	*/
+
+	validate_ast_block_scope(parser, &func_block->body_scope, depth);
 }
 
 static void validate_ast_block_mem(
@@ -1390,12 +1238,20 @@ static void validate_ast_block_mem(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(mem_block != NULL);
 
-	if (is_identifier_token_valid_by_ast_unit_refs(&parser->unit, &mem_block->identifier))
+	/*
+	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
 	{
-		log_parser_error_and_exit(mem_block->identifier.location,
-			"ERROR X5"
-		);
+		if (mirac_string_view_equal(mem_block->identifier.as.str, (parser->unit.mem_refs.data[mem_ref_index])->identifier.as.str))
+		{
+			log_parser_error_and_exit(mem_block->identifier.location,
+				"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
+				mirac_sv_arg(mem_block->identifier.text)
+			);
+		}
 	}
+
+	mirac_mem_blocks_refs_vector_push(&parser->unit.mem_refs, mem_block);
+	*/
 }
 
 static void validate_ast_block(
