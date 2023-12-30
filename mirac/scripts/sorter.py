@@ -53,6 +53,7 @@ tokens = [
 	("mirac_token_type_reserved_sys5", "\\$5"),
 	("mirac_token_type_reserved_sys6", "\\$6"),
 
+	("mirac_token_type_reserved_str", "str"),
 	("mirac_token_type_reserved_mem", "mem"),
 	("mirac_token_type_reserved_inl", "inl"),
 	("mirac_token_type_reserved_func", "func"),

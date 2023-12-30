@@ -4,6 +4,8 @@
 ; --- 
 mem my_mem_1 10 ; of size = 10 bytes
 
+str hello "hello"
+
 func test_func {
 	if {
 		0 loop { \+. 10 < } {
@@ -13,9 +15,8 @@ func test_func {
 		0
 	}
 
-	"hello"
-	"hello1"
-	"hello1"
+	my_mem_1
+	hello
 	10 ; putu
 }
 
@@ -51,8 +52,6 @@ func my_func_1 {
 	elif { 2 2 == } {
 		; code goes here...
 	}
-
-	"hello again :)"
 
 	if { 1 2 == } {
 		; code goes here...

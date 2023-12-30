@@ -96,6 +96,7 @@ typedef enum
 	mirac_token_type_reserved_ptr,
 	mirac_token_type_reserved_req,
 	mirac_token_type_reserved_ret,
+	mirac_token_type_reserved_str,
 	mirac_token_type_reserved_u08,
 	mirac_token_type_reserved_u16,
 	mirac_token_type_reserved_u32,
