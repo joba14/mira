@@ -2,9 +2,13 @@
 ; --- 
 ; :brief memory (like static arrays in c)
 ; --- 
+mem my_mem_1 1
 mem my_mem_1 10 ; of size = 10 bytes
 
 func test_func {
+	"hello"
+	"hello1"
+	"hello1"
 	10 ; putu
 }
 

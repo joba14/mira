@@ -88,6 +88,12 @@ void mirac_compiler_compile_ast_unit(
 {
 	mirac_debug_assert(compiler != NULL);
 
+	fprintf(compiler->file, "\n");
+	fprintf(compiler->file, "format ELF64 executable 3\n");
+	fprintf(compiler->file, "segment readable executable\n");
+	fprintf(compiler->file, "entry " mirac_sv_fmt "\n", mirac_sv_arg(compiler->config->entry));
+	fprintf(compiler->file, "\n");
+
 	for (uint64_t block_index = 0; block_index < compiler->unit->blocks.count; ++block_index)
 	{
 		compile_ast_block(compiler, &compiler->unit->blocks.data[block_index]);
@@ -452,56 +458,64 @@ static void compile_ast_block_expr(
 		{
 			fprintf(compiler->file, ";; --- literal_i08 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ival);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_i16:
 		{
 			fprintf(compiler->file, ";; --- literal_i16 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ival);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_i32:
 		{
 			fprintf(compiler->file, ";; --- literal_i32 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ival);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_i64:
 		{
 			fprintf(compiler->file, ";; --- literal_i64 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ival);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_u08:
 		{
 			fprintf(compiler->file, ";; --- literal_u08 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %lu\n", expr_block->token.as.uval);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_u16:
 		{
 			fprintf(compiler->file, ";; --- literal_u16 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %lu\n", expr_block->token.as.uval);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_u32:
 		{
 			fprintf(compiler->file, ";; --- literal_u32 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %lu\n", expr_block->token.as.uval);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_u64:
 		{
 			fprintf(compiler->file, ";; --- literal_u64 --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tmov rax, %lu\n", expr_block->token.as.uval);
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_literal_f32:
@@ -529,7 +543,7 @@ static void compile_ast_block_expr(
 		{
 			fprintf(compiler->file, ";; --- literal_str --- \n");
 			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			fprintf(compiler->file, "\tpush str_%lu\n", expr_block->token.index);
 		} break;
 
 		case mirac_token_type_identifier:
