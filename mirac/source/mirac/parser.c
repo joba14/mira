@@ -17,7 +17,10 @@
 
 mirac_implement_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
-mirac_implement_heap_array_type(mirac_blocks_refs_vector, mirac_ast_block_s*);
+
+mirac_implement_heap_array_type(mirac_func_blocks_refs_vector, mirac_ast_block_func_s*);
+mirac_implement_heap_array_type(mirac_mem_blocks_refs_vector, mirac_ast_block_mem_s*);
+mirac_implement_heap_array_type(mirac_str_blocks_refs_vector, mirac_ast_block_str_s*);
 
 #define log_parser_error_and_exit(_location, _format, ...)                     \
 	do                                                                         \
@@ -167,6 +170,12 @@ static void validate_ast_block_func(
 static void validate_ast_block_mem(
 	mirac_parser_s* const parser,
 	mirac_ast_block_mem_s* const mem_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_str(
+	mirac_parser_s* const parser,
+	mirac_ast_block_str_s* const str_block,
 	const uint64_t depth);
 
 // TODO: document!
@@ -478,9 +487,9 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_unit_s unit = {0};
 	unit.blocks = mirac_blocks_vector_from_parts(arena, 1);
-	unit.str_refs = mirac_blocks_refs_vector_from_parts(arena, 1);
-	unit.func_refs = mirac_blocks_refs_vector_from_parts(arena, 1);
-	unit.mem_refs = mirac_blocks_refs_vector_from_parts(arena, 1);
+	unit.func_refs = mirac_func_blocks_refs_vector_from_parts(arena, 1);
+	unit.mem_refs = mirac_mem_blocks_refs_vector_from_parts(arena, 1);
+	unit.str_refs = mirac_str_blocks_refs_vector_from_parts(arena, 1);
 	return unit;
 }
 
@@ -501,36 +510,36 @@ void mirac_ast_unit_print(
 	}
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
-	printf("str_refs:\n");
-	for (uint64_t str_ref_index = 0; str_ref_index < unit->str_refs.count; ++str_ref_index)
-	{
-		mirac_ast_block_s* const block = unit->str_refs.data[str_ref_index];
-		mirac_debug_assert(block != NULL);
-
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&block->as.str_block.identifier)));
-	}
-
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("func_refs:\n");
 	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
 	{
-		mirac_ast_block_s* const block = unit->func_refs.data[func_ref_index];
-		mirac_debug_assert(block != NULL);
+		mirac_ast_block_func_s* const func_block = unit->func_refs.data[func_ref_index];
+		mirac_debug_assert(func_block != NULL);
 
 		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&block->as.func_block.identifier)));
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->identifier)));
 	}
 
 	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
 	printf("mem_refs:\n");
 	for (uint64_t mem_ref_index = 0; mem_ref_index < unit->mem_refs.count; ++mem_ref_index)
 	{
-		mirac_ast_block_s* const block = unit->mem_refs.data[mem_ref_index];
-		mirac_debug_assert(block != NULL);
+		mirac_ast_block_mem_s* const mem_block = unit->mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_block != NULL);
 
 		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&block->as.mem_block.identifier)));
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
+	}
+
+	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	printf("str_refs:\n");
+	for (uint64_t str_ref_index = 0; str_ref_index < unit->str_refs.count; ++str_ref_index)
+	{
+		mirac_ast_block_str_s* const str_block = unit->str_refs.data[str_ref_index];
+		mirac_debug_assert(str_block != NULL);
+
+		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_block->identifier)));
 	}
 
 	for (uint8_t index = 0; index < indent; ++index) printf("\t");
@@ -1284,20 +1293,20 @@ static void validate_ast_block_func(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(func_block != NULL);
 
-	/*
-	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
-	{
-		if (mirac_string_view_equal(func_block->identifier.as.str, (parser->unit.func_refs.data[func_ref_index])->identifier.as.str))
+	{ // TODO: should use some kind of map for faster access times:
+		for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
 		{
-			log_parser_error_and_exit(func_block->identifier.location,
-				"encountered a redefinition of a function '" mirac_sv_fmt "'.",
-				mirac_sv_arg(func_block->identifier.text)
-			);
+			if (mirac_string_view_equal(func_block->identifier.as.ident, (parser->unit.func_refs.data[func_ref_index])->identifier.as.ident))
+			{
+				log_parser_error_and_exit(func_block->identifier.location,
+					"encountered a redefinition of a function '" mirac_sv_fmt "'.",
+					mirac_sv_arg(func_block->identifier.text)
+				);
+			}
 		}
-	}
 
-	mirac_func_blocks_refs_vector_push(&parser->unit.func_refs, func_block);
-	*/
+		mirac_func_blocks_refs_vector_push(&parser->unit.func_refs, func_block);
+	}
 
 	validate_ast_block_scope(parser, &func_block->body_scope, depth);
 }
@@ -1311,20 +1320,45 @@ static void validate_ast_block_mem(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(mem_block != NULL);
 
-	/*
-	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
-	{
-		if (mirac_string_view_equal(mem_block->identifier.as.str, (parser->unit.mem_refs.data[mem_ref_index])->identifier.as.str))
+	{ // TODO: should use some kind of map for faster access times:
+		for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
 		{
-			log_parser_error_and_exit(mem_block->identifier.location,
-				"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
-				mirac_sv_arg(mem_block->identifier.text)
-			);
+			if (mirac_string_view_equal(mem_block->identifier.as.ident, (parser->unit.mem_refs.data[mem_ref_index])->identifier.as.ident))
+			{
+				log_parser_error_and_exit(mem_block->identifier.location,
+					"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
+					mirac_sv_arg(mem_block->identifier.text)
+				);
+			}
 		}
-	}
 
-	mirac_mem_blocks_refs_vector_push(&parser->unit.mem_refs, mem_block);
-	*/
+		mirac_mem_blocks_refs_vector_push(&parser->unit.mem_refs, mem_block);
+	}
+}
+
+static void validate_ast_block_str(
+	mirac_parser_s* const parser,
+	mirac_ast_block_str_s* const str_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(str_block != NULL);
+
+	{ // TODO: should use some kind of map for faster access times:
+		for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
+		{
+			if (mirac_string_view_equal(str_block->identifier.as.ident, (parser->unit.str_refs.data[str_ref_index])->identifier.as.ident))
+			{
+				log_parser_error_and_exit(str_block->identifier.location,
+					"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
+					mirac_sv_arg(str_block->identifier.text)
+				);
+			}
+		}
+
+		mirac_str_blocks_refs_vector_push(&parser->unit.str_refs, str_block);
+	}
 }
 
 static void validate_ast_block(
@@ -1371,6 +1405,7 @@ static void validate_ast_block(
 		case mirac_ast_block_type_loop:  { validate_ast_block_loop(parser, &block->as.loop_block, depth + 1);   } break;
 		case mirac_ast_block_type_func:  { validate_ast_block_func(parser, &block->as.func_block, depth + 1);   } break;
 		case mirac_ast_block_type_mem:   { validate_ast_block_mem(parser, &block->as.mem_block, depth + 1);     } break;
+		case mirac_ast_block_type_str:   { validate_ast_block_str(parser, &block->as.str_block, depth + 1);     } break;
 
 		default:
 		{

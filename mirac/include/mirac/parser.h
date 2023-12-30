@@ -20,10 +20,16 @@
 #include <mirac/lexer.h>
 
 typedef struct mirac_ast_block_s mirac_ast_block_s;
+typedef struct mirac_ast_block_func_s mirac_ast_block_func_s;
+typedef struct mirac_ast_block_mem_s mirac_ast_block_mem_s;
+typedef struct mirac_ast_block_str_s mirac_ast_block_str_s;
 
 mirac_define_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
-mirac_define_heap_array_type(mirac_blocks_refs_vector, mirac_ast_block_s*);
+
+mirac_define_heap_array_type(mirac_func_blocks_refs_vector, mirac_ast_block_func_s*);
+mirac_define_heap_array_type(mirac_mem_blocks_refs_vector, mirac_ast_block_mem_s*);
+mirac_define_heap_array_type(mirac_str_blocks_refs_vector, mirac_ast_block_str_s*);
 
 typedef struct
 {
@@ -98,7 +104,7 @@ void mirac_ast_block_loop_print(
 	const mirac_ast_block_loop_s* const loop_block,
 	const uint64_t indent);
 
-typedef struct
+struct mirac_ast_block_func_s
 {
 	mirac_token_s identifier;
 	mirac_tokens_vector_s req_tokens;
@@ -107,31 +113,31 @@ typedef struct
 	bool is_inlined;
 	bool is_entry;
 	bool is_used;
-} mirac_ast_block_func_s;
+};
 
 // TODO: document!
 void mirac_ast_block_func_print(
 	const mirac_ast_block_func_s* const func_block,
 	const uint64_t indent);
 
-typedef struct
+struct mirac_ast_block_mem_s
 {
 	mirac_token_s identifier;
 	mirac_token_s capacity;
 	bool is_used;
-} mirac_ast_block_mem_s;
+};
 
 // TODO: document!
 void mirac_ast_block_mem_print(
 	const mirac_ast_block_mem_s* const mem_block,
 	const uint64_t indent);
 
-typedef struct
+struct mirac_ast_block_str_s
 {
 	mirac_token_s identifier;
 	mirac_token_s literal;
 	bool is_used;
-} mirac_ast_block_str_s;
+};
 
 // TODO: document!
 void mirac_ast_block_str_print(
@@ -191,9 +197,9 @@ void mirac_ast_block_print(
 typedef struct
 {
 	mirac_blocks_vector_s blocks;
-	mirac_blocks_refs_vector_s str_refs;
-	mirac_blocks_refs_vector_s func_refs;
-	mirac_blocks_refs_vector_s mem_refs;
+	mirac_func_blocks_refs_vector_s func_refs;
+	mirac_mem_blocks_refs_vector_s mem_refs;
+	mirac_str_blocks_refs_vector_s str_refs;
 } mirac_ast_unit_s;
 
 // TODO: document!
