@@ -15,7 +15,6 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-#include <sys/stat.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
@@ -100,16 +99,6 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 		mirac_logger_error(_format, ## __VA_ARGS__);                           \
 		mirac_c_exit(-1);                                                      \
 	} while (0)
-
-/**
- * @brief Validate file path and open file for reading.
- * 
- * @param file_path[in] path of the file to be opened
- * 
- * @return FILE*
- */
-static FILE* validate_and_open_file_for_reading(
-	const mirac_string_view_s file_path);
 
 /**
  * @brief Get the next token as text from the lexer's buffer.
@@ -383,10 +372,20 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	const mirac_string_view_s file_path,
-	const mirac_string_view_s buffer)
+	FILE* const file)
 {
 	mirac_debug_assert(config != NULL);
 	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(file != NULL);
+
+	(void)fseek(file, 0, SEEK_END);
+	const uint64_t length = (uint64_t)ftell(file) + 1;
+	(void)fseek(file, 0, SEEK_SET);
+	char* const buffer = (char* const)mirac_c_malloc((length + 1) * sizeof(char));
+	const size_t read = fread(buffer, 1, length, file);
+	mirac_debug_assert(read == (length - 1));
+	buffer[length - 1] = '\n';
+	buffer[length] = '\0';
 
 	mirac_lexer_s lexer = {0};
 	lexer.config = config;
@@ -396,32 +395,8 @@ mirac_lexer_s mirac_lexer_from_parts(
 	lexer.locations[1] = lexer.locations[0];
 	lexer.token = mirac_token_from_type(mirac_token_type_none);
 
-	lexer.buffer = buffer;
+	lexer.buffer = mirac_string_view_from_parts(buffer, length);
 	lexer.line = (mirac_string_view_s) {0};
-	return lexer;
-}
-
-mirac_lexer_s mirac_lexer_from_file_path(
-	mirac_config_s* const config,
-	mirac_arena_s* const arena,
-	const mirac_string_view_s file_path)
-{
-	mirac_debug_assert(config != NULL);
-	mirac_debug_assert(arena != NULL);
-
-	FILE* const file = validate_and_open_file_for_reading(file_path);
-	(void)fseek(file, 0, SEEK_END);
-	const uint64_t length = (uint64_t)ftell(file) + 1;
-	(void)fseek(file, 0, SEEK_SET);
-	char* const buffer = (char* const)mirac_c_malloc((length + 1) * sizeof(char));
-	const size_t read = fread(buffer, 1, length, file);
-	mirac_debug_assert(read == (length - 1));
-	buffer[length - 1] = '\n';
-	buffer[length] = '\0';
-	(void)fclose(file);
-
-	mirac_lexer_s lexer = mirac_lexer_from_parts(
-		config, arena, file_path, mirac_string_view_from_parts(buffer, length));
 	return lexer;
 }
 
@@ -499,59 +474,6 @@ void mirac_lexer_unlex(
 	mirac_debug_assert(lexer != NULL);
 	mirac_debug_assert(token != NULL);
 	lexer->token = *token;
-}
-
-static FILE* validate_and_open_file_for_reading(
-	const mirac_string_view_s file_path)
-{
-	typedef struct stat file_stats_s;
-	file_stats_s file_stats = {0};
-
-	if (stat(file_path.data, &file_stats) != 0)
-	{
-		switch (errno)
-		{
-			case ENOENT:
-			{
-				mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- file not found.", mirac_sv_arg(file_path));
-				mirac_c_exit(-1);
-			} break;
-
-			case EACCES:
-			{
-				mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- permission denied.", mirac_sv_arg(file_path));
-				mirac_c_exit(-1);
-			} break;
-
-			case ENAMETOOLONG:
-			{
-				mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- path name exceeds the system-defined maximum length.", mirac_sv_arg(file_path));
-				mirac_c_exit(-1);
-			} break;
-
-			default:
-			{
-				mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- failed to stat.", mirac_sv_arg(file_path));
-				mirac_c_exit(-1);
-			} break;
-		}
-	}
-
-	if (S_ISDIR(file_stats.st_mode))
-	{
-		mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- it is a directory.", mirac_sv_arg(file_path));
-		mirac_c_exit(-1);
-	}
-
-	FILE* const file = fopen(file_path.data, "rt");
-
-	if (NULL == file)
-	{
-		mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- failed to open.", mirac_sv_arg(file_path));
-		mirac_c_exit(-1);
-	}
-
-	return file;
 }
 
 static mirac_string_view_s get_next_token_as_text(

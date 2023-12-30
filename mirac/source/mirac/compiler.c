@@ -68,15 +68,18 @@ static void compile_ast_block(
 mirac_compiler_s mirac_compiler_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
-	mirac_ast_unit_s* const unit)
+	mirac_ast_unit_s* const unit,
+	FILE* const file)
 {
 	mirac_debug_assert(config != NULL);
 	mirac_debug_assert(arena != NULL);
 	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(file != NULL);
 	mirac_compiler_s compiler = {0};
 	compiler.config = config;
 	compiler.arena = arena;
 	compiler.unit = unit;
+	compiler.file = file;
 	return compiler;
 }
 
@@ -102,277 +105,430 @@ static void compile_ast_block_expr(
 	{
 		case mirac_token_type_reserved_lnot:
 		{
+			fprintf(compiler->file, ";; --- lnot --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_land:
 		{
+			fprintf(compiler->file, ";; --- land --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_lor:
 		{
+			fprintf(compiler->file, ";; --- lor --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_lxor:
 		{
+			fprintf(compiler->file, ";; --- lxor --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 
 		case mirac_token_type_reserved_bnot:
 		{
+			fprintf(compiler->file, ";; --- bnot --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_band:
 		{
+			fprintf(compiler->file, ";; --- band --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_bor:
 		{
+			fprintf(compiler->file, ";; --- bor --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_bxor:
 		{
+			fprintf(compiler->file, ";; --- bxor --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_shl:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- shl --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rcx\n");
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tshl rbx, cl\n");
+			fprintf(compiler->file, "\tpush rbx\n");
 		} break;
 
 		case mirac_token_type_reserved_shr:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- shr --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rcx\n");
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tshr rbx, cl\n");
+			fprintf(compiler->file, "\tpush rbx\n");
 		} break;
 
 
 		case mirac_token_type_reserved_eq:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- eq --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tmov rcx, 0\n");
+			fprintf(compiler->file, "\tmov rdx, 1\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tcmp rax, rbx\n");
+			fprintf(compiler->file, "\tcmove rcx, rdx\n");
+			fprintf(compiler->file, "\tpush rcx\n");
 		} break;
 
 		case mirac_token_type_reserved_neq:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- neq --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tmov rcx, 1\n");
+			fprintf(compiler->file, "\tmov rdx, 0\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tcmp rax, rbx\n");
+			fprintf(compiler->file, "\tcmove rcx, rdx\n");
+			fprintf(compiler->file, "\tpush rcx\n");
 		} break;
 
 		case mirac_token_type_reserved_gt:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- gt --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tmov rcx, 0\n");
+			fprintf(compiler->file, "\tmov rdx, 1\n");
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tcmp rax, rbx\n");
+			fprintf(compiler->file, "\tcmovg rcx, rdx\n");
+			fprintf(compiler->file, "\tpush rcx\n");
 		} break;
 
 		case mirac_token_type_reserved_gteq:
 		{
+			fprintf(compiler->file, ";; --- gteq --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_ls:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- ls --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tmov rcx, 0\n");
+			fprintf(compiler->file, "\tmov rdx, 1\n");
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tcmp rax, rbx\n");
+			fprintf(compiler->file, "\tcmovl rcx, rdx\n");
+			fprintf(compiler->file, "\tpush rcx\n");
 		} break;
 
 		case mirac_token_type_reserved_lseq:
 		{
+			fprintf(compiler->file, ";; --- lseq --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 
 		case mirac_token_type_reserved_add:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- add --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tadd rax, rbx\n");
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_reserved_inc:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- inc --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 		} break;
 
 		case mirac_token_type_reserved_sub:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- sub --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tsub rax, rbx\n");
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_reserved_dec:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- dec --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 		} break;
 
 		case mirac_token_type_reserved_mul:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- mul --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rbx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tmul rbx\n");
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_reserved_div:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- div --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rcx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tmov rdx, 0\n");
+			fprintf(compiler->file, "\tdiv rcx\n");
+			fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		case mirac_token_type_reserved_mod:
 		{
-			// TODO: implement!
+			fprintf(compiler->file, ";; --- mod --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
+			fprintf(compiler->file, "\tpop rcx\n");
+			fprintf(compiler->file, "\tpop rax\n");
+			fprintf(compiler->file, "\tmov rdx, 0\n");
+			fprintf(compiler->file, "\tdiv rcx\n");
+			fprintf(compiler->file, "\tpush rdx\n");
 		} break;
 
 
 		case mirac_token_type_reserved_ld08:
 		{
+			fprintf(compiler->file, ";; --- ld08 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_ld16:
 		{
+			fprintf(compiler->file, ";; --- ld16 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_ld32:
 		{
+			fprintf(compiler->file, ";; --- ld32 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_ld64:
 		{
+			fprintf(compiler->file, ";; --- ld64 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_st08:
 		{
+			fprintf(compiler->file, ";; --- st08 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_st16:
 		{
+			fprintf(compiler->file, ";; --- st16 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_st32:
 		{
+			fprintf(compiler->file, ";; --- st32 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_st64:
 		{
+			fprintf(compiler->file, ";; --- st64 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_sys1:
 		{
+			fprintf(compiler->file, ";; --- sys1 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_sys2:
 		{
+			fprintf(compiler->file, ";; --- sys2 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_sys3:
 		{
+			fprintf(compiler->file, ";; --- sys3 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_sys4:
 		{
+			fprintf(compiler->file, ";; --- sys4 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_sys5:
 		{
+			fprintf(compiler->file, ";; --- sys5 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_sys6:
 		{
+			fprintf(compiler->file, ";; --- sys6 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 
 		case mirac_token_type_reserved_drop:
 		{
+			fprintf(compiler->file, ";; --- drop --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_dup:
 		{
+			fprintf(compiler->file, ";; --- dup --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_over:
 		{
+			fprintf(compiler->file, ";; --- over --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_rot:
 		{
+			fprintf(compiler->file, ";; --- rot --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_reserved_swap:
 		{
+			fprintf(compiler->file, ";; --- swap --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 
 		case mirac_token_type_literal_i08:
 		{
+			fprintf(compiler->file, ";; --- literal_i08 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_i16:
 		{
+			fprintf(compiler->file, ";; --- literal_i16 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_i32:
 		{
+			fprintf(compiler->file, ";; --- literal_i32 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_i64:
 		{
+			fprintf(compiler->file, ";; --- literal_i64 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_u08:
 		{
+			fprintf(compiler->file, ";; --- literal_u08 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_u16:
 		{
+			fprintf(compiler->file, ";; --- literal_u16 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_u32:
 		{
+			fprintf(compiler->file, ";; --- literal_u32 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_u64:
 		{
+			fprintf(compiler->file, ";; --- literal_u64 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_f32:
 		{
+			fprintf(compiler->file, ";; --- literal_f32 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_f64:
 		{
+			fprintf(compiler->file, ";; --- literal_f64 --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_ptr:
 		{
+			fprintf(compiler->file, ";; --- literal_ptr --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
 		case mirac_token_type_literal_str:
 		{
+			fprintf(compiler->file, ";; --- literal_str --- \n");
+			fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
 			// TODO: implement!
 		} break;
 
@@ -419,6 +575,7 @@ static void compile_ast_block_if(
 	mirac_debug_assert(if_block != NULL);
 
 	// TODO: implement!
+	compile_ast_block_scope(compiler, &if_block->scope);
 }
 
 static void compile_ast_block_elif(
@@ -429,6 +586,7 @@ static void compile_ast_block_elif(
 	mirac_debug_assert(elif_block != NULL);
 
 	// TODO: implement!
+	compile_ast_block_scope(compiler, &elif_block->scope);
 }
 
 static void compile_ast_block_else(
@@ -439,6 +597,7 @@ static void compile_ast_block_else(
 	mirac_debug_assert(else_block != NULL);
 
 	// TODO: implement!
+	compile_ast_block_scope(compiler, &else_block->scope);
 }
 
 static void compile_ast_block_loop(
@@ -449,6 +608,7 @@ static void compile_ast_block_loop(
 	mirac_debug_assert(loop_block != NULL);
 
 	// TODO: implement!
+	compile_ast_block_scope(compiler, &loop_block->scope);
 }
 
 static void compile_ast_block_func(
@@ -459,6 +619,7 @@ static void compile_ast_block_func(
 	mirac_debug_assert(func_block != NULL);
 
 	// TODO: implement!
+	compile_ast_block_scope(compiler, &func_block->scope);
 }
 
 static void compile_ast_block_mem(

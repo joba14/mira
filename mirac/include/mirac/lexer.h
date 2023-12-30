@@ -278,8 +278,8 @@ typedef struct
  * 
  * @param config[in]    config instance
  * @param arena[in]     arena instance for memory management
- * @param file_path[in] file path for location of lexed tokens
- * @param buffer[in]    string view (buffer) to lex
+ * @param file_path[in] file path
+ * @param file[in]      file for lexing
  * 
  * @return mirac_lexer_s
  */
@@ -287,22 +287,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	const mirac_string_view_s file_path,
-	const mirac_string_view_s buffer);
-
-// TODO: write unit tests!
-/**
- * @brief Create a lexer with provided file and its path.
- * 
- * @param config[in]    config instance
- * @param arena[in]     arena instance for memory management
- * @param file_path[in] path of file to lexed
- * 
- * @return mirac_lexer_s
- */
-mirac_lexer_s mirac_lexer_from_file_path(
-	mirac_config_s* const config,
-	mirac_arena_s* const arena,
-	const mirac_string_view_s file_path);
+	FILE* const file);
 
 // TODO: write unit tests!
 /**

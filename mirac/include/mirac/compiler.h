@@ -20,17 +20,21 @@
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
 
+#include <stdio.h>
+
 typedef struct
 {
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_ast_unit_s* unit;
+	FILE* file;
 } mirac_compiler_s;
 
 mirac_compiler_s mirac_compiler_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
-	mirac_ast_unit_s* const unit);
+	mirac_ast_unit_s* const unit,
+	FILE* const file);
 
 void mirac_compiler_compile_ast_unit(
 	mirac_compiler_s* const compiler);
