@@ -691,6 +691,13 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
 	// TODO: check for invalid tokens for expr block?
+	if ((mirac_token_type_literal_str == token.type))
+	{
+		log_parser_error_and_exit(token.location,
+			"encountered an invalid 'expr' block token '" mirac_sv_fmt "'.",
+			mirac_sv_arg(token.text)
+		);
+	}
 
 	expr_block.token = token;
 	return expr_block;
@@ -1169,21 +1176,6 @@ static void validate_ast_block_expr(
 	(void)depth;
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(expr_block != NULL);
-
-	/*
-	if (mirac_token_type_literal_str == expr_block->token.type)
-	{
-		for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
-		{
-			if (mirac_string_view_equal(expr_block->token.as.str, (parser->unit.str_refs.data[str_ref_index])->token.as.str))
-			{
-				return;
-			}
-		}
-
-		mirac_expr_blocks_refs_vector_push(&parser->unit.str_refs, expr_block);
-	}
-	*/
 }
 
 static void validate_ast_block_as(
