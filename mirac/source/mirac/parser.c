@@ -1317,6 +1317,8 @@ static void validate_ast_block_scope(
 	}
 }
 
+// TODO: add the if, elif, and else order validation to the ast!
+
 static void validate_ast_block_if(
 	mirac_parser_s* const parser,
 	mirac_ast_block_if_s* const if_block,
