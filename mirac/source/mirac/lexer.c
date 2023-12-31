@@ -176,11 +176,11 @@ mirac_string_view_s mirac_token_type_to_string_view(
 {
 	switch (token_type)
 	{
-		case mirac_token_type_literal_i08: { return mirac_string_view_from_cstring("literal_i8");  } break;
+		case mirac_token_type_literal_i08: { return mirac_string_view_from_cstring("literal_i08"); } break;
 		case mirac_token_type_literal_i16: { return mirac_string_view_from_cstring("literal_i16"); } break;
 		case mirac_token_type_literal_i32: { return mirac_string_view_from_cstring("literal_i32"); } break;
 		case mirac_token_type_literal_i64: { return mirac_string_view_from_cstring("literal_i64"); } break;
-		case mirac_token_type_literal_u08: { return mirac_string_view_from_cstring("literal_u8");  } break;
+		case mirac_token_type_literal_u08: { return mirac_string_view_from_cstring("literal_u08"); } break;
 		case mirac_token_type_literal_u16: { return mirac_string_view_from_cstring("literal_u16"); } break;
 		case mirac_token_type_literal_u32: { return mirac_string_view_from_cstring("literal_u32"); } break;
 		case mirac_token_type_literal_u64: { return mirac_string_view_from_cstring("literal_u64"); } break;

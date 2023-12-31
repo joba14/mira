@@ -18,9 +18,9 @@
 mirac_implement_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_implement_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 
-mirac_implement_heap_array_type(mirac_func_blocks_refs_vector, mirac_ast_block_func_s*);
-mirac_implement_heap_array_type(mirac_mem_blocks_refs_vector, mirac_ast_block_mem_s*);
-mirac_implement_heap_array_type(mirac_str_blocks_refs_vector, mirac_ast_block_str_s*);
+mirac_implement_heap_array_type(mirac_func_refs_vector, mirac_ast_block_func_s*);
+mirac_implement_heap_array_type(mirac_mem_refs_vector, mirac_ast_block_mem_s*);
+mirac_implement_heap_array_type(mirac_str_refs_vector, mirac_ast_block_str_s*);
 
 #define log_parser_error_and_exit(_location, _format, ...)                     \
 	do                                                                         \
@@ -35,6 +35,9 @@ mirac_implement_heap_array_type(mirac_str_blocks_refs_vector, mirac_ast_block_st
 
 // TODO: document!
 static mirac_ast_block_expr_s create_ast_block_expr(
+	mirac_arena_s* const arena);
+
+static mirac_ast_block_call_s create_ast_block_call(
 	mirac_arena_s* const arena);
 
 // TODO: document!
@@ -75,6 +78,10 @@ static mirac_ast_block_str_s create_ast_block_str(
 
 // TODO: document!
 static mirac_ast_block_expr_s parse_ast_block_expr(
+	mirac_parser_s* const parser);
+
+// TODO: document!
+static mirac_ast_block_call_s parse_ast_block_call(
 	mirac_parser_s* const parser);
 
 // TODO: document!
@@ -122,6 +129,12 @@ static mirac_ast_block_type_e parse_ast_block(
 static void validate_ast_block_expr(
 	mirac_parser_s* const parser,
 	mirac_ast_block_expr_s* const expr_block,
+	const uint64_t depth);
+
+// TODO: document!
+static void validate_ast_block_call(
+	mirac_parser_s* const parser,
+	mirac_ast_block_call_s* const call_block,
 	const uint64_t depth);
 
 // TODO: document!
@@ -194,13 +207,61 @@ void mirac_ast_block_expr_print(
 {
 	mirac_debug_assert(expr_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_expr)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
+	printf("]\n");
+}
+
+void mirac_ast_block_call_print(
+	const mirac_ast_block_call_s* const call_block,
+	const uint64_t indent)
+{
+	mirac_debug_assert(call_block != NULL);
+
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
+	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_call)));
+
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
+	printf("token:\n");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&call_block->token)));
+
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
+	printf("ref_block:\n");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+	switch (call_block->type)
+	{
+		case mirac_ast_block_call_type_func:
+		{
+			if (call_block->as.func_ref != NULL)
+			{
+				printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&call_block->as.func_ref->identifier)));
+			}
+		} break;
+
+		case mirac_ast_block_call_type_mem:
+		{
+			if (call_block->as.mem_ref != NULL)
+			{
+				printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&call_block->as.mem_ref->identifier)));
+			}
+		} break;
+
+		case mirac_ast_block_call_type_str:
+		{
+			if (call_block->as.str_ref != NULL)
+			{
+				printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&call_block->as.str_ref->identifier)));
+			}
+		} break;
+	}
+
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -210,18 +271,18 @@ void mirac_ast_block_as_print(
 {
 	mirac_debug_assert(as_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_as)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("types:\n");
 	for (uint64_t type_index = 0; type_index < as_block->type_tokens.count; ++type_index)
 	{
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&as_block->type_tokens.data[type_index])));
 	}
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -231,15 +292,17 @@ void mirac_ast_block_scope_print(
 {
 	mirac_debug_assert(scope_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_scope)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("blocks:\n");
-	for (uint64_t index = 0; index < scope_block->blocks.count; ++index)
-		mirac_ast_block_print(&scope_block->blocks.data[index], indent + 2);
+	for (uint64_t block_index = 0; block_index < scope_block->blocks.count; ++block_index)
+	{
+		mirac_ast_block_print(&scope_block->blocks.data[block_index], indent + 2);
+	}
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -249,18 +312,18 @@ void mirac_ast_block_if_print(
 {
 	mirac_debug_assert(if_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_if)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("cond_scope:\n");
 	mirac_ast_block_scope_print(&if_block->cond_scope, indent + 2);
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body_scope:\n");
 	mirac_ast_block_scope_print(&if_block->body_scope, indent + 2);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -270,18 +333,18 @@ void mirac_ast_block_elif_print(
 {
 	mirac_debug_assert(elif_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_elif)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("cond_scope:\n");
 	mirac_ast_block_scope_print(&elif_block->cond_scope, indent + 2);
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body_scope:\n");
 	mirac_ast_block_scope_print(&elif_block->body_scope, indent + 2);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -291,14 +354,14 @@ void mirac_ast_block_else_print(
 {
 	mirac_debug_assert(else_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_else)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body_scope:\n");
 	mirac_ast_block_scope_print(&else_block->body_scope, indent + 2);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -308,18 +371,18 @@ void mirac_ast_block_loop_print(
 {
 	mirac_debug_assert(loop_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_loop)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("cond_scope:\n");
 	mirac_ast_block_scope_print(&loop_block->cond_scope, indent + 2);
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body_scope:\n");
 	mirac_ast_block_scope_print(&loop_block->body_scope, indent + 2);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -329,44 +392,44 @@ void mirac_ast_block_func_print(
 {
 	mirac_debug_assert(func_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_func)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("identifier:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->identifier)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("req_tokens:\n");
-	for (uint64_t req_index = 0; req_index < func_block->req_tokens.count; ++req_index)
+	for (uint64_t req_token_index = 0; req_token_index < func_block->req_tokens.count; ++req_token_index)
 	{
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->req_tokens.data[req_index])));
+		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->req_tokens.data[req_token_index])));
 	}
 	
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("ret_tokens:\n");
-	for (uint64_t ret_index = 0; ret_index < func_block->ret_tokens.count; ++ret_index)
+	for (uint64_t ret_token_index = 0; ret_token_index < func_block->ret_tokens.count; ++ret_token_index)
 	{
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->ret_tokens.data[ret_index])));
+		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->ret_tokens.data[ret_token_index])));
 	}
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("scope:\n");
 	mirac_ast_block_scope_print(&func_block->body_scope, indent + 2);
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_inlined: %s\n", func_block->is_inlined ? "yes" : "no");
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_entry: %s\n", func_block->is_entry ? "yes" : "no");
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_used: %s\n", func_block->is_used ? "yes" : "no");
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -376,23 +439,23 @@ void mirac_ast_block_mem_print(
 {
 	mirac_debug_assert(mem_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_mem)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("identifier:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("capacity:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->capacity)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_used: %s\n", mem_block->is_used ? "yes" : "no");
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -403,23 +466,23 @@ void mirac_ast_block_str_print(
 {
 	mirac_debug_assert(str_block != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[type='" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(mirac_ast_block_type_str)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("identifier:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_block->identifier)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("literal:\n");
-	for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_block->literal)));
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_used: %s\n", str_block->is_used ? "yes" : "no");
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -429,6 +492,7 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 	switch (type)
 	{
 		case mirac_ast_block_type_expr:  { return mirac_string_view_from_cstring("expr");  } break;
+		case mirac_ast_block_type_call:  { return mirac_string_view_from_cstring("call");    } break;
 		case mirac_ast_block_type_as:    { return mirac_string_view_from_cstring("as");    } break;
 		case mirac_ast_block_type_scope: { return mirac_string_view_from_cstring("scope"); } break;
 		case mirac_ast_block_type_if:    { return mirac_string_view_from_cstring("if");    } break;
@@ -464,6 +528,7 @@ void mirac_ast_block_print(
 	switch (block->type)
 	{
 		case mirac_ast_block_type_expr:  { mirac_ast_block_expr_print(&block->as.expr_block, indent);   } break;
+		case mirac_ast_block_type_call:  { mirac_ast_block_call_print(&block->as.call_block, indent);   } break;
 		case mirac_ast_block_type_as:    { mirac_ast_block_as_print(&block->as.as_block, indent);       } break;
 		case mirac_ast_block_type_scope: { mirac_ast_block_scope_print(&block->as.scope_block, indent); } break;
 		case mirac_ast_block_type_if:    { mirac_ast_block_if_print(&block->as.if_block, indent);       } break;
@@ -487,9 +552,9 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_unit_s unit = {0};
 	unit.blocks = mirac_blocks_vector_from_parts(arena, 1);
-	unit.func_refs = mirac_func_blocks_refs_vector_from_parts(arena, 1);
-	unit.mem_refs = mirac_mem_blocks_refs_vector_from_parts(arena, 1);
-	unit.str_refs = mirac_str_blocks_refs_vector_from_parts(arena, 1);
+	unit.func_refs = mirac_func_refs_vector_from_parts(arena, 1);
+	unit.mem_refs = mirac_mem_refs_vector_from_parts(arena, 1);
+	unit.str_refs = mirac_str_refs_vector_from_parts(arena, 1);
 	return unit;
 }
 
@@ -499,50 +564,50 @@ void mirac_ast_unit_print(
 {
 	mirac_debug_assert(unit != NULL);
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Unit[\n");
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("blocks:\n");
 	for (uint64_t block_index = 0; block_index < unit->blocks.count; ++block_index)
 	{
 		mirac_ast_block_print(&unit->blocks.data[block_index], indent + 2);
 	}
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("func_refs:\n");
 	for (uint64_t func_ref_index = 0; func_ref_index < unit->func_refs.count; ++func_ref_index)
 	{
-		mirac_ast_block_func_s* const func_block = unit->func_refs.data[func_ref_index];
-		mirac_debug_assert(func_block != NULL);
+		mirac_ast_block_func_s* const func_ref = unit->func_refs.data[func_ref_index];
+		mirac_debug_assert(func_ref != NULL);
 
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_block->identifier)));
+		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_ref->identifier)));
 	}
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("mem_refs:\n");
 	for (uint64_t mem_ref_index = 0; mem_ref_index < unit->mem_refs.count; ++mem_ref_index)
 	{
-		mirac_ast_block_mem_s* const mem_block = unit->mem_refs.data[mem_ref_index];
-		mirac_debug_assert(mem_block != NULL);
+		mirac_ast_block_mem_s* const mem_ref = unit->mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_ref != NULL);
 
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_block->identifier)));
+		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_ref->identifier)));
 	}
 
-	for (uint8_t index = 0; index < (indent + 1); ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("str_refs:\n");
 	for (uint64_t str_ref_index = 0; str_ref_index < unit->str_refs.count; ++str_ref_index)
 	{
-		mirac_ast_block_str_s* const str_block = unit->str_refs.data[str_ref_index];
-		mirac_debug_assert(str_block != NULL);
+		mirac_ast_block_str_s* const str_ref = unit->str_refs.data[str_ref_index];
+		mirac_debug_assert(str_ref != NULL);
 
-		for (uint8_t index = 0; index < (indent + 2); ++index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_block->identifier)));
+		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_ref->identifier)));
 	}
 
-	for (uint8_t index = 0; index < indent; ++index) printf("\t");
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
 }
 
@@ -595,6 +660,14 @@ static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_expr_s expr_block = {0};
 	return expr_block;
+}
+
+static mirac_ast_block_call_s create_ast_block_call(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_ast_block_call_s call_block = {0};
+	return call_block;
 }
 
 static mirac_ast_block_as_s create_ast_block_as(
@@ -690,8 +763,7 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
-	// TODO: check for invalid tokens for expr block?
-	if ((mirac_token_type_literal_str == token.type))
+	if (mirac_token_type_literal_str == token.type)
 	{
 		log_parser_error_and_exit(token.location,
 			"encountered an invalid 'expr' block token '" mirac_sv_fmt "'.",
@@ -701,6 +773,19 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 
 	expr_block.token = token;
 	return expr_block;
+}
+
+static mirac_ast_block_call_s parse_ast_block_call(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser);
+	mirac_ast_block_call_s call_block = create_ast_block_call(parser->arena);
+
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+	call_block.token = token;
+	return call_block;
 }
 
 static mirac_ast_block_as_s parse_ast_block_as(
@@ -754,6 +839,37 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 		}
 
 		mirac_blocks_vector_push(&scope_block.blocks, block);
+	}
+
+	for (uint64_t block_index = 0; block_index < scope_block.blocks.count; ++block_index)
+	{
+		mirac_ast_block_s* const block_ref = &scope_block.blocks.data[block_index];
+		mirac_debug_assert(block_ref != NULL);
+		mirac_ast_block_s* const prev_block_ref = (block_index > 0 ? &scope_block.blocks.data[block_index - 1] : NULL);
+
+		if ((mirac_ast_block_type_elif == block_ref->type) ||
+			(mirac_ast_block_type_else == block_ref->type))
+		{
+			if (NULL == prev_block_ref)
+			{
+				log_parser_error_and_exit(block_ref->location,
+					"missing 'if' block prior to '" mirac_sv_fmt "' block.",
+					mirac_sv_arg(mirac_ast_block_type_to_string_view(block_ref->type))
+				);
+			}
+			else
+			{
+				if ((prev_block_ref->type != mirac_ast_block_type_if) &&
+					(prev_block_ref->type != mirac_ast_block_type_elif))
+				{
+					log_parser_error_and_exit(block_ref->location,
+						"expected 'if' block prior to '" mirac_sv_fmt "' block, but found '" mirac_sv_fmt"' block.",
+						mirac_sv_arg(mirac_ast_block_type_to_string_view(block_ref->type)),
+						mirac_sv_arg(mirac_ast_block_type_to_string_view(prev_block_ref->type))
+					);
+				}
+			}
+		}
 	}
 
 	return scope_block;
@@ -1093,6 +1209,12 @@ static mirac_ast_block_type_e parse_ast_block(
 
 	switch (token.type)
 	{
+		case mirac_token_type_identifier:
+		{
+			block->type = mirac_ast_block_type_call;
+			block->as.call_block = parse_ast_block_call(parser);
+		} break;
+
 		case mirac_token_type_reserved_as:
 		{
 			block->type = mirac_ast_block_type_as;
@@ -1176,6 +1298,60 @@ static void validate_ast_block_expr(
 	(void)depth;
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(expr_block != NULL);
+}
+
+static void validate_ast_block_call(
+	mirac_parser_s* const parser,
+	mirac_ast_block_call_s* const call_block,
+	const uint64_t depth)
+{
+	(void)depth;
+	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(call_block != NULL);
+
+	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
+	{
+		mirac_ast_block_func_s* const func_ref = parser->unit.func_refs.data[func_ref_index];
+		mirac_debug_assert(func_ref != NULL);
+
+		if (mirac_string_view_equal(call_block->token.as.ident, func_ref->identifier.as.ident))
+		{
+			call_block->as.func_ref = func_ref;
+			goto found_match;
+		}
+	}
+
+	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
+	{
+		mirac_ast_block_mem_s* const mem_ref = parser->unit.mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_ref != NULL);
+
+		if (mirac_string_view_equal(call_block->token.as.ident, mem_ref->identifier.as.ident))
+		{
+			call_block->as.mem_ref = mem_ref;
+			goto found_match;
+		}
+	}
+
+	for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
+	{
+		mirac_ast_block_str_s* const str_ref = parser->unit.str_refs.data[str_ref_index];
+		mirac_debug_assert(str_ref != NULL);
+
+		if (mirac_string_view_equal(call_block->token.as.ident, str_ref->identifier.as.ident))
+		{
+			call_block->as.str_ref = str_ref;
+			goto found_match;
+		}
+	}
+
+	log_parser_error_and_exit(call_block->token.location,
+		"encountered an undefined identifier '" mirac_sv_fmt "'.",
+		mirac_sv_arg(call_block->token.text)
+	);
+
+found_match:
+	return;
 }
 
 static void validate_ast_block_as(
@@ -1285,20 +1461,49 @@ static void validate_ast_block_func(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(func_block != NULL);
 
-	{ // TODO: should use some kind of map for faster access times:
-		for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
-		{
-			if (mirac_string_view_equal(func_block->identifier.as.ident, (parser->unit.func_refs.data[func_ref_index])->identifier.as.ident))
-			{
-				log_parser_error_and_exit(func_block->identifier.location,
-					"encountered a redefinition of a function '" mirac_sv_fmt "'.",
-					mirac_sv_arg(func_block->identifier.text)
-				);
-			}
-		}
+	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
+	{
+		mirac_ast_block_func_s* const func_ref = parser->unit.func_refs.data[func_ref_index];
+		mirac_debug_assert(func_ref != NULL);
 
-		mirac_func_blocks_refs_vector_push(&parser->unit.func_refs, func_block);
+		if (mirac_string_view_equal(func_block->identifier.as.ident, func_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(func_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(func_block->identifier.text)
+			);
+		}
 	}
+
+	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
+	{
+		mirac_ast_block_mem_s* const mem_ref = parser->unit.mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_ref != NULL);
+
+		if (mirac_string_view_equal(func_block->identifier.as.ident, mem_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(func_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(func_block->identifier.text)
+			);
+		}
+	}
+
+	for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
+	{
+		mirac_ast_block_str_s* const str_ref = parser->unit.str_refs.data[str_ref_index];
+		mirac_debug_assert(str_ref != NULL);
+
+		if (mirac_string_view_equal(func_block->identifier.as.ident, str_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(func_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(func_block->identifier.text)
+			);
+		}
+	}
+
+	mirac_func_refs_vector_push(&parser->unit.func_refs, func_block);
 
 	validate_ast_block_scope(parser, &func_block->body_scope, depth);
 }
@@ -1312,20 +1517,49 @@ static void validate_ast_block_mem(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(mem_block != NULL);
 
-	{ // TODO: should use some kind of map for faster access times:
-		for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
-		{
-			if (mirac_string_view_equal(mem_block->identifier.as.ident, (parser->unit.mem_refs.data[mem_ref_index])->identifier.as.ident))
-			{
-				log_parser_error_and_exit(mem_block->identifier.location,
-					"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
-					mirac_sv_arg(mem_block->identifier.text)
-				);
-			}
-		}
+	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
+	{
+		mirac_ast_block_func_s* const func_ref = parser->unit.func_refs.data[func_ref_index];
+		mirac_debug_assert(func_ref != NULL);
 
-		mirac_mem_blocks_refs_vector_push(&parser->unit.mem_refs, mem_block);
+		if (mirac_string_view_equal(mem_block->identifier.as.ident, func_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(mem_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(mem_block->identifier.text)
+			);
+		}
 	}
+
+	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
+	{
+		mirac_ast_block_mem_s* const mem_ref = parser->unit.mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_ref != NULL);
+
+		if (mirac_string_view_equal(mem_block->identifier.as.ident, mem_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(mem_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(mem_block->identifier.text)
+			);
+		}
+	}
+
+	for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
+	{
+		mirac_ast_block_str_s* const str_ref = parser->unit.str_refs.data[str_ref_index];
+		mirac_debug_assert(str_ref != NULL);
+
+		if (mirac_string_view_equal(mem_block->identifier.as.ident, str_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(mem_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(mem_block->identifier.text)
+			);
+		}
+	}
+
+	mirac_mem_refs_vector_push(&parser->unit.mem_refs, mem_block);
 }
 
 static void validate_ast_block_str(
@@ -1337,20 +1571,49 @@ static void validate_ast_block_str(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(str_block != NULL);
 
-	{ // TODO: should use some kind of map for faster access times:
-		for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
-		{
-			if (mirac_string_view_equal(str_block->identifier.as.ident, (parser->unit.str_refs.data[str_ref_index])->identifier.as.ident))
-			{
-				log_parser_error_and_exit(str_block->identifier.location,
-					"encountered a redefinition of a memory '" mirac_sv_fmt "'.",
-					mirac_sv_arg(str_block->identifier.text)
-				);
-			}
-		}
+	for (uint64_t func_ref_index = 0; func_ref_index < parser->unit.func_refs.count; ++func_ref_index)
+	{
+		mirac_ast_block_func_s* const func_ref = parser->unit.func_refs.data[func_ref_index];
+		mirac_debug_assert(func_ref != NULL);
 
-		mirac_str_blocks_refs_vector_push(&parser->unit.str_refs, str_block);
+		if (mirac_string_view_equal(str_block->identifier.as.ident, func_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(str_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(str_block->identifier.text)
+			);
+		}
 	}
+
+	for (uint64_t mem_ref_index = 0; mem_ref_index < parser->unit.mem_refs.count; ++mem_ref_index)
+	{
+		mirac_ast_block_mem_s* const mem_ref = parser->unit.mem_refs.data[mem_ref_index];
+		mirac_debug_assert(mem_ref != NULL);
+
+		if (mirac_string_view_equal(str_block->identifier.as.ident, mem_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(str_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(str_block->identifier.text)
+			);
+		}
+	}
+
+	for (uint64_t str_ref_index = 0; str_ref_index < parser->unit.str_refs.count; ++str_ref_index)
+	{
+		mirac_ast_block_str_s* const str_ref = parser->unit.str_refs.data[str_ref_index];
+		mirac_debug_assert(str_ref != NULL);
+
+		if (mirac_string_view_equal(str_block->identifier.as.ident, str_ref->identifier.as.ident))
+		{
+			log_parser_error_and_exit(str_block->identifier.location,
+				"encountered a redefinition of identifier '" mirac_sv_fmt "'.",
+				mirac_sv_arg(str_block->identifier.text)
+			);
+		}
+	}
+
+	mirac_str_refs_vector_push(&parser->unit.str_refs, str_block);
 }
 
 static void validate_ast_block(
@@ -1389,6 +1652,7 @@ static void validate_ast_block(
 	switch (block->type)
 	{
 		case mirac_ast_block_type_expr:  { validate_ast_block_expr(parser, &block->as.expr_block, depth + 1);   } break;
+		case mirac_ast_block_type_call:  { validate_ast_block_call(parser, &block->as.call_block, depth + 1);   } break;
 		case mirac_ast_block_type_as:    { validate_ast_block_as(parser, &block->as.as_block, depth + 1);       } break;
 		case mirac_ast_block_type_scope: { validate_ast_block_scope(parser, &block->as.scope_block, depth + 1); } break;
 		case mirac_ast_block_type_if:    { validate_ast_block_if(parser, &block->as.if_block, depth + 1);       } break;

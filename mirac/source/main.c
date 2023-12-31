@@ -86,6 +86,15 @@ int32_t main(
 
 		const mirac_seconds_t start_time = mirac_timer_get_time_in_seconds();
 		{
+			/*
+			mirac_token_s token;
+			mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path, source_file);
+			while (!mirac_lexer_should_stop_lexing(mirac_lexer_lex_next(&lexer, &token)))
+			{
+				mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_to_string_view(&token)));
+			}
+			*/
+
 			mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path, source_file);
 			mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);

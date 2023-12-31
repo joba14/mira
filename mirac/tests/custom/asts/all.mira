@@ -16,7 +16,7 @@ func test_func {
 	}
 
 	my_mem_1
-	hello
+	; hello
 	10 ; putu
 }
 

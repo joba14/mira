@@ -20,6 +20,7 @@
 #include <mirac/lexer.h>
 
 typedef struct mirac_ast_block_s mirac_ast_block_s;
+
 typedef struct mirac_ast_block_func_s mirac_ast_block_func_s;
 typedef struct mirac_ast_block_mem_s mirac_ast_block_mem_s;
 typedef struct mirac_ast_block_str_s mirac_ast_block_str_s;
@@ -27,9 +28,9 @@ typedef struct mirac_ast_block_str_s mirac_ast_block_str_s;
 mirac_define_heap_array_type(mirac_tokens_vector, mirac_token_s);
 mirac_define_heap_array_type(mirac_blocks_vector, mirac_ast_block_s);
 
-mirac_define_heap_array_type(mirac_func_blocks_refs_vector, mirac_ast_block_func_s*);
-mirac_define_heap_array_type(mirac_mem_blocks_refs_vector, mirac_ast_block_mem_s*);
-mirac_define_heap_array_type(mirac_str_blocks_refs_vector, mirac_ast_block_str_s*);
+mirac_define_heap_array_type(mirac_func_refs_vector, mirac_ast_block_func_s*);
+mirac_define_heap_array_type(mirac_mem_refs_vector, mirac_ast_block_mem_s*);
+mirac_define_heap_array_type(mirac_str_refs_vector, mirac_ast_block_str_s*);
 
 typedef struct
 {
@@ -39,6 +40,31 @@ typedef struct
 // TODO: document!
 void mirac_ast_block_expr_print(
 	const mirac_ast_block_expr_s* const expr_block,
+	const uint64_t indent);
+
+typedef enum
+{
+	mirac_ast_block_call_type_func = 0,
+	mirac_ast_block_call_type_mem,
+	mirac_ast_block_call_type_str
+} mirac_ast_block_call_type_e;
+
+typedef struct
+{
+	mirac_ast_block_call_type_e type;
+	mirac_token_s token;
+
+	union
+	{
+		mirac_ast_block_func_s* func_ref;
+		mirac_ast_block_mem_s* mem_ref;
+		mirac_ast_block_str_s* str_ref;
+	} as;
+} mirac_ast_block_call_s;
+
+// TODO: document!
+void mirac_ast_block_call_print(
+	const mirac_ast_block_call_s* const call_block,
 	const uint64_t indent);
 
 typedef struct
@@ -147,6 +173,7 @@ void mirac_ast_block_str_print(
 typedef enum
 {
 	mirac_ast_block_type_expr = 0,
+	mirac_ast_block_type_call,
 	mirac_ast_block_type_as,
 	mirac_ast_block_type_scope,
 	mirac_ast_block_type_if,
@@ -173,6 +200,7 @@ struct mirac_ast_block_s
 	union
 	{
 		mirac_ast_block_expr_s  expr_block;
+		mirac_ast_block_call_s  call_block;
 		mirac_ast_block_as_s    as_block;
 		mirac_ast_block_scope_s scope_block;
 		mirac_ast_block_if_s    if_block;
@@ -197,9 +225,9 @@ void mirac_ast_block_print(
 typedef struct
 {
 	mirac_blocks_vector_s blocks;
-	mirac_func_blocks_refs_vector_s func_refs;
-	mirac_mem_blocks_refs_vector_s mem_refs;
-	mirac_str_blocks_refs_vector_s str_refs;
+	mirac_func_refs_vector_s func_refs;
+	mirac_mem_refs_vector_s mem_refs;
+	mirac_str_refs_vector_s str_refs;
 } mirac_ast_unit_s;
 
 // TODO: document!
