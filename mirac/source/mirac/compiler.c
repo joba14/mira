@@ -21,6 +21,11 @@ static void compile_ast_block_expr(
 	mirac_ast_block_expr_s* const expr_block);
 
 // TODO: document!
+static void compile_ast_block_call(
+	mirac_compiler_s* const compiler,
+	mirac_ast_block_call_s* const call_block);
+
+// TODO: document!
 static void compile_ast_block_as(
 	mirac_compiler_s* const compiler,
 	mirac_ast_block_as_s* const as_block);
@@ -59,6 +64,11 @@ static void compile_ast_block_func(
 static void compile_ast_block_mem(
 	mirac_compiler_s* const compiler,
 	mirac_ast_block_mem_s* const mem_block);
+
+// TODO: document!
+static void compile_ast_block_str(
+	mirac_compiler_s* const compiler,
+	mirac_ast_block_str_s* const str_block);
 
 // TODO: document!
 static void compile_ast_block(
@@ -649,16 +659,21 @@ static void compile_ast_block_expr(
 			// TODO: implement!
 		} break;
 
-		case mirac_token_type_identifier:
-		{
-			// TODO: implement!
-		} break;
-
 		default:
 		{
 			// TODO: implement!
 		} break;
 	}
+}
+
+static void compile_ast_block_call(
+	mirac_compiler_s* const compiler,
+	mirac_ast_block_call_s* const call_block)
+{
+	mirac_debug_assert(compiler != NULL);
+	mirac_debug_assert(call_block != NULL);
+
+	// TODO: implement!
 }
 
 static void compile_ast_block_as(
@@ -736,6 +751,11 @@ static void compile_ast_block_func(
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(func_block != NULL);
 
+	// TODO: handle inline functions!
+	// TODO: handle unused functions!
+
+	// TODO: implement the func in all supported archs!
+
 	if (func_block->is_entry)
 	{
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
@@ -778,7 +798,19 @@ static void compile_ast_block_mem(
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(mem_block != NULL);
 
-	// TODO: implement!
+	// TODO: handle unused mems!
+	// TODO: implement the mem in all supported archs!
+}
+
+static void compile_ast_block_str(
+	mirac_compiler_s* const compiler,
+	mirac_ast_block_str_s* const str_block)
+{
+	mirac_debug_assert(compiler != NULL);
+	mirac_debug_assert(str_block != NULL);
+
+	// TODO: handle unused strs!
+	// TODO: implement the str in all supported archs!
 }
 
 static void compile_ast_block(
@@ -791,6 +823,7 @@ static void compile_ast_block(
 	switch (block->type)
 	{
 		case mirac_ast_block_type_expr:  { compile_ast_block_expr(compiler, &block->as.expr_block);   } break;
+		case mirac_ast_block_type_call:  { compile_ast_block_call(compiler, &block->as.call_block);   } break;
 		case mirac_ast_block_type_as:    { compile_ast_block_as(compiler, &block->as.as_block);       } break;
 		case mirac_ast_block_type_scope: { compile_ast_block_scope(compiler, &block->as.scope_block); } break;
 		case mirac_ast_block_type_if:    { compile_ast_block_if(compiler, &block->as.if_block);       } break;
@@ -799,6 +832,7 @@ static void compile_ast_block(
 		case mirac_ast_block_type_loop:  { compile_ast_block_loop(compiler, &block->as.loop_block);   } break;
 		case mirac_ast_block_type_func:  { compile_ast_block_func(compiler, &block->as.func_block);   } break;
 		case mirac_ast_block_type_mem:   { compile_ast_block_mem(compiler, &block->as.mem_block);     } break;
+		case mirac_ast_block_type_str:   { compile_ast_block_str(compiler, &block->as.str_block);     } break;
 
 		default:
 		{
