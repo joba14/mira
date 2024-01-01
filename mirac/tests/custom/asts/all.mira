@@ -6,7 +6,7 @@ mem my_mem_1 10 ; of size = 10 bytes
 
 str hello "hello"
 
-func test_func {
+inl func test_func {
 	if {
 		0 loop { \+. 10 < } {
 			10 \!. ++
@@ -23,7 +23,7 @@ func test_func {
 ; --- 
 ; :brief function (can be marked as inlined with 'inl' keyword before 'func' keyword)
 ; --- 
-func my_func_1 {
+sec ".text" func my_func_1 {
 	; code goes here...
 
 	test_func
