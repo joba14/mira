@@ -4,7 +4,11 @@
 ; --- 
 mem my_mem_1 10 ; of size = 10 bytes
 
+sec ".bss" mem my_mem_2 10 ; of size = 10 bytes
+
 str hello "hello"
+
+sec ".data" str hello2 "hello"
 
 inl func test_func {
 	if {
