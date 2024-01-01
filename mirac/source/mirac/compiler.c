@@ -99,9 +99,7 @@ void mirac_compiler_compile_ast_unit(
 	mirac_debug_assert(compiler != NULL);
 
 	(void)fprintf(compiler->file, "\n");
-	(void)fprintf(compiler->file, "format ELF64 executable 3\n");
-	(void)fprintf(compiler->file, "segment readable executable\n");
-	(void)fprintf(compiler->file, "entry " mirac_sv_fmt "\n", mirac_sv_arg(compiler->config->entry));
+	(void)fprintf(compiler->file, "global " mirac_sv_fmt "\n", mirac_sv_arg(compiler->config->entry));
 	(void)fprintf(compiler->file, "\n");
 
 	for (uint64_t block_index = 0; block_index < compiler->unit->blocks.count; ++block_index)
@@ -111,7 +109,7 @@ void mirac_compiler_compile_ast_unit(
 
 	// TODO: implement!
 	(void)fprintf(compiler->file, "\n");
-	(void)fprintf(compiler->file, "segment .bss\n");
+	(void)fprintf(compiler->file, "section .bss\n");
 	(void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
 	(void)fprintf(compiler->file, "\tret_stack_rsp: resq 1\n");
 	(void)fprintf(compiler->file, "\tret_stack: resb 4096\n");
@@ -656,7 +654,8 @@ static void compile_ast_block_expr(
 		{
 			(void)fprintf(compiler->file, ";; --- literal_ptr --- \n");
 			(void)fprintf(compiler->file, "addr_%lu:\n", expr_block->token.index);
-			// TODO: implement!
+			(void)fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ptr);
+			(void)fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
 		default:
@@ -674,6 +673,32 @@ static void compile_ast_block_call(
 	mirac_debug_assert(call_block != NULL);
 
 	// TODO: implement!
+	switch (call_block->type)
+	{
+		case mirac_ast_block_call_type_func:
+		{
+			(void)fprintf(compiler->file, ";; --- call --- \n");
+			(void)fprintf(compiler->file, "\tmov rax, rsp\n");
+			(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
+			(void)fprintf(compiler->file, "\tcall proc_%lu\n", call_block->as.func_ref->identifier.index);
+			(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
+			(void)fprintf(compiler->file, "\tmov rsp, rax\n");
+		} break;
+
+		case mirac_ast_block_call_type_mem:
+		{
+		} break;
+
+		case mirac_ast_block_call_type_str:
+		{
+			(void)fprintf(compiler->file, ";; --- call --- \n");
+			(void)fprintf(compiler->file, "\tpush str_%lu\n", call_block->as.str_ref->identifier.index);
+		} break;
+
+		default:
+		{
+		} break;
+	}
 }
 
 static void compile_ast_block_as(

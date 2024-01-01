@@ -1317,6 +1317,7 @@ static void validate_ast_block_call(
 
 		if (mirac_string_view_equal(call_block->token.as.ident, func_ref->identifier.as.ident))
 		{
+			call_block->type = mirac_ast_block_call_type_func;
 			call_block->as.func_ref = func_ref;
 			func_ref->is_used = true;
 			goto found_match;
@@ -1330,6 +1331,7 @@ static void validate_ast_block_call(
 
 		if (mirac_string_view_equal(call_block->token.as.ident, mem_ref->identifier.as.ident))
 		{
+			call_block->type = mirac_ast_block_call_type_mem;
 			call_block->as.mem_ref = mem_ref;
 			mem_ref->is_used = true;
 			goto found_match;
@@ -1343,6 +1345,7 @@ static void validate_ast_block_call(
 
 		if (mirac_string_view_equal(call_block->token.as.ident, str_ref->identifier.as.ident))
 		{
+			call_block->type = mirac_ast_block_call_type_str;
 			call_block->as.str_ref = str_ref;
 			str_ref->is_used = true;
 			goto found_match;
