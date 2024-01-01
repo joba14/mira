@@ -9,7 +9,7 @@ str hello "hello"
 func test_func {
 	if {
 		0 loop { \+. 10 < } {
-			10
+			10 \!. ++
 		}
 	} {
 		0
@@ -71,4 +71,8 @@ func my_func_1 {
 		; code goes here...
 		1 +
 	}
+}
+
+func main {
+	10 20 30
 }

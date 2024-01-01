@@ -15,15 +15,15 @@
 #include <mirac/version.h>
 #include <mirac/debug.h>
 #include <mirac/logger.h>
+#include <mirac/c_common.h>
 
 #include <getopt.h>
 
 static mirac_string_view_s g_program = mirac_string_view_static("");
-
 static mirac_string_view_s g_supported_architectures[] =
 {
-	mirac_string_view_static("nasm_x86_64_linux"),
-	mirac_string_view_static("fasm_x86_64_linux")
+	[mirac_config_arch_type_fasm_x86_64_linux] = mirac_string_view_static("fasm_x86_64_linux"),
+	[mirac_config_arch_type_nasm_x86_64_linux] = mirac_string_view_static("nasm_x86_64_linux")
 };
 
 static const char* const g_usage_banner =
@@ -38,6 +38,35 @@ static const char* const g_usage_banner =
 	"\n"
 	"notice:\n"
 	"    this executable is distributed under the \"mira gplv1\" license.\n";
+
+static int32_t compare_text_with_supported_architecture(
+	const void* const left,
+	const void* const right);
+
+static int32_t compare_text_with_supported_architecture(
+	const void* const left,
+	const void* const right)
+{
+	const mirac_string_view_s* left_string_view = (const mirac_string_view_s*)left;
+	const mirac_string_view_s* right_string_view = (const mirac_string_view_s*)right;
+	return mirac_c_strncmp(left_string_view->data, right_string_view->data, left_string_view->length);
+}
+
+mirac_string_view_s mirac_config_arch_type_to_string_view(
+	const mirac_config_arch_type_e type)
+{
+	switch (type)
+	{
+		case mirac_config_arch_type_fasm_x86_64_linux: { return mirac_string_view_from_cstring("fasm_x86_64_linux"); } break;
+		case mirac_config_arch_type_nasm_x86_64_linux: { return mirac_string_view_from_cstring("nasm_x86_64_linux"); } break;
+
+		default:
+		{
+			mirac_debug_assert(0);
+			return mirac_string_view_from_parts("", 0);
+		} break;
+	}
+}
 
 mirac_config_s mirac_config_from_cli(
 	const int32_t argc,
@@ -89,7 +118,20 @@ mirac_config_s mirac_config_from_cli(
 
 			case 'a':
 			{
-				config.arch = mirac_string_view_from_cstring((const char*)optarg);
+				mirac_string_view_s arch_as_string = mirac_string_view_from_cstring((const char*)optarg);
+				const void* const found_architecture = (const void* const)mirac_c_bsearch(
+					&arch_as_string, g_supported_architectures, mirac_config_arch_types_count + 1,
+					sizeof(g_supported_architectures[0]), compare_text_with_supported_architecture
+				);
+
+				if (NULL == found_architecture)
+				{
+					config.arch = mirac_config_arch_type_none;
+				}
+				else
+				{
+					config.arch = (mirac_config_arch_type_e)((const mirac_string_view_s*)found_architecture - g_supported_architectures);
+				}
 			} break;
 
 			case 'e':
@@ -111,33 +153,11 @@ mirac_config_s mirac_config_from_cli(
 		}
 	}
 
-	if (config.arch.length <= 0)
+	if (mirac_config_arch_type_none == config.arch)
 	{
-		mirac_logger_error("no architecture was provided.");
+		mirac_logger_error("invalid architecture was provided.");
 		mirac_config_usage();
 		mirac_c_exit(-1);
-	}
-	else
-	{
-		bool valid_architecture = false;
-		const uint64_t supported_architectures_count =
-			sizeof(g_supported_architectures) / sizeof(g_supported_architectures[0]);
-
-		for (uint8_t index = 0; index < supported_architectures_count; ++index)
-		{
-			if (mirac_string_view_equal(config.arch, g_supported_architectures[index]))
-			{
-				valid_architecture = true;
-				break;
-			}
-		}
-
-		if (!valid_architecture)
-		{
-			mirac_logger_error("invalid architecture '" mirac_sv_fmt "' was provided.", mirac_sv_arg(config.arch));
-			mirac_config_usage();
-			mirac_c_exit(-1);
-		}
 	}
 
 	// NOTE: If entry symbol is not provided, default to 'main'.
@@ -154,12 +174,9 @@ void mirac_config_usage(
 	void)
 {
 	mirac_logger_log(g_usage_banner, mirac_sv_arg(g_program));
-
-	const uint64_t supported_architectures_count =
-		sizeof(g_supported_architectures) / sizeof(g_supported_architectures[0]);
 	mirac_logger_log("supported architectures:");
 
-	for (uint8_t index = 0; index < supported_architectures_count; ++index)
+	for (uint64_t index = 0; index < mirac_config_arch_types_count + 1; ++index)
 	{
 		mirac_logger_log("    - " mirac_sv_fmt, mirac_sv_arg(g_supported_architectures[index]));
 	}

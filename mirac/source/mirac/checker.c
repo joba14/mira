@@ -211,7 +211,8 @@ static void validate_ast_block_if(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(if_block != NULL);
 
-	validate_ast_block_scope(parser, &if_block->scope, depth);
+	validate_ast_block_scope(parser, &if_block->cond_scope, depth);
+	validate_ast_block_scope(parser, &if_block->body_scope, depth);
 }
 
 static void validate_ast_block_elif(
@@ -222,7 +223,8 @@ static void validate_ast_block_elif(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(elif_block != NULL);
 
-	validate_ast_block_scope(parser, &elif_block->scope, depth);
+	validate_ast_block_scope(parser, &elif_block->cond_scope, depth);
+	validate_ast_block_scope(parser, &elif_block->body_scope, depth);
 }
 
 static void validate_ast_block_else(
@@ -233,7 +235,7 @@ static void validate_ast_block_else(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(else_block != NULL);
 
-	validate_ast_block_scope(parser, &else_block->scope, depth);
+	validate_ast_block_scope(parser, &else_block->body_scope, depth);
 }
 
 static void validate_ast_block_loop(
@@ -244,7 +246,8 @@ static void validate_ast_block_loop(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(loop_block != NULL);
 
-	validate_ast_block_scope(parser, &loop_block->scope, depth);
+	validate_ast_block_scope(parser, &loop_block->cond_scope, depth);
+	validate_ast_block_scope(parser, &loop_block->body_scope, depth);
 }
 
 static void validate_ast_block_func(
@@ -264,7 +267,7 @@ static void validate_ast_block_func(
 	}
 	*/
 
-	validate_ast_block_scope(parser, &func_block->scope, depth);
+	validate_ast_block_scope(parser, &func_block->body_scope, depth);
 }
 
 static void validate_ast_block_mem(
@@ -380,7 +383,8 @@ static void type_check_ast_block_if(
 	mirac_debug_assert(if_block != NULL);
 
 	// ... 
-	type_check_ast_block_scope(checker, &if_block->scope);
+	type_check_ast_block_scope(checker, &if_block->cond_scope);
+	type_check_ast_block_scope(checker, &if_block->body_scope);
 }
 
 static void type_check_ast_block_elif(
@@ -391,7 +395,8 @@ static void type_check_ast_block_elif(
 	mirac_debug_assert(elif_block != NULL);
 
 	// ... 
-	type_check_ast_block_scope(checker, &elif_block->scope);
+	type_check_ast_block_scope(checker, &elif_block->cond_scope);
+	type_check_ast_block_scope(checker, &elif_block->body_scope);
 }
 
 static void type_check_ast_block_else(
@@ -402,7 +407,7 @@ static void type_check_ast_block_else(
 	mirac_debug_assert(else_block != NULL);
 
 	// ... 
-	type_check_ast_block_scope(checker, &else_block->scope);
+	type_check_ast_block_scope(checker, &else_block->body_scope);
 }
 
 static void type_check_ast_block_loop(
@@ -413,7 +418,8 @@ static void type_check_ast_block_loop(
 	mirac_debug_assert(loop_block != NULL);
 
 	// ... 
-	type_check_ast_block_scope(checker, &loop_block->scope);
+	type_check_ast_block_scope(checker, &loop_block->cond_scope);
+	type_check_ast_block_scope(checker, &loop_block->body_scope);
 }
 
 static void type_check_ast_block_func(
@@ -424,6 +430,7 @@ static void type_check_ast_block_func(
 	mirac_debug_assert(func_block != NULL);
 
 	// ... 
+	type_check_ast_block_scope(checker, &func_block->body_scope);
 }
 
 static void type_check_ast_block_mem(

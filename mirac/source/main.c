@@ -100,17 +100,17 @@ int32_t main(
 			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
 			// TODO: remove:
-			getchar();
-			mirac_ast_unit_print(&unit, 0);
-			getchar();
+			// getchar();
+			// mirac_ast_unit_print(&unit, 0);
+			// getchar();
 
 			// TODO: implement the checker!
-			// mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
-			// mirac_checker_type_check_ast_unit(&checker);
+			mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
+			mirac_checker_type_check_ast_unit(&checker);
 
 			// TODO: implement the compiler!
-			// mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit, output_file);
-			// mirac_compiler_compile_ast_unit(&compiler);
+			mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit, output_file);
+			mirac_compiler_compile_ast_unit(&compiler);
 		}
 		const mirac_seconds_t elapsed_time = mirac_timer_get_elapsed_time_in_seconds(start_time);
 		mirac_logger_info("file '" mirac_sv_fmt "' was compiled in %.3Lf secs.", mirac_sv_arg(source_file_path), elapsed_time);

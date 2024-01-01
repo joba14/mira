@@ -1045,6 +1045,7 @@ static mirac_ast_block_func_s parse_ast_block_func(
 	}
 
 	func_block.identifier = token;
+	func_block.is_entry = mirac_string_view_equal(func_block.identifier.as.ident, parser->config->entry);
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
 	if (mirac_token_type_reserved_req == token.type)

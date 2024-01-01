@@ -16,10 +16,22 @@
 #include <mirac/c_common.h>
 #include <mirac/string_view.h>
 
+typedef enum
+{
+	mirac_config_arch_type_fasm_x86_64_linux = 0,
+	mirac_config_arch_type_nasm_x86_64_linux,
+	mirac_config_arch_types_count = mirac_config_arch_type_nasm_x86_64_linux,
+
+	mirac_config_arch_type_none
+} mirac_config_arch_type_e;
+
+mirac_string_view_s mirac_config_arch_type_to_string_view(
+	const mirac_config_arch_type_e type);
+
 typedef struct
 {
 	mirac_string_view_s program;
-	mirac_string_view_s arch;
+	mirac_config_arch_type_e arch;
 	mirac_string_view_s entry;
 	mirac_string_view_s output;
 } mirac_config_s;
