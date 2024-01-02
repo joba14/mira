@@ -58,10 +58,8 @@ tokens = [
 	("mirac_token_type_reserved_inl", "inl"),
 	("mirac_token_type_reserved_func", "func"),
 	("mirac_token_type_reserved_if", "if"),
-	("mirac_token_type_reserved_left_brace", "{"),
 	("mirac_token_type_reserved_elif", "elif"),
 	("mirac_token_type_reserved_else", "else"),
-	("mirac_token_type_reserved_right_brace", "}"),
 	("mirac_token_type_reserved_loop", "loop"),
 	("mirac_token_type_reserved_as", "as"),
 	("mirac_token_type_reserved_req", "req"),
@@ -72,6 +70,11 @@ tokens = [
 	("mirac_token_type_reserved_over", "\\>."),
 	("mirac_token_type_reserved_rot", "\\>3"),
 	("mirac_token_type_reserved_swap", "\\><"),
+
+	("mirac_token_type_reserved_left_brace", "{"),
+	("mirac_token_type_reserved_right_brace", "}"),
+	("mirac_token_type_reserved_left_bracket", "["),
+	("mirac_token_type_reserved_right_bracket", "]"),
 ]
 
 for token in sorted(tokens, key=lambda x: x[1]):
