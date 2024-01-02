@@ -1,5 +1,5 @@
 
-str message "hello world!\n\0"
+sec ".data" str message "hello world!\n\0"
 
 func _start {
 	14 message 1 1 \$3 \!.
