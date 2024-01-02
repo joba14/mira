@@ -32,9 +32,6 @@
 		mirac_arena_s* const arena,                                            \
 		const uint64_t capacity);                                              \
 	                                                                           \
-	void _type_name ## _destroy(                                               \
-		_type_name ## _s* const heap_array);                                   \
-	                                                                           \
 	void _type_name ## _push(                                                  \
 		_type_name ## _s* const heap_array,                                    \
 		_element_type element);                                                \
@@ -61,18 +58,17 @@
 		                                                                       \
 		heap_array.data = (_element_type*)mirac_arena_malloc(                  \
 			heap_array.arena, capacity * sizeof(_element_type));               \
-		mirac_debug_assert(heap_array.data != NULL);                           \
+		                                                                       \
+		if (NULL == node)                                                      \
+		{                                                                      \
+			mirac_logger_error(                                                \
+				"internal failure -- failed to allocate heap array.");         \
+			mirac_c_exit(-1);                                                  \
+		}                                                                      \
 		                                                                       \
 		heap_array.capacity = capacity;                                        \
 		heap_array.count = 0;                                                  \
 		return heap_array;                                                     \
-	}                                                                          \
-	                                                                           \
-	void _type_name ## _destroy(                                               \
-		_type_name ## _s* const heap_array)                                    \
-	{                                                                          \
-		mirac_debug_assert(heap_array != NULL);                                \
-		mirac_c_memset(heap_array, 0, sizeof(_type_name ## _s));               \
 	}                                                                          \
 	                                                                           \
 	void _type_name ## _push(                                                  \
@@ -89,7 +85,13 @@
 			                                                                   \
 			_element_type* new_data = mirac_arena_malloc(                      \
 				heap_array->arena, new_capacity * sizeof(_element_type));      \
-			mirac_debug_assert(new_data != NULL);                              \
+			                                                                   \
+			if (NULL == node)                                                  \
+			{                                                                  \
+				mirac_logger_error(                                            \
+					"internal failure -- failed to allocate heap array.");     \
+				mirac_c_exit(-1);                                              \
+			}                                                                  \
 			                                                                   \
 			if (heap_array->count > 0)                                         \
 			{                                                                  \
