@@ -43,25 +43,25 @@ typedef struct
 
 typedef struct
 {
-	mirac_ast_block_scope_s cond_scope;
-	mirac_ast_block_scope_s body_scope;
+	mirac_ast_block_s* cond; // NOTE: must be scope blocks.
+	mirac_ast_block_s* body; // NOTE: must be scope blocks.
 } mirac_ast_block_if_s;
 
 typedef struct
 {
-	mirac_ast_block_scope_s cond_scope;
-	mirac_ast_block_scope_s body_scope;
+	mirac_ast_block_s* cond; // NOTE: must be scope blocks.
+	mirac_ast_block_s* body; // NOTE: must be scope blocks.
 } mirac_ast_block_elif_s;
 
 typedef struct
 {
-	mirac_ast_block_scope_s body_scope;
+	mirac_ast_block_s* body; // NOTE: must be scope blocks.
 } mirac_ast_block_else_s;
 
 typedef struct
 {
-	mirac_ast_block_scope_s cond_scope;
-	mirac_ast_block_scope_s body_scope;
+	mirac_ast_block_s* cond; // NOTE: must be scope blocks.
+	mirac_ast_block_s* body; // NOTE: must be scope blocks.
 } mirac_ast_block_loop_s;
 
 typedef enum
@@ -104,7 +104,7 @@ typedef struct
 	mirac_token_s identifier;
 	mirac_token_list_s req_tokens;
 	mirac_token_list_s ret_tokens;
-	mirac_ast_block_scope_s body_scope;
+	mirac_ast_block_s* body; // NOTE: must be scope blocks.
 	bool is_entry;
 } mirac_ast_def_func_s;
 

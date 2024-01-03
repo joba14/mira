@@ -577,8 +577,6 @@ static mirac_ast_block_if_s create_ast_block_if(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_if_s if_block = {0};
-	if_block.cond_scope = create_ast_block_scope(arena);
-	if_block.body_scope = create_ast_block_scope(arena);
 	return if_block;
 }
 
@@ -587,8 +585,6 @@ static mirac_ast_block_elif_s create_ast_block_elif(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_elif_s elif_block = {0};
-	elif_block.cond_scope = create_ast_block_scope(arena);
-	elif_block.body_scope = create_ast_block_scope(arena);
 	return elif_block;
 }
 
@@ -597,7 +593,6 @@ static mirac_ast_block_else_s create_ast_block_else(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_else_s else_block = {0};
-	else_block.body_scope = create_ast_block_scope(arena);
 	return else_block;
 }
 
@@ -606,8 +601,6 @@ static mirac_ast_block_loop_s create_ast_block_loop(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_block_loop_s loop_block = {0};
-	loop_block.cond_scope = create_ast_block_scope(arena);
-	loop_block.body_scope = create_ast_block_scope(arena);
 	return loop_block;
 }
 
@@ -624,7 +617,6 @@ static mirac_ast_def_func_s create_ast_def_func(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-
 	mirac_ast_def_func_s func_def = {0};
 	func_def.req_tokens = mirac_token_list_from_parts(arena);
 	func_def.ret_tokens = mirac_token_list_from_parts(arena);
@@ -635,7 +627,6 @@ static mirac_ast_def_mem_s create_ast_def_mem(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-
 	mirac_ast_def_mem_s mem_def = {0};
 	return mem_def;
 }
@@ -829,7 +820,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 		);
 	}
 
-	if_block.cond_scope = block->as.scope_block;
+	if_block.cond = block;
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
@@ -839,7 +830,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 		);
 	}
 
-	if_block.body_scope = block->as.scope_block;
+	if_block.body = block;
 
 	return if_block;
 }
@@ -864,7 +855,7 @@ static mirac_ast_block_elif_s parse_ast_block_elif(
 		);
 	}
 
-	elif_block.cond_scope = block->as.scope_block;
+	elif_block.cond = block;
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
@@ -874,7 +865,7 @@ static mirac_ast_block_elif_s parse_ast_block_elif(
 		);
 	}
 
-	elif_block.body_scope = block->as.scope_block;
+	elif_block.body = block;
 
 	return elif_block;
 }
@@ -899,7 +890,7 @@ static mirac_ast_block_else_s parse_ast_block_else(
 		);
 	}
 
-	else_block.body_scope = block->as.scope_block;
+	else_block.body = block;
 
 	return else_block;
 }
@@ -924,7 +915,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 		);
 	}
 
-	loop_block.cond_scope = block->as.scope_block;
+	loop_block.cond = block;
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
@@ -934,7 +925,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 		);
 	}
 
-	loop_block.body_scope = block->as.scope_block;
+	loop_block.body = block;
 
 	return loop_block;
 }
@@ -1085,7 +1076,7 @@ static mirac_ast_def_func_s parse_ast_def_func(
 		);
 	}
 
-	func_def.body_scope = block->as.scope_block;
+	func_def.body = block;
 	return func_def;
 }
 
@@ -1301,17 +1292,21 @@ static void print_ast_block_if(
 	const uint64_t indent)
 {
 	mirac_debug_assert(if_block != NULL);
+	mirac_debug_assert(if_block->cond != NULL);
+	mirac_debug_assert(if_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == if_block->cond->type);
+	mirac_debug_assert(mirac_ast_block_type_scope == if_block->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("IfBlock[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("cond:\n");
-	print_ast_block_scope(&if_block->cond_scope, indent + 2);
+	print_ast_block(if_block->cond, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body:\n");
-	print_ast_block_scope(&if_block->body_scope, indent + 2);
+	print_ast_block(if_block->body, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
@@ -1322,17 +1317,21 @@ static void print_ast_block_elif(
 	const uint64_t indent)
 {
 	mirac_debug_assert(elif_block != NULL);
+	mirac_debug_assert(elif_block->cond != NULL);
+	mirac_debug_assert(elif_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == elif_block->cond->type);
+	mirac_debug_assert(mirac_ast_block_type_scope == elif_block->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("ElifBlock[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("cond:\n");
-	print_ast_block_scope(&elif_block->cond_scope, indent + 2);
+	print_ast_block(elif_block->cond, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body:\n");
-	print_ast_block_scope(&elif_block->body_scope, indent + 2);
+	print_ast_block(elif_block->body, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
@@ -1343,13 +1342,15 @@ static void print_ast_block_else(
 	const uint64_t indent)
 {
 	mirac_debug_assert(else_block != NULL);
+	mirac_debug_assert(else_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == else_block->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("ElseBlock[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body:\n");
-	print_ast_block_scope(&else_block->body_scope, indent + 2);
+	print_ast_block(else_block->body, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
@@ -1360,17 +1361,21 @@ static void print_ast_block_loop(
 	const uint64_t indent)
 {
 	mirac_debug_assert(loop_block != NULL);
+	mirac_debug_assert(loop_block->cond != NULL);
+	mirac_debug_assert(loop_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->cond->type);
+	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("LoopBlock[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("cond:\n");
-	print_ast_block_scope(&loop_block->cond_scope, indent + 2);
+	print_ast_block(loop_block->cond, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("body:\n");
-	print_ast_block_scope(&loop_block->body_scope, indent + 2);
+	print_ast_block(loop_block->body, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
@@ -1441,6 +1446,8 @@ static void print_ast_def_func(
 	const uint64_t indent)
 {
 	mirac_debug_assert(func_def != NULL);
+	mirac_debug_assert(func_def->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == func_def->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("FuncDef[\n");
@@ -1467,8 +1474,8 @@ static void print_ast_def_func(
 	}
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("body_scope:\n");
-	print_ast_block_scope(&func_def->body_scope, indent + 2);
+	printf("body:\n");
+	print_ast_block(func_def->body, indent + 2);
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_entry: %s\n", func_def->is_entry ? "yes" : "no");
@@ -1701,8 +1708,8 @@ static void validate_ast_block_if(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(if_block != NULL);
 
-	validate_ast_block_scope(parser, &if_block->cond_scope, depth);
-	validate_ast_block_scope(parser, &if_block->body_scope, depth);
+	validate_ast_block_scope(parser, &if_block->cond, depth);
+	validate_ast_block_scope(parser, &if_block->body, depth);
 }
 
 static void validate_ast_block_elif(
@@ -1713,8 +1720,8 @@ static void validate_ast_block_elif(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(elif_block != NULL);
 
-	validate_ast_block_scope(parser, &elif_block->cond_scope, depth);
-	validate_ast_block_scope(parser, &elif_block->body_scope, depth);
+	validate_ast_block_scope(parser, &elif_block->cond, depth);
+	validate_ast_block_scope(parser, &elif_block->body, depth);
 }
 
 static void validate_ast_block_else(
@@ -1725,7 +1732,7 @@ static void validate_ast_block_else(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(else_block != NULL);
 
-	validate_ast_block_scope(parser, &else_block->body_scope, depth);
+	validate_ast_block_scope(parser, &else_block->body, depth);
 }
 
 static void validate_ast_block_loop(
@@ -1736,8 +1743,8 @@ static void validate_ast_block_loop(
 	mirac_debug_assert(parser != NULL);
 	mirac_debug_assert(loop_block != NULL);
 
-	validate_ast_block_scope(parser, &loop_block->cond_scope, depth);
-	validate_ast_block_scope(parser, &loop_block->body_scope, depth);
+	validate_ast_block_scope(parser, &loop_block->cond, depth);
+	validate_ast_block_scope(parser, &loop_block->body, depth);
 }
 
 static void validate_ast_block_func(
@@ -1792,7 +1799,7 @@ static void validate_ast_block_func(
 
 	mirac_func_refs_vector_push(&parser->unit.func_refs, func_block);
 
-	validate_ast_block_scope(parser, &func_block->body_scope, depth);
+	validate_ast_block_scope(parser, &func_block->body, depth);
 }
 
 static void validate_ast_block_mem(
