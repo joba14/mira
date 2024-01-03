@@ -36,8 +36,20 @@ typedef struct
 	mirac_token_list_s type_tokens;
 } mirac_ast_block_as_s;
 
+typedef enum
+{
+	mirac_ast_block_scope_type_parentheses = 0,
+	mirac_ast_block_scope_type_brackets,
+	mirac_ast_block_scope_type_braces,
+} mirac_ast_block_scope_type_e;
+
+// TODO: document!
+mirac_string_view_s mirac_ast_block_scope_type_to_string_view(
+	const mirac_ast_block_scope_type_e type);
+
 typedef struct
 {
+	mirac_ast_block_scope_type_e type;
 	mirac_ast_block_list_s blocks;
 } mirac_ast_block_scope_s;
 

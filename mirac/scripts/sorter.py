@@ -71,6 +71,10 @@ tokens = [
 	("mirac_token_type_reserved_rot", "\\>3"),
 	("mirac_token_type_reserved_swap", "\\><"),
 
+	("mirac_token_type_reserved_left_parenthesis", "("),
+	("mirac_token_type_reserved_right_parenthesis", ")"),
+	("mirac_token_type_reserved_left_bracket", "["),
+	("mirac_token_type_reserved_right_bracket", "]"),
 	("mirac_token_type_reserved_left_brace", "{"),
 	("mirac_token_type_reserved_right_brace", "}"),
 ]

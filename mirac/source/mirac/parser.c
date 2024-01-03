@@ -435,6 +435,23 @@ static void print_ast_def(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
+mirac_string_view_s mirac_ast_block_scope_type_to_string_view(
+	const mirac_ast_block_scope_type_e type)
+{
+	switch (type)
+	{
+		case mirac_ast_block_scope_type_parentheses:  { return mirac_string_view_from_cstring("parentheses");  } break;
+		case mirac_ast_block_scope_type_brackets:     { return mirac_string_view_from_cstring("brackets");     } break;
+		case mirac_ast_block_scope_type_braces:       { return mirac_string_view_from_cstring("braces");       } break;
+
+		default:
+		{
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			return mirac_string_view_from_parts("", 0);
+		} break;
+	}
+}
+
 mirac_string_view_s mirac_ast_block_type_to_string_view(
 	const mirac_ast_block_type_e type)
 {
@@ -749,30 +766,35 @@ static bool is_token_valid_expr_block_token_by_type(
 	const mirac_token_type_e type)
 {
 	return (
-		(mirac_token_type_literal_str         != type) &&
-		(mirac_token_type_reserved_sec        != type) &&
-		(mirac_token_type_reserved_ret        != type) &&
-		(mirac_token_type_reserved_req        != type) &&
-		(mirac_token_type_reserved_func       != type) &&
-		(mirac_token_type_reserved_mem        != type) &&
-		(mirac_token_type_reserved_str        != type) &&
-		(mirac_token_type_reserved_as         != type) &&
-		(mirac_token_type_reserved_if         != type) &&
-		(mirac_token_type_reserved_elif       != type) &&
-		(mirac_token_type_reserved_else       != type) &&
-		(mirac_token_type_reserved_loop       != type) &&
-		(mirac_token_type_reserved_left_brace != type) &&
-		(mirac_token_type_reserved_i08        != type) &&
-		(mirac_token_type_reserved_i16        != type) &&
-		(mirac_token_type_reserved_i32        != type) &&
-		(mirac_token_type_reserved_i64        != type) &&
-		(mirac_token_type_reserved_u08        != type) &&
-		(mirac_token_type_reserved_u16        != type) &&
-		(mirac_token_type_reserved_u32        != type) &&
-		(mirac_token_type_reserved_u64        != type) &&
-		(mirac_token_type_reserved_f32        != type) &&
-		(mirac_token_type_reserved_f64        != type) &&
-		(mirac_token_type_reserved_ptr        != type)
+		(mirac_token_type_literal_str                != type) &&
+		(mirac_token_type_reserved_sec               != type) &&
+		(mirac_token_type_reserved_ret               != type) &&
+		(mirac_token_type_reserved_req               != type) &&
+		(mirac_token_type_reserved_func              != type) &&
+		(mirac_token_type_reserved_mem               != type) &&
+		(mirac_token_type_reserved_str               != type) &&
+		(mirac_token_type_reserved_as                != type) &&
+		(mirac_token_type_reserved_if                != type) &&
+		(mirac_token_type_reserved_elif              != type) &&
+		(mirac_token_type_reserved_else              != type) &&
+		(mirac_token_type_reserved_loop              != type) &&
+		(mirac_token_type_reserved_left_parenthesis  != type) &&
+		(mirac_token_type_reserved_right_parenthesis != type) &&
+		(mirac_token_type_reserved_left_bracket      != type) &&
+		(mirac_token_type_reserved_right_bracket     != type) &&
+		(mirac_token_type_reserved_left_brace        != type) &&
+		(mirac_token_type_reserved_right_brace       != type) &&
+		(mirac_token_type_reserved_i08               != type) &&
+		(mirac_token_type_reserved_i16               != type) &&
+		(mirac_token_type_reserved_i32               != type) &&
+		(mirac_token_type_reserved_i64               != type) &&
+		(mirac_token_type_reserved_u08               != type) &&
+		(mirac_token_type_reserved_u16               != type) &&
+		(mirac_token_type_reserved_u32               != type) &&
+		(mirac_token_type_reserved_u64               != type) &&
+		(mirac_token_type_reserved_f32               != type) &&
+		(mirac_token_type_reserved_f64               != type) &&
+		(mirac_token_type_reserved_ptr               != type)
 	);
 }
 
@@ -839,24 +861,66 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_ast_block_s* block = NULL;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
-	mirac_debug_assert(mirac_token_type_reserved_left_brace == token.type);
+	mirac_debug_assert((mirac_token_type_reserved_left_parenthesis == token.type) ||
+					   (mirac_token_type_reserved_left_bracket     == token.type) ||
+					   (mirac_token_type_reserved_left_brace       == token.type));
 
-	while ((block = parse_ast_block(parser)) != NULL)
+	mirac_token_type_e scope_end_token_type;
+	switch (token.type)
 	{
+		case mirac_token_type_reserved_left_parenthesis:
+		{
+			scope_block.type = mirac_ast_block_scope_type_parentheses;
+			scope_end_token_type = mirac_token_type_reserved_right_parenthesis;
+		} break;
+
+		case mirac_token_type_reserved_left_bracket:
+		{
+			scope_block.type = mirac_ast_block_scope_type_brackets;
+			scope_end_token_type = mirac_token_type_reserved_right_bracket;
+		} break;
+
+		case mirac_token_type_reserved_left_brace:
+		{
+			scope_block.type = mirac_ast_block_scope_type_braces;
+			scope_end_token_type = mirac_token_type_reserved_right_brace;
+		} break;
+
+		default:
+		{
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
+		} break;
+	}
+
+	while (1)
+	{
+		(void)mirac_lexer_lex_next(parser->lexer, &token);
+
+		if (scope_end_token_type == token.type)
+		{
+			break;
+		}
+
+		mirac_lexer_unlex(parser->lexer, &token);
+		block = parse_ast_block(parser);
+
 		if ((mirac_ast_block_type_eou  == block->type) ||
 			(mirac_ast_block_type_none == block->type))
 		{
 			log_parser_error_and_exit(block->location,
-				"expected scope closing '}' token, but found '" mirac_sv_fmt "' block.",
+				"expected scope closing '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' block.",
+				mirac_sv_arg(mirac_token_type_to_string_view(scope_end_token_type)),
 				mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
 			);
 		}
 
+		/*
 		if ((mirac_ast_block_type_expr == block->type) &&
-			(mirac_token_type_reserved_right_brace == block->as.expr_block.token.type))
+			(scope_end_token_type == block->as.expr_block.token.type))
 		{
 			break;
 		}
+		*/
 
 		mirac_ast_block_list_push(&scope_block.blocks, block);
 	}
@@ -1051,6 +1115,8 @@ static mirac_ast_block_s* parse_ast_block(
 			block->as.as_block = parse_ast_block_as(parser);
 		} break;
 
+		case mirac_token_type_reserved_left_parenthesis:
+		case mirac_token_type_reserved_left_bracket:
 		case mirac_token_type_reserved_left_brace:
 		{
 			block->type = mirac_ast_block_type_scope;
@@ -1372,6 +1438,11 @@ static void print_ast_block_scope(
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("ScopeBlock[\n");
+
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
+	printf("type:\n");
+	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
+	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_ast_block_scope_type_to_string_view(scope_block->type)));
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("blocks:\n");
