@@ -491,15 +491,123 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 	}
 }
 
+static uint64_t hash_identifier(
+	const mirac_string_view_s identifier);
+
+static uint64_t hash_identifier(
+	const mirac_string_view_s identifier)
+{
+	const char* data = identifier.data;
+	uint64_t nblocks = identifier.length / 8;
+	uint64_t hash = 2166136261u;
+
+	for (uint64_t index = 0; index < nblocks; ++index)
+	{
+		hash ^= (uint64_t)data[0] << 0  | (uint64_t)data[1] << 8  |
+				(uint64_t)data[2] << 16 | (uint64_t)data[3] << 24 |
+				(uint64_t)data[4] << 32 | (uint64_t)data[5] << 40 |
+				(uint64_t)data[6] << 48 | (uint64_t)data[7] << 56;
+		hash *= 0xbf58476d1ce4e5b9;
+		data += 8;
+	}
+
+	uint64_t last = identifier.length & 0xff;
+	switch (identifier.length % 8)
+	{
+		case 7: last |= (uint64_t)data[6] << 56; /* fallthrough */
+		case 6: last |= (uint64_t)data[5] << 48; /* fallthrough */
+		case 5: last |= (uint64_t)data[4] << 40; /* fallthrough */
+		case 4: last |= (uint64_t)data[3] << 32; /* fallthrough */
+		case 3: last |= (uint64_t)data[2] << 24; /* fallthrough */
+		case 2: last |= (uint64_t)data[1] << 16; /* fallthrough */
+		case 1: last |= (uint64_t)data[0] << 8;
+			hash ^= last;
+			hash *= 0xd6e8feb86659fd93;
+	}
+
+	return hash;
+}
+
+mirac_ast_def_map_s mirac_ast_def_map_from_parts(
+	mirac_arena_s* const arena,
+	const uint64_t capacity)
+{
+	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(capacity > 0);
+
+	mirac_ast_def_map_s def_map = {0};
+	def_map.arena = arena;
+	def_map.nodes = (mirac_ast_def_map_node_s**)mirac_arena_malloc(arena, capacity * sizeof(mirac_ast_def_map_node_s*));
+	mirac_c_memset(def_map.nodes, 0, capacity * sizeof(mirac_ast_def_map_node_s*));
+	return def_map;
+}
+
+bool mirac_ast_def_map_set(
+	mirac_ast_def_map_s* const def_map,
+	const mirac_string_view_s identifier,
+	const mirac_ast_def_s* const def)
+{
+	mirac_debug_assert(def_map != NULL);
+	mirac_debug_assert(def != NULL);
+
+	const uint64_t hash = hash_identifier(identifier) % def_map->capacity;
+	mirac_ast_def_map_node_s* node = def_map->nodes[hash];
+	mirac_ast_def_map_node_s* prev_node = NULL;
+
+	while (node != NULL)
+	{
+		if (mirac_string_view_equal(identifier, node->identifier))
+		{
+			node->def = def;
+			return true;
+		}
+
+		prev_node = node;
+		node = node->next;
+	}
+
+	node = mirac_arena_malloc(def_map->arena, sizeof(mirac_ast_def_map_node_s));
+	node->identifier = identifier;
+	node->def = def;
+	node->next = NULL;
+	prev_node->next = node;
+	return true;
+}
+
+bool mirac_ast_def_map_get(
+	mirac_ast_def_map_s* const def_map,
+	const mirac_string_view_s key,
+	const mirac_ast_def_s** const def)
+{
+	mirac_debug_assert(def_map != NULL);
+	mirac_debug_assert(def != NULL);
+
+	uint64_t hash = hash_identifier(key);
+	hash = hash % def_map->capacity;
+	mirac_ast_def_map_node_s* node = def_map->nodes[hash];
+
+	while (node != NULL)
+	{
+		if (mirac_string_view_equal(key, node->identifier))
+		{
+			*def = node->def;
+			return true;
+		}
+
+		node = node->next;
+	}
+
+	return false;
+}
+
 mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != NULL);
-	mirac_ast_unit_s ast_unit = {0};
-	ast_unit.func_defs = mirac_ast_def_list_from_parts(arena);
-	ast_unit.mem_defs = mirac_ast_def_list_from_parts(arena);
-	ast_unit.str_defs = mirac_ast_def_list_from_parts(arena);
-	return ast_unit;
+	mirac_ast_unit_s unit = {0};
+	unit.defs = mirac_ast_def_list_from_parts(arena);
+	unit.def_map = mirac_ast_def_map_from_parts(arena, 1000);
+	return unit;
 }
 
 void mirac_ast_unit_print(
@@ -512,24 +620,10 @@ void mirac_ast_unit_print(
 	printf("Unit[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("func_defs:\n");
-	for (const mirac_ast_def_list_node_s* func_defs_iterator = unit->func_defs.begin; func_defs_iterator != NULL; func_defs_iterator = func_defs_iterator->next)
+	printf("defs:\n");
+	for (const mirac_ast_def_list_node_s* defs_iterator = unit->defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
 	{
-		print_ast_def(func_defs_iterator->data, indent + 2);
-	}
-
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("mem_defs:\n");
-	for (const mirac_ast_def_list_node_s* mem_defs_iterator = unit->mem_defs.begin; mem_defs_iterator != NULL; mem_defs_iterator = mem_defs_iterator->next)
-	{
-		print_ast_def(mem_defs_iterator->data, indent + 2);
-	}
-
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("str_defs:\n");
-	for (const mirac_ast_def_list_node_s* str_defs_iterator = unit->str_defs.begin; str_defs_iterator != NULL; str_defs_iterator = str_defs_iterator->next)
-	{
-		print_ast_def(str_defs_iterator->data, indent + 2);
+		print_ast_def(defs_iterator->data, indent + 2);
 	}
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
@@ -597,64 +691,17 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 			} break;
 		}
 
-		for (mirac_ast_def_list_node_s* func_defs_iterator = unit.func_defs.begin; func_defs_iterator != NULL; func_defs_iterator = func_defs_iterator->next)
+		const mirac_ast_def_s* existing_def = NULL;
+		if (mirac_ast_def_map_get(&unit.def_map, identifier_token->as.ident, &existing_def))
 		{
-			mirac_debug_assert(mirac_ast_def_type_func == func_defs_iterator->data->type);
-			if (mirac_string_view_equal(identifier_token->as.ident, func_defs_iterator->data->as.func_def.identifier.as.ident))
-			{
-				log_parser_error_and_exit(identifier_token->location,
-					"encountered a redefinition '" mirac_sv_fmt "'.",
-					mirac_sv_arg(identifier_token->as.ident)
-				);
-			}
+			mirac_debug_assert(existing_def != NULL);
+			log_parser_error_and_exit(identifier_token->location,
+				"encountered a redefinition of '" mirac_sv_fmt "' identifier.",
+				mirac_sv_arg(identifier_token->as.ident)
+			);
 		}
 
-		for (mirac_ast_def_list_node_s* mem_defs_iterator = unit.mem_defs.begin; mem_defs_iterator != NULL; mem_defs_iterator = mem_defs_iterator->next)
-		{
-			mirac_debug_assert(mirac_ast_def_type_mem == mem_defs_iterator->data->type);
-			if (mirac_string_view_equal(identifier_token->as.ident, mem_defs_iterator->data->as.mem_def.identifier.as.ident))
-			{
-				log_parser_error_and_exit(identifier_token->location,
-					"encountered a redefinition '" mirac_sv_fmt "'.",
-					mirac_sv_arg(identifier_token->as.ident)
-				);
-			}
-		}
-
-		for (mirac_ast_def_list_node_s* str_defs_iterator = unit.str_defs.begin; str_defs_iterator != NULL; str_defs_iterator = str_defs_iterator->next)
-		{
-			mirac_debug_assert(mirac_ast_def_type_str == str_defs_iterator->data->type);
-			if (mirac_string_view_equal(identifier_token->as.ident, str_defs_iterator->data->as.str_def.identifier.as.ident))
-			{
-				log_parser_error_and_exit(identifier_token->location,
-					"encountered a redefinition '" mirac_sv_fmt "'.",
-					mirac_sv_arg(identifier_token->as.ident)
-				);
-			}
-		}
-
-		switch (def->type)
-		{
-			case mirac_ast_def_type_func:
-			{
-				mirac_ast_def_list_push(&unit.func_defs, def);
-			} break;
-
-			case mirac_ast_def_type_mem:
-			{
-				mirac_ast_def_list_push(&unit.mem_defs, def);
-			} break;
-
-			case mirac_ast_def_type_str:
-			{
-				mirac_ast_def_list_push(&unit.str_defs, def);
-			} break;
-
-			default:
-			{
-				mirac_debug_assert(0); // NOTE: Should never reach this block.
-			} break;
-		}
+		mirac_ast_def_list_push(&unit.defs, def);
 	}
 
 	return unit;
