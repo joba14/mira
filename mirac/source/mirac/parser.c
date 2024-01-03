@@ -479,7 +479,9 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 {
 	mirac_debug_assert(arena != NULL);
 	mirac_ast_unit_s ast_unit = {0};
-	ast_unit.defs = mirac_ast_def_list_from_parts(arena);
+	ast_unit.func_defs = mirac_ast_def_list_from_parts(arena);
+	ast_unit.mem_defs = mirac_ast_def_list_from_parts(arena);
+	ast_unit.str_defs = mirac_ast_def_list_from_parts(arena);
 	return ast_unit;
 }
 
@@ -493,10 +495,24 @@ void mirac_ast_unit_print(
 	printf("Unit[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("defs:\n");
-	for (const mirac_ast_def_list_node_s* defs_iterator = unit->defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
+	printf("func_defs:\n");
+	for (const mirac_ast_def_list_node_s* func_defs_iterator = unit->func_defs.begin; func_defs_iterator != NULL; func_defs_iterator = func_defs_iterator->next)
 	{
-		print_ast_def(defs_iterator->data, indent + 2);
+		print_ast_def(func_defs_iterator->data, indent + 2);
+	}
+
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
+	printf("mem_defs:\n");
+	for (const mirac_ast_def_list_node_s* mem_defs_iterator = unit->mem_defs.begin; mem_defs_iterator != NULL; mem_defs_iterator = mem_defs_iterator->next)
+	{
+		print_ast_def(mem_defs_iterator->data, indent + 2);
+	}
+
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
+	printf("str_defs:\n");
+	for (const mirac_ast_def_list_node_s* str_defs_iterator = unit->str_defs.begin; str_defs_iterator != NULL; str_defs_iterator = str_defs_iterator->next)
+	{
+		print_ast_def(str_defs_iterator->data, indent + 2);
 	}
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
@@ -540,7 +556,88 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 			break;
 		}
 
-		mirac_ast_def_list_push(&unit.defs, def);
+		const mirac_token_s* identifier_token = NULL;
+		switch (def->type)
+		{
+			case mirac_ast_def_type_func:
+			{
+				identifier_token = &def->as.func_def.identifier;
+			} break;
+
+			case mirac_ast_def_type_mem:
+			{
+				identifier_token = &def->as.mem_def.identifier;
+			} break;
+
+			case mirac_ast_def_type_str:
+			{
+				identifier_token = &def->as.str_def.identifier;
+			} break;
+
+			default:
+			{
+				mirac_debug_assert(0); // NOTE: Should never reach this block.
+			} break;
+		}
+
+		for (mirac_ast_def_list_node_s* func_defs_iterator = unit.func_defs.begin; func_defs_iterator != NULL; func_defs_iterator = func_defs_iterator->next)
+		{
+			mirac_debug_assert(mirac_ast_def_type_func == func_defs_iterator->data->type);
+			if (mirac_string_view_equal(identifier_token->as.ident, func_defs_iterator->data->as.func_def.identifier.as.ident))
+			{
+				log_parser_error_and_exit(identifier_token->location,
+					"encountered a redefinition '" mirac_sv_fmt "'.",
+					mirac_sv_arg(identifier_token->as.ident)
+				);
+			}
+		}
+
+		for (mirac_ast_def_list_node_s* mem_defs_iterator = unit.mem_defs.begin; mem_defs_iterator != NULL; mem_defs_iterator = mem_defs_iterator->next)
+		{
+			mirac_debug_assert(mirac_ast_def_type_mem == mem_defs_iterator->data->type);
+			if (mirac_string_view_equal(identifier_token->as.ident, mem_defs_iterator->data->as.mem_def.identifier.as.ident))
+			{
+				log_parser_error_and_exit(identifier_token->location,
+					"encountered a redefinition '" mirac_sv_fmt "'.",
+					mirac_sv_arg(identifier_token->as.ident)
+				);
+			}
+		}
+
+		for (mirac_ast_def_list_node_s* str_defs_iterator = unit.str_defs.begin; str_defs_iterator != NULL; str_defs_iterator = str_defs_iterator->next)
+		{
+			mirac_debug_assert(mirac_ast_def_type_str == str_defs_iterator->data->type);
+			if (mirac_string_view_equal(identifier_token->as.ident, str_defs_iterator->data->as.str_def.identifier.as.ident))
+			{
+				log_parser_error_and_exit(identifier_token->location,
+					"encountered a redefinition '" mirac_sv_fmt "'.",
+					mirac_sv_arg(identifier_token->as.ident)
+				);
+			}
+		}
+
+		switch (def->type)
+		{
+			case mirac_ast_def_type_func:
+			{
+				mirac_ast_def_list_push(&unit.func_defs, def);
+			} break;
+
+			case mirac_ast_def_type_mem:
+			{
+				mirac_ast_def_list_push(&unit.mem_defs, def);
+			} break;
+
+			case mirac_ast_def_type_str:
+			{
+				mirac_ast_def_list_push(&unit.str_defs, def);
+			} break;
+
+			default:
+			{
+				mirac_debug_assert(0); // NOTE: Should never reach this block.
+			} break;
+		}
 	}
 
 	return unit;

@@ -148,7 +148,9 @@ struct mirac_ast_def_s
 
 typedef struct
 {
-	mirac_ast_def_list_s defs;
+	mirac_ast_def_list_s func_defs;
+	mirac_ast_def_list_s mem_defs;
+	mirac_ast_def_list_s str_defs;
 } mirac_ast_unit_s;
 
 // TODO: document!
