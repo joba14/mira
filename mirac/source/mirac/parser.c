@@ -895,13 +895,9 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 	while (1)
 	{
 		(void)mirac_lexer_lex_next(parser->lexer, &token);
-
-		if (scope_end_token_type == token.type)
-		{
-			break;
-		}
-
+		if (scope_end_token_type == token.type) { break; }
 		mirac_lexer_unlex(parser->lexer, &token);
+
 		block = parse_ast_block(parser);
 
 		if ((mirac_ast_block_type_eou  == block->type) ||
@@ -914,23 +910,20 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 			);
 		}
 
-		/*
-		if ((mirac_ast_block_type_expr == block->type) &&
-			(scope_end_token_type == block->as.expr_block.token.type))
-		{
-			break;
-		}
-		*/
-
 		mirac_ast_block_list_push(&scope_block.blocks, block);
 	}
 
-	/*
-	for (uint64_t block_index = 0; block_index < scope_block.blocks.count; ++block_index)
+	mirac_ast_block_s* block_ref = NULL;
+	mirac_ast_block_s* prev_block_ref = NULL;
+
+	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block.blocks.begin; blocks_iterator != NULL; blocks_iterator = blocks_iterator->next)
 	{
-		mirac_ast_block_s* const block_ref = &scope_block.blocks.data[block_index];
+		mirac_debug_assert(blocks_iterator != NULL);
+		mirac_debug_assert(blocks_iterator->data != NULL);
+
+		prev_block_ref = block_ref;
+		block_ref = blocks_iterator->data;
 		mirac_debug_assert(block_ref != NULL);
-		mirac_ast_block_s* const prev_block_ref = (block_index > 0 ? &scope_block.blocks.data[block_index - 1] : NULL);
 
 		if ((mirac_ast_block_type_elif == block_ref->type) ||
 			(mirac_ast_block_type_else == block_ref->type))
@@ -956,7 +949,6 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 			}
 		}
 	}
-	*/
 
 	return scope_block;
 }
@@ -1448,6 +1440,8 @@ static void print_ast_block_scope(
 	printf("blocks:\n");
 	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block->blocks.begin; blocks_iterator != NULL; blocks_iterator = blocks_iterator->next)
 	{
+		mirac_debug_assert(blocks_iterator != NULL);
+		mirac_debug_assert(blocks_iterator->data != NULL);
 		print_ast_block(blocks_iterator->data, indent + 2);
 	}
 
