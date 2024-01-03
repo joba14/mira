@@ -15,34 +15,18 @@ func func4 req i64 ret i64 {
 	0 putu
 }
 
-inl func func5 {
+sec .text func func9 {
 	0 putu
 }
 
-inl func func6 req i64 {
+sec .text func func10 req i64 {
 	0 putu
 }
 
-inl func func7 ret i64 {
+sec .text func func11 ret i64 {
 	0 putu
 }
 
-inl func func8 req i64 ret i64 {
-	0 putu
-}
-
-sec ".text" func func9 {
-	0 putu
-}
-
-sec ".text" func func10 req i64 {
-	0 putu
-}
-
-sec ".text" func func11 ret i64 {
-	0 putu
-}
-
-sec ".text" func func12 req i64 ret i64 {
+sec .text func func12 req i64 ret i64 {
 	0 putu
 }

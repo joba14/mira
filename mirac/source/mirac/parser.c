@@ -1175,7 +1175,7 @@ static mirac_ast_def_s* parse_ast_def(
 	if (mirac_lexer_should_stop_lexing(token.type))
 	{ goto parse_def_by_token; }
 
-	if (token.type != mirac_token_type_literal_str)
+	if (token.type != mirac_token_type_identifier)
 	{
 		log_parser_error_and_exit(token.location,
 			"expected 'str literal' token after 'sec' token, but found '" mirac_sv_fmt "' token.",

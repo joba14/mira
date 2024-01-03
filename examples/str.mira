@@ -1,4 +1,4 @@
 
 str str1 "hello, world!\n\0"
 
-str ".data" mem str2 "hello, world!\n\0"
+str .data mem str2 "hello, world!\n\0"

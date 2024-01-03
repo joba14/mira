@@ -49,7 +49,7 @@
 		"globalKeywords": {
 			"patterns": [{
 				"name": "entity.name.tag",
-				"match": "\\b(inl|func|req|ret|mem|str|as|sec)\\b"
+				"match": "\\b(sec|func|req|ret|mem|str|as)\\b"
 			}]
 		},
 		"keywords": {
