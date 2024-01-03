@@ -1,0 +1,10 @@
+
+sec ".data" str msg "hello, world!"
+
+sec ".bss" mem buf 64
+
+sec ".text" func _start {
+	if { 1 } {
+		69 putu
+	}
+}

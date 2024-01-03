@@ -36,39 +36,32 @@ typedef struct
 	mirac_token_list_s type_tokens;
 } mirac_ast_block_as_s;
 
-typedef enum
-{
-	mirac_ast_block_scope_type_cond = 0,
-	mirac_ast_block_scope_type_body
-} mirac_ast_block_scope_type_e;
-
 typedef struct
 {
-	mirac_ast_block_scope_type_e type;
 	mirac_ast_block_list_s blocks;
 } mirac_ast_block_scope_s;
 
 typedef struct
 {
-	mirac_ast_block_s* cond_scope;
-	mirac_ast_block_s* body_scope;
+	mirac_ast_block_scope_s cond_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_if_s;
 
 typedef struct
 {
-	mirac_ast_block_s* cond_scope;
-	mirac_ast_block_s* body_scope;
+	mirac_ast_block_scope_s cond_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_elif_s;
 
 typedef struct
 {
-	mirac_ast_block_s* body_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_else_s;
 
 typedef struct
 {
-	mirac_ast_block_s* cond_scope;
-	mirac_ast_block_s* body_scope;
+	mirac_ast_block_scope_s cond_scope;
+	mirac_ast_block_scope_s body_scope;
 } mirac_ast_block_loop_s;
 
 typedef enum
@@ -111,7 +104,7 @@ typedef struct
 	mirac_token_s identifier;
 	mirac_token_list_s req_tokens;
 	mirac_token_list_s ret_tokens;
-	mirac_ast_block_s* body_scope;
+	mirac_ast_block_scope_s body_scope;
 	bool is_entry;
 } mirac_ast_def_func_s;
 
@@ -131,7 +124,8 @@ typedef enum
 {
 	mirac_ast_def_type_func = 0,
 	mirac_ast_def_type_mem,
-	mirac_ast_def_type_str
+	mirac_ast_def_type_str,
+	mirac_ast_def_type_none
 } mirac_ast_def_type_e;
 
 // TODO: document!

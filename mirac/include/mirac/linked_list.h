@@ -90,6 +90,8 @@
 			mirac_debug_assert(linked_list->end->next != NULL);                \
 			linked_list->end = linked_list->end->next;                         \
 		}                                                                      \
+		                                                                       \
+		linked_list->count++;                                                  \
 	}                                                                          \
 	                                                                           \
 	_Static_assert(1, "") // NOTE: Left fot ';' support after calling the macro.
