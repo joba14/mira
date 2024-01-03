@@ -3,4 +3,4 @@
 
 clear
 ./build.sh debug
-time ./../build/mirac -a fasm_x86_64_linux $1 ./experiments/devrun_output.asm
+time ./../build/mirac -e _start -a fasm_x86_64_linux $1 ./experiments/devrun_output.asm

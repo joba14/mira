@@ -160,6 +160,7 @@ struct mirac_ast_def_s
 
 typedef struct
 {
+	// TODO: Make these into hash maps(3):
 	mirac_ast_def_list_s func_defs;
 	mirac_ast_def_list_s mem_defs;
 	mirac_ast_def_list_s str_defs;
