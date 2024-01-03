@@ -25,8 +25,9 @@ SOURCES="
 	$PROJECT_DIR/source/main.c
 "
 
-# $PROJECT_DIR/source/mirac/checker.c
+# TODO: put these back into the sources list!
 # $PROJECT_DIR/source/mirac/compiler.c
+# $PROJECT_DIR/source/mirac/checker.c
 
 LIBRARIES="
 "
