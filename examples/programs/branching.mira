@@ -1,5 +1,6 @@
 
 sec .data str msg "hello, world!"
+sec .data str msg "hello, world2!"
 
 sec .bss mem buf 64
 
