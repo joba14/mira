@@ -158,40 +158,12 @@ struct mirac_ast_def_s
 	} as;
 };
 
-typedef struct mirac_ast_def_map_node_s mirac_ast_def_map_node_s;
-
-struct mirac_ast_def_map_node_s
-{
-	mirac_string_view_s identifier;
-	const mirac_ast_def_s* def;
-	mirac_ast_def_map_node_s* next;
-};
-
-typedef struct
-{
-	mirac_arena_s* arena;
-	mirac_ast_def_map_node_s** nodes;
-	uint64_t capacity;
-} mirac_ast_def_map_s;
-
-mirac_ast_def_map_s mirac_ast_def_map_from_parts(
-	mirac_arena_s* const arena,
-	const uint64_t capacity);
-
-bool mirac_ast_def_map_set(
-	mirac_ast_def_map_s* const def_map,
-	const mirac_string_view_s key,
+mirac_token_s mirac_ast_def_get_identifier_token(
 	const mirac_ast_def_s* const def);
-
-bool mirac_ast_def_map_get(
-	mirac_ast_def_map_s* const def_map,
-	const mirac_string_view_s key,
-	const mirac_ast_def_s** const def);
 
 typedef struct
 {
 	mirac_ast_def_list_s defs;
-	mirac_ast_def_map_s def_map;
 } mirac_ast_unit_s;
 
 // TODO: document!
