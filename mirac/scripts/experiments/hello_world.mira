@@ -11,7 +11,13 @@ sec .text func write req u64 ptr i32 {
 
 sec .rodata str msg "hello, world!\n\0"
 
+sec .text func test req u64 u64 i64 ret u64 u64 {
+	as u64 + + \+.
+}
+
 sec .text func _start {
+	10 10 10 test \!. \!.
+
 	14 msg stdout write
 	0 exit
 }

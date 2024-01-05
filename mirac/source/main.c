@@ -45,6 +45,9 @@ static FILE* validate_and_open_file_for_reading(
 static FILE* validate_and_open_file_for_writing(
 	const mirac_string_view_s file_path);
 
+mirac_define_linked_list_type(ints_list, int32_t);
+mirac_implement_linked_list_type(ints_list, int32_t);
+
 int32_t main(
 	const int32_t argc,
 	const char** const argv)

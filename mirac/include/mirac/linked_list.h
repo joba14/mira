@@ -26,6 +26,7 @@
 	{                                                                          \
 		_element_type data;                                                    \
 		_type_name ## _node_s* next;                                           \
+		_type_name ## _node_s* prev;                                           \
 	};                                                                         \
 	                                                                           \
 	typedef struct                                                             \
@@ -66,6 +67,7 @@
 		                                                                       \
 		node->data = data;                                                     \
 		node->next = NULL;                                                     \
+		node->prev = NULL;                                                     \
 		                                                                       \
 		if (NULL == linked_list->end)                                          \
 		{                                                                      \
@@ -81,6 +83,7 @@
 				linked_list->end = linked_list->end->next;                     \
 			}                                                                  \
 			                                                                   \
+			node->prev = linked_list->end;                                     \
 			linked_list->end->next = node;                                     \
 			mirac_debug_assert(linked_list->end->next != NULL);                \
 			linked_list->end = linked_list->end->next;                         \

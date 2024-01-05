@@ -909,18 +909,58 @@ static void type_check_ast_block_expr(
 		} break;
 
 		case mirac_token_type_literal_i08:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_i08);
+		} break;
+
 		case mirac_token_type_literal_i16:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_i16);
+		} break;
+
 		case mirac_token_type_literal_i32:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_i32);
+		} break;
+
 		case mirac_token_type_literal_i64:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_i64);
+		} break;
+
 		case mirac_token_type_literal_u08:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_u08);
+		} break;
+
 		case mirac_token_type_literal_u16:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_u16);
+		} break;
+
 		case mirac_token_type_literal_u32:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_u32);
+		} break;
+
 		case mirac_token_type_literal_u64:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_u64);
+		} break;
+
 		case mirac_token_type_literal_f32:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_f32);
+		} break;
+
 		case mirac_token_type_literal_f64:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_f64);
+		} break;
+
 		case mirac_token_type_literal_ptr:
 		{
-			mirac_types_stack_push(&checker->stack, expr_block->token.type);
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
 		} break;
 
 		default:
@@ -981,7 +1021,21 @@ static void type_check_ast_block_as(
 	mirac_debug_assert(checker != NULL);
 	mirac_debug_assert(as_block != NULL);
 
-	mirac_debug_assert(!"type_check_ast_block_as() is not implemented yet!");
+	if (checker->stack.count < as_block->type_tokens.count)
+	{
+		log_checker_error_and_exit(as_block->type_tokens.begin->data.location,
+			"encountered stack underflow in 'as' block."
+		);
+	}
+
+	for (const mirac_token_list_node_s* types_iterator = as_block->type_tokens.end; types_iterator != NULL; types_iterator = types_iterator->prev)
+	{
+		mirac_debug_assert(types_iterator);
+
+		mirac_token_type_e type;
+		(void)mirac_types_stack_pop(&checker->stack, &type);
+		(void)mirac_types_stack_push(&checker->stack, types_iterator->data.type);
+	}
 }
 
 static void type_check_ast_block_scope(
@@ -1087,10 +1141,11 @@ static void type_check_ast_def_func(
 		);
 	}
 
-	for (mirac_token_list_node_s* rets_iterator = func_def->ret_tokens.begin; rets_iterator != NULL; rets_iterator = rets_iterator->next)
+	for (mirac_token_list_node_s* rets_iterator = func_def->ret_tokens.end; rets_iterator != NULL; rets_iterator = rets_iterator->prev)
 	{
 		mirac_debug_assert(rets_iterator != NULL);
-		// TODO: do the right ting.
+		mirac_token_type_e type;
+		(void)mirac_types_stack_pop(&checker->stack, &type);
 	}
 }
 
