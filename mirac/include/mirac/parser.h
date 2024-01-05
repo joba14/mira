@@ -33,6 +33,12 @@ typedef struct
 
 typedef struct
 {
+	mirac_token_s token;
+	const mirac_ast_def_s* def;
+} mirac_ast_block_call_s;
+
+typedef struct
+{
 	mirac_token_list_s type_tokens;
 } mirac_ast_block_as_s;
 
@@ -79,6 +85,7 @@ typedef struct
 typedef enum
 {
 	mirac_ast_block_type_expr = 0,
+	mirac_ast_block_type_call,
 	mirac_ast_block_type_as,
 	mirac_ast_block_type_scope,
 	mirac_ast_block_type_if,
@@ -102,6 +109,7 @@ struct mirac_ast_block_s
 	union
 	{
 		mirac_ast_block_expr_s  expr_block;
+		mirac_ast_block_call_s  call_block;
 		mirac_ast_block_as_s    as_block;
 		mirac_ast_block_scope_s scope_block;
 		mirac_ast_block_if_s    if_block;
