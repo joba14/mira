@@ -823,9 +823,9 @@ static void compile_ast_def_func(
 	{
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
 		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_def->identifier.as.ident));
-		(void)fprintf(compiler->file, "\tmov [args_ptr], rsp\n");
-		(void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
-		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rax\n");
+		// (void)fprintf(compiler->file, "\tmov [args_ptr], rsp\n");
+		// (void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
+		// (void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rax\n");
 	}
 	else
 	{
@@ -837,14 +837,7 @@ static void compile_ast_def_func(
 
 	compile_ast_block(compiler, func_def->body);
 
-	if (func_def->is_entry)
-	{
-		(void)fprintf(compiler->file, ";; --- entry-end --- \n");
-		(void)fprintf(compiler->file, "\tmov rax, 60\n");
-		(void)fprintf(compiler->file, "\tmov rdi, 0\n");
-		(void)fprintf(compiler->file, "\tsyscall\n");
-	}
-	else
+	if (!func_def->is_entry)
 	{
 		(void)fprintf(compiler->file, "\t;; --- func-ret --- \n");
 		(void)fprintf(compiler->file, "\tmov rax, rsp\n");
@@ -862,6 +855,8 @@ static void compile_ast_def_mem(
 
 	// TODO: implement!
 	// TODO: handle unused!
+
+	(void)fprintf(compiler->file, "section .bss\n");
 }
 
 static void compile_ast_def_str(
@@ -873,6 +868,11 @@ static void compile_ast_def_str(
 
 	// TODO: implement!
 	// TODO: handle unused!
+
+	(void)fprintf(compiler->file, "\tstr_%lu db " mirac_sv_fmt "\n",
+		str_def->identifier.index,
+		mirac_sv_arg(str_def->literal.text)
+	);
 }
 
 static void compile_ast_def(
@@ -881,6 +881,10 @@ static void compile_ast_def(
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(def != NULL);
+
+	(void)fprintf(compiler->file, "section " mirac_sv_fmt "\n",
+		mirac_sv_arg(def->section.as.ident)
+	);
 
 	switch (def->type)
 	{
@@ -893,4 +897,6 @@ static void compile_ast_def(
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
+
+	(void)fprintf(compiler->file, "\n");
 }
