@@ -6,7 +6,7 @@ sec .data str msg3 "hello posix!\n\0"
 sec .data str msg4 "if works!\n\0"
 sec .data str msg5 "else works!\n\0"
 
-sec .data str msg_bad "BAD!\n\0"
+sec .bss str msg_bad "BAD!\n\0"
 
 sec .bss mem MEMORY 4096
 sec .data mem MEMORY2 4096
