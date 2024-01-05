@@ -782,7 +782,6 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
 		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_def->identifier.as.ident));
-		(void)fprintf(compiler->file, "\tmov [args_ptr], rsp\n");
 		(void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
 		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rax\n");
 	}
