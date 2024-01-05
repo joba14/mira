@@ -49,7 +49,14 @@ typedef enum
 	mirac_ast_block_scope_type_braces,
 } mirac_ast_block_scope_type_e;
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Stringify ast scope block type and return the string view.
+ * 
+ * @param type[in] ast scope block type to stringify
+ * 
+ * @return mirac_string_view_s
+ */
 mirac_string_view_s mirac_ast_block_scope_type_to_string_view(
 	const mirac_ast_block_scope_type_e type);
 
@@ -94,7 +101,14 @@ typedef enum
 	mirac_ast_block_type_none
 } mirac_ast_block_type_e;
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Stringify ast block type and return the string view.
+ * 
+ * @param type[in] ast block type to stringify
+ * 
+ * @return mirac_string_view_s
+ */
 mirac_string_view_s mirac_ast_block_type_to_string_view(
 	const mirac_ast_block_type_e type);
 
@@ -147,7 +161,14 @@ typedef enum
 	mirac_ast_def_type_none
 } mirac_ast_def_type_e;
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Stringify ast def type and return the string view.
+ * 
+ * @param type[in] ast def type to stringify
+ * 
+ * @return mirac_string_view_s
+ */
 mirac_string_view_s mirac_ast_def_type_to_string_view(
 	const mirac_ast_def_type_e type);
 
@@ -165,6 +186,14 @@ struct mirac_ast_def_s
 	} as;
 };
 
+// TODO: write unit tests!
+/**
+ * @brief Get identifier token of a provided st def structure.
+ * 
+ * @param def[in] ast def to fetch identifier token from
+ * 
+ * @return mirac_token_s
+ */
 mirac_token_s mirac_ast_def_get_identifier_token(
 	const mirac_ast_def_s* const def);
 
@@ -173,11 +202,23 @@ typedef struct
 	mirac_ast_def_list_s defs;
 } mirac_ast_unit_s;
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Create ast unit with provided arena.
+ * 
+ * @param arena[in] arena reference
+ * 
+ * @return mirac_ast_unit_s
+ */
 mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+/**
+ * @brief Print ast unit.
+ * 
+ * @param unit[in]   ast unit to print
+ * @param indent[in] indent from left side (in tabs)
+ */
 void mirac_ast_unit_print(
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent);
@@ -197,17 +238,38 @@ typedef struct
 	mirac_ast_unit_s unit;
 } mirac_parser_s;
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Create parser from config, arena, and lexer.
+ * 
+ * @param config[in] config reference
+ * @param arena[in]  arena reference
+ * @param lexer[in]  lexer reference
+ * 
+ * @return mirac_parser_s
+ */
 mirac_parser_s mirac_parser_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	mirac_lexer_s* const lexer);
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Destroy parser.
+ * 
+ * @param parser[in/out] parser to destroy
+ */
 void mirac_parser_destroy(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: write unit tests!
+/**
+ * @brief Parse ast unit.
+ * 
+ * @param parser[in] parser reference
+ * 
+ * @return mirac_ast_unit_s
+ */
 mirac_ast_unit_s mirac_parser_parse_ast_unit(
 	mirac_parser_s* const parser);
 
