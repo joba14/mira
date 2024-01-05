@@ -23,6 +23,7 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/lexer.c
 	$PROJECT_DIR/source/mirac/parser.c
 	$PROJECT_DIR/source/mirac/compiler.c
+	$PROJECT_DIR/source/mirac/architectures/nasm_x86_64_linux.c
 	$PROJECT_DIR/source/main.c
 "
 
