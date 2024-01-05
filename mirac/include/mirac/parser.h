@@ -180,6 +180,7 @@ typedef struct
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;
+	mirac_ast_unit_s unit;
 } mirac_parser_s;
 
 // TODO: document!

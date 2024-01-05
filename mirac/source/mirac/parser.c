@@ -30,251 +30,6 @@ mirac_implement_linked_list_type(mirac_ast_def_list, mirac_ast_def_s*);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
-#if 0
-// TODO: document!
-static void validate_ast_block_expr(
-	mirac_parser_s* const parser,
-	mirac_ast_block_expr_s* const expr_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_as(
-	mirac_parser_s* const parser,
-	mirac_ast_block_as_s* const as_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_scope(
-	mirac_parser_s* const parser,
-	mirac_ast_block_scope_s* const scope_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_if(
-	mirac_parser_s* const parser,
-	mirac_ast_block_if_s* const if_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_elif(
-	mirac_parser_s* const parser,
-	mirac_ast_block_elif_s* const elif_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_else(
-	mirac_parser_s* const parser,
-	mirac_ast_block_else_s* const else_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_loop(
-	mirac_parser_s* const parser,
-	mirac_ast_block_loop_s* const loop_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_func(
-	mirac_parser_s* const parser,
-	mirac_ast_block_func_s* const func_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_mem(
-	mirac_parser_s* const parser,
-	mirac_ast_block_mem_s* const mem_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_str(
-	mirac_parser_s* const parser,
-	mirac_ast_block_str_s* const str_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block,
-	const uint64_t depth);
-
-// TODO: document!
-static bool should_stop_parsing(
-
-// TODO: document!
-static mirac_ast_block_type_e parse_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block);
-
-static mirac_ast_block_type_e parse_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(block != NULL);
-
-	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	(void)mirac_lexer_lex_next(parser->lexer, &token);
-	block->location = token.location;
-
-	if (!mirac_lexer_should_stop_lexing(token.type))
-	{
-		mirac_lexer_unlex(parser->lexer, &token);
-	}
-
-	switch (token.type)
-	{
-		case mirac_token_type_identifier:
-		{
-			block->type = mirac_ast_block_type_call;
-			block->as.call_block = parse_ast_block_call(parser);
-		} break;
-
-		case mirac_token_type_reserved_as:
-		{
-			block->type = mirac_ast_block_type_as;
-			block->as.as_block = parse_ast_block_as(parser);
-		} break;
-
-		case mirac_token_type_reserved_left_brace:
-		{
-			block->type = mirac_ast_block_type_scope;
-			block->as.scope_block = parse_ast_block_scope(parser);
-		} break;
-
-		case mirac_token_type_reserved_if:
-		{
-			block->type = mirac_ast_block_type_if;
-			block->as.if_block = parse_ast_block_if(parser);
-		} break;
-
-		case mirac_token_type_reserved_elif:
-		{
-			block->type = mirac_ast_block_type_elif;
-			block->as.elif_block = parse_ast_block_elif(parser);
-		} break;
-
-		case mirac_token_type_reserved_else:
-		{
-			block->type = mirac_ast_block_type_else;
-			block->as.else_block = parse_ast_block_else(parser);
-		} break;
-
-		case mirac_token_type_reserved_loop:
-		{
-			block->type = mirac_ast_block_type_loop;
-			block->as.loop_block = parse_ast_block_loop(parser);
-		} break;
-
-		case mirac_token_type_reserved_inl:
-		case mirac_token_type_reserved_func:
-		{
-			block->type = mirac_ast_block_type_func;
-			block->as.func_block = parse_ast_block_func(parser);
-		} break;
-
-		case mirac_token_type_reserved_mem:
-		{
-			block->type = mirac_ast_block_type_mem;
-			block->as.mem_block = parse_ast_block_mem(parser);
-		} break;
-
-		case mirac_token_type_reserved_str:
-		{
-			block->type = mirac_ast_block_type_str;
-			block->as.str_block = parse_ast_block_str(parser);
-		} break;
-
-		case mirac_token_type_eof:
-		{
-			block->type = mirac_ast_block_type_eou;
-		} break;
-
-		case mirac_token_type_none:
-		{
-			block->type = mirac_ast_block_type_none;
-		} break;
-
-		default:
-		{
-			block->type = mirac_ast_block_type_expr;
-			block->as.expr_block = parse_ast_block_expr(parser);
-		} break;
-	}
-
-	return block->type;
-}
-
-// TODO: document!
-static void validate_ast_block_expr(
-	mirac_parser_s* const parser,
-	mirac_ast_block_expr_s* const expr_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_as(
-	mirac_parser_s* const parser,
-	mirac_ast_block_as_s* const as_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_scope(
-	mirac_parser_s* const parser,
-	mirac_ast_block_scope_s* const scope_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_if(
-	mirac_parser_s* const parser,
-	mirac_ast_block_if_s* const if_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_elif(
-	mirac_parser_s* const parser,
-	mirac_ast_block_elif_s* const elif_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_else(
-	mirac_parser_s* const parser,
-	mirac_ast_block_else_s* const else_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_loop(
-	mirac_parser_s* const parser,
-	mirac_ast_block_loop_s* const loop_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_func(
-	mirac_parser_s* const parser,
-	mirac_ast_block_func_s* const func_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_mem(
-	mirac_parser_s* const parser,
-	mirac_ast_block_mem_s* const mem_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block_str(
-	mirac_parser_s* const parser,
-	mirac_ast_block_str_s* const str_block,
-	const uint64_t depth);
-
-// TODO: document!
-static void validate_ast_block(
-	mirac_parser_s* const parser,
-	mirac_ast_block_s* const block,
-	const uint64_t depth);
-
-// TODO: document!
-static bool should_stop_parsing(
-	const mirac_ast_block_type_e type);
-#endif
-
 // TODO: document!
 static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena);
@@ -562,6 +317,7 @@ mirac_parser_s mirac_parser_from_parts(
 	parser.config = config;
 	parser.arena = arena;
 	parser.lexer = lexer;
+	parser.unit = mirac_ast_unit_from_parts(arena);
 	return parser;
 }
 
@@ -577,9 +333,7 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 {
 	mirac_debug_assert(parser != NULL);
 
-	mirac_ast_unit_s unit = mirac_ast_unit_from_parts(parser->arena);
 	mirac_ast_def_s* def = NULL;
-
 	while ((def = parse_ast_def(parser)) != NULL)
 	{
 		if (mirac_ast_def_type_none == def->type)
@@ -588,7 +342,7 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 		}
 
 		const mirac_token_s current_def_identifier_token = mirac_ast_def_get_identifier_token(def);
-		for (const mirac_ast_def_list_node_s* defs_iterator = unit.defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
+		for (const mirac_ast_def_list_node_s* defs_iterator = parser->unit.defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
 		{
 			mirac_debug_assert(defs_iterator != NULL);
 			mirac_debug_assert(defs_iterator->data != NULL);
@@ -603,10 +357,10 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 			}
 		}
 
-		mirac_ast_def_list_push(&unit.defs, def);
+		mirac_ast_def_list_push(&parser->unit.defs, def);
 	}
 
-	return unit;
+	return parser->unit;
 }
 
 static mirac_ast_block_expr_s create_ast_block_expr(
@@ -764,6 +518,28 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 		);
 	}
 
+	if (mirac_token_type_identifier == token.type)
+	{
+		// TODO: fix this:
+		for (const mirac_ast_def_list_node_s* defs_iterator = parser->unit.defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
+		{
+			mirac_debug_assert(defs_iterator != NULL);
+			mirac_debug_assert(defs_iterator->data != NULL);
+
+			const mirac_token_s existing_def_identifier_token = mirac_ast_def_get_identifier_token(defs_iterator->data);
+			if (mirac_string_view_equal(token.as.ident, existing_def_identifier_token.as.ident))
+			{
+				goto found_matching_idendtifier;
+			}
+		}
+
+		log_parser_error_and_exit(token.location,
+			"encountered an undefined identifier '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(token.as.ident)
+		);
+	}
+
+found_matching_idendtifier:
 	expr_block.token = token;
 	return expr_block;
 }

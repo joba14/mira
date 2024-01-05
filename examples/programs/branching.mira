@@ -3,7 +3,7 @@ sec .data str msg1 "hello, world!\n"
 sec .data str msg2 "hello, linux!\n"
 sec .data str msg3 "hello, posix!\n"
 
-sec .text func _start (
+sec .text func _start {
 	if [ 0 ] {
 		14 msg1 1 1 \$3 \!.
 	}
@@ -13,4 +13,4 @@ sec .text func _start (
 	else {
 		14 msg3 1 1 \$3 \!.
 	}
-)
+}
