@@ -14,7 +14,7 @@
 
 #include <mirac/debug.h>
 
-#include "./architectures/nasm_x86_64_linux.h"
+#include "./archs/nasm_x86_64_linux.h"
 
 mirac_compiler_s mirac_compiler_from_parts(
 	mirac_config_s* const config,

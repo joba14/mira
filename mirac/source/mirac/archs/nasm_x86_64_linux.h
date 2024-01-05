@@ -10,8 +10,8 @@
  * @date 2024-01-05
  */
 
-#ifndef __mirac__source__mirac__architectures__nasm_x86_64_linux_h__
-#define __mirac__source__mirac__architectures__nasm_x86_64_linux_h__
+#ifndef __mirac__source__mirac__archs__nasm_x86_64_linux_h__
+#define __mirac__source__mirac__archs__nasm_x86_64_linux_h__
 
 #include <mirac/compiler.h>
 
