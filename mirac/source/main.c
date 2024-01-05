@@ -77,13 +77,13 @@ int32_t main(
 
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_file_pointer);
 		const mirac_string_view_s output_file_path = mirac_string_view_from_cstring(output_file_pointer);
-		mirac_arena_s arena = mirac_arena_from_parts();
 
 		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 		FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
 		mirac_debug_assert(source_file != NULL);
 		mirac_debug_assert(output_file != NULL);
 
+		mirac_arena_s arena = mirac_arena_from_parts();
 		const mirac_seconds_t start_time = mirac_timer_get_time_in_seconds();
 		{
 			mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path, source_file);
@@ -190,8 +190,6 @@ static FILE* validate_and_open_file_for_writing(
 
 			default:
 			{
-				// mirac_logger_error("unable to open " mirac_sv_fmt " for writing -- failed to stat.", mirac_sv_arg(file_path));
-				// mirac_c_exit(-1);
 			} break;
 		}
 	}
