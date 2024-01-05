@@ -18,62 +18,67 @@
 // TODO: document!
 static void compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_expr_s* const expr_block);
+	const mirac_ast_block_expr_s* const expr_block);
 
 // TODO: document!
 static void compile_ast_block_call(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_call_s* const call_block);
+	const mirac_ast_block_call_s* const call_block);
 
 // TODO: document!
 static void compile_ast_block_as(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_as_s* const as_block);
+	const mirac_ast_block_as_s* const as_block);
 
 // TODO: document!
 static void compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_scope_s* const scope_block);
+	const mirac_ast_block_scope_s* const scope_block);
 
 // TODO: document!
 static void compile_ast_block_if(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_if_s* const if_block);
+	const mirac_ast_block_if_s* const if_block);
 
 // TODO: document!
 static void compile_ast_block_elif(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_elif_s* const elif_block);
+	const mirac_ast_block_elif_s* const elif_block);
 
 // TODO: document!
 static void compile_ast_block_else(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_else_s* const else_block);
+	const mirac_ast_block_else_s* const else_block);
 
 // TODO: document!
 static void compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_loop_s* const loop_block);
-
-// TODO: document!
-static void compile_ast_block_func(
-	mirac_compiler_s* const compiler,
-	mirac_ast_block_func_s* const func_block);
-
-// TODO: document!
-static void compile_ast_block_mem(
-	mirac_compiler_s* const compiler,
-	mirac_ast_block_mem_s* const mem_block);
-
-// TODO: document!
-static void compile_ast_block_str(
-	mirac_compiler_s* const compiler,
-	mirac_ast_block_str_s* const str_block);
+	const mirac_ast_block_loop_s* const loop_block);
 
 // TODO: document!
 static void compile_ast_block(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_s* const block);
+	const mirac_ast_block_s* const block);
+
+// TODO: document!
+static void compile_ast_def_func(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_def_func_s* const func_def);
+
+// TODO: document!
+static void compile_ast_def_mem(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_def_mem_s* const mem_def);
+
+// TODO: document!
+static void compile_ast_def_str(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_def_str_s* const str_def);
+
+// TODO: document!
+static void compile_ast_def(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_def_s* const def);
 
 mirac_compiler_s mirac_compiler_from_parts(
 	mirac_config_s* const config,
@@ -102,23 +107,25 @@ void mirac_compiler_compile_ast_unit(
 	(void)fprintf(compiler->file, "global " mirac_sv_fmt "\n", mirac_sv_arg(compiler->config->entry));
 	(void)fprintf(compiler->file, "\n");
 
-	for (uint64_t block_index = 0; block_index < compiler->unit->blocks.count; ++block_index)
+	for (const mirac_ast_def_list_node_s* defs_iterator = compiler->unit->defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
 	{
-		compile_ast_block(compiler, &compiler->unit->blocks.data[block_index]);
+		mirac_debug_assert(defs_iterator != NULL);
+		mirac_debug_assert(defs_iterator->data != NULL);
+		compile_ast_def(compiler, defs_iterator->data);
 	}
 
 	// TODO: implement!
-	(void)fprintf(compiler->file, "\n");
-	(void)fprintf(compiler->file, "section .bss\n");
-	(void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
-	(void)fprintf(compiler->file, "\tret_stack_rsp: resq 1\n");
-	(void)fprintf(compiler->file, "\tret_stack: resb 4096\n");
-	(void)fprintf(compiler->file, "\tret_stack_end:\n");
+	// (void)fprintf(compiler->file, "\n");
+	// (void)fprintf(compiler->file, "section .bss\n");
+	// (void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
+	// (void)fprintf(compiler->file, "\tret_stack_rsp: resq 1\n");
+	// (void)fprintf(compiler->file, "\tret_stack: resb 4096\n");
+	// (void)fprintf(compiler->file, "\tret_stack_end:\n");
 }
 
 static void compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_expr_s* const expr_block)
+	const mirac_ast_block_expr_s* const expr_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(expr_block != NULL);
@@ -667,43 +674,47 @@ static void compile_ast_block_expr(
 
 static void compile_ast_block_call(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_call_s* const call_block)
+	const mirac_ast_block_call_s* const call_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(call_block != NULL);
+	mirac_debug_assert(call_block->def != NULL);
 
 	// TODO: implement!
-	switch (call_block->type)
+	switch (call_block->def->type)
 	{
-		case mirac_ast_block_call_type_func:
+		case mirac_ast_def_type_func:
 		{
 			(void)fprintf(compiler->file, ";; --- call --- \n");
 			(void)fprintf(compiler->file, "\tmov rax, rsp\n");
 			(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
-			(void)fprintf(compiler->file, "\tcall proc_%lu\n", call_block->as.func_ref->identifier.index);
+			(void)fprintf(compiler->file, "\tcall proc_%lu\n", call_block->def->as.func_def.identifier.index);
 			(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
 			(void)fprintf(compiler->file, "\tmov rsp, rax\n");
 		} break;
 
-		case mirac_ast_block_call_type_mem:
-		{
-		} break;
-
-		case mirac_ast_block_call_type_str:
+		case mirac_ast_def_type_mem:
 		{
 			(void)fprintf(compiler->file, ";; --- call --- \n");
-			(void)fprintf(compiler->file, "\tpush str_%lu\n", call_block->as.str_ref->identifier.index);
+			(void)fprintf(compiler->file, "\tpush mem_%lu\n", call_block->def->as.mem_def.identifier.index);
+		} break;
+
+		case mirac_ast_def_type_str:
+		{
+			(void)fprintf(compiler->file, ";; --- call --- \n");
+			(void)fprintf(compiler->file, "\tpush str_%lu\n", call_block->def->as.str_def.identifier.index);
 		} break;
 
 		default:
 		{
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
 }
 
 static void compile_ast_block_as(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_as_s* const as_block)
+	const mirac_ast_block_as_s* const as_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(as_block != NULL);
@@ -711,80 +722,107 @@ static void compile_ast_block_as(
 
 static void compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_scope_s* const scope_block)
+	const mirac_ast_block_scope_s* const scope_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(scope_block != NULL);
 
-	for (uint64_t block_index = 0; block_index < scope_block->blocks.count; ++block_index)
+	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block->blocks.begin; blocks_iterator != NULL; blocks_iterator = blocks_iterator->next)
 	{
-		compile_ast_block(compiler, &scope_block->blocks.data[block_index]);
+		mirac_debug_assert(blocks_iterator != NULL);
+		mirac_debug_assert(blocks_iterator->data != NULL);
+		compile_ast_block(compiler, blocks_iterator->data);
 	}
 }
 
 static void compile_ast_block_if(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_if_s* const if_block)
+	const mirac_ast_block_if_s* const if_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(if_block != NULL);
 
 	// TODO: implement!
-	compile_ast_block_scope(compiler, &if_block->cond_scope);
-	compile_ast_block_scope(compiler, &if_block->body_scope);
+	compile_ast_block(compiler, if_block->cond);
+	compile_ast_block(compiler, if_block->body);
 }
 
 static void compile_ast_block_elif(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_elif_s* const elif_block)
+	const mirac_ast_block_elif_s* const elif_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(elif_block != NULL);
 
 	// TODO: implement!
-	compile_ast_block_scope(compiler, &elif_block->cond_scope);
-	compile_ast_block_scope(compiler, &elif_block->body_scope);
+	compile_ast_block(compiler, elif_block->cond);
+	compile_ast_block(compiler, elif_block->body);
 }
 
 static void compile_ast_block_else(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_else_s* const else_block)
+	const mirac_ast_block_else_s* const else_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(else_block != NULL);
 
 	// TODO: implement!
-	compile_ast_block_scope(compiler, &else_block->body_scope);
+	compile_ast_block(compiler, else_block->body);
 }
 
 static void compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_loop_s* const loop_block)
+	const mirac_ast_block_loop_s* const loop_block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(loop_block != NULL);
 
 	// TODO: implement!
-	compile_ast_block_scope(compiler, &loop_block->cond_scope);
-	compile_ast_block_scope(compiler, &loop_block->body_scope);
+	compile_ast_block(compiler, loop_block->cond);
+	compile_ast_block(compiler, loop_block->body);
 }
 
-static void compile_ast_block_func(
+static void compile_ast_block(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_func_s* const func_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
-	mirac_debug_assert(func_block != NULL);
+	mirac_debug_assert(block != NULL);
 
-	// TODO: handle inline functions!
-	// TODO: handle unused functions!
+	switch (block->type)
+	{
+		case mirac_ast_block_type_expr:  { compile_ast_block_expr(compiler, &block->as.expr_block);   } break;
+		case mirac_ast_block_type_call:  { compile_ast_block_call(compiler, &block->as.call_block);   } break;
+		case mirac_ast_block_type_as:    { compile_ast_block_as(compiler, &block->as.as_block);       } break;
+		case mirac_ast_block_type_scope: { compile_ast_block_scope(compiler, &block->as.scope_block); } break;
+		case mirac_ast_block_type_if:    { compile_ast_block_if(compiler, &block->as.if_block);       } break;
+		case mirac_ast_block_type_elif:  { compile_ast_block_elif(compiler, &block->as.elif_block);   } break;
+		case mirac_ast_block_type_else:  { compile_ast_block_else(compiler, &block->as.else_block);   } break;
+		case mirac_ast_block_type_loop:  { compile_ast_block_loop(compiler, &block->as.loop_block);   } break;
+
+		default:
+		{
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
+		} break;
+	}
+}
+
+static void compile_ast_def_func(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_def_func_s* const func_def)
+{
+	mirac_debug_assert(compiler != NULL);
+	mirac_debug_assert(func_def != NULL);
+
+	// TODO: implement!
+	// TODO: handle unused!
 
 	// TODO: implement the func in all supported archs!
 
-	if (func_block->is_entry)
+	if (func_def->is_entry)
 	{
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
-		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_block->identifier.as.ident));
+		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_def->identifier.as.ident));
 		(void)fprintf(compiler->file, "\tmov [args_ptr], rsp\n");
 		(void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
 		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rax\n");
@@ -792,15 +830,14 @@ static void compile_ast_block_func(
 	else
 	{
 		(void)fprintf(compiler->file, ";; --- func --- \n");
-		(void)fprintf(compiler->file, "func_%lu:\n", func_block->identifier.index);
+		(void)fprintf(compiler->file, "func_%lu:\n", func_def->identifier.index);
 		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, rax\n");
 	}
 
-	// TODO: implement!
-	compile_ast_block_scope(compiler, &func_block->body_scope);
+	compile_ast_block(compiler, func_def->body);
 
-	if (func_block->is_entry)
+	if (func_def->is_entry)
 	{
 		(void)fprintf(compiler->file, ";; --- entry-end --- \n");
 		(void)fprintf(compiler->file, "\tmov rax, 60\n");
@@ -816,51 +853,44 @@ static void compile_ast_block_func(
 	}
 }
 
-static void compile_ast_block_mem(
+static void compile_ast_def_mem(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_mem_s* const mem_block)
+	const mirac_ast_def_mem_s* const mem_def)
 {
 	mirac_debug_assert(compiler != NULL);
-	mirac_debug_assert(mem_block != NULL);
+	mirac_debug_assert(mem_def != NULL);
 
-	// TODO: handle unused mems!
-	// TODO: implement the mem in all supported archs!
+	// TODO: implement!
+	// TODO: handle unused!
 }
 
-static void compile_ast_block_str(
+static void compile_ast_def_str(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_str_s* const str_block)
+	const mirac_ast_def_str_s* const str_def)
 {
 	mirac_debug_assert(compiler != NULL);
-	mirac_debug_assert(str_block != NULL);
+	mirac_debug_assert(str_def != NULL);
 
-	// TODO: handle unused strs!
-	// TODO: implement the str in all supported archs!
+	// TODO: implement!
+	// TODO: handle unused!
 }
 
-static void compile_ast_block(
+static void compile_ast_def(
 	mirac_compiler_s* const compiler,
-	mirac_ast_block_s* const block)
+	const mirac_ast_def_s* const def)
 {
 	mirac_debug_assert(compiler != NULL);
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(def != NULL);
 
-	switch (block->type)
+	switch (def->type)
 	{
-		case mirac_ast_block_type_expr:  { compile_ast_block_expr(compiler, &block->as.expr_block);   } break;
-		case mirac_ast_block_type_call:  { compile_ast_block_call(compiler, &block->as.call_block);   } break;
-		case mirac_ast_block_type_as:    { compile_ast_block_as(compiler, &block->as.as_block);       } break;
-		case mirac_ast_block_type_scope: { compile_ast_block_scope(compiler, &block->as.scope_block); } break;
-		case mirac_ast_block_type_if:    { compile_ast_block_if(compiler, &block->as.if_block);       } break;
-		case mirac_ast_block_type_elif:  { compile_ast_block_elif(compiler, &block->as.elif_block);   } break;
-		case mirac_ast_block_type_else:  { compile_ast_block_else(compiler, &block->as.else_block);   } break;
-		case mirac_ast_block_type_loop:  { compile_ast_block_loop(compiler, &block->as.loop_block);   } break;
-		case mirac_ast_block_type_func:  { compile_ast_block_func(compiler, &block->as.func_block);   } break;
-		case mirac_ast_block_type_mem:   { compile_ast_block_mem(compiler, &block->as.mem_block);     } break;
-		case mirac_ast_block_type_str:   { compile_ast_block_str(compiler, &block->as.str_block);     } break;
+		case mirac_ast_def_type_func: { compile_ast_def_func(compiler, &def->as.func_def); } break;
+		case mirac_ast_def_type_mem:  { compile_ast_def_mem(compiler, &def->as.mem_def);   } break;
+		case mirac_ast_def_type_str:  { compile_ast_def_str(compiler, &def->as.str_def);   } break;
 
 		default:
 		{
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
 }

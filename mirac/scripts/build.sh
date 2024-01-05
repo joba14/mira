@@ -22,11 +22,11 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/config.c
 	$PROJECT_DIR/source/mirac/lexer.c
 	$PROJECT_DIR/source/mirac/parser.c
+	$PROJECT_DIR/source/mirac/compiler.c
 	$PROJECT_DIR/source/main.c
 "
 
 # TODO: put these back into the sources list!
-# $PROJECT_DIR/source/mirac/compiler.c
 # $PROJECT_DIR/source/mirac/checker.c
 
 LIBRARIES="
