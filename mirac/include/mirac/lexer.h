@@ -222,17 +222,6 @@ mirac_string_view_s mirac_token_to_string_view(
 
 // TODO: write unit tests!
 /**
- * @brief Check if a token is signed numeric literal.
- * 
- * @param token[in] token to check
- * 
- * @return bool
- */
-bool mirac_token_is_signed_numeric_literal(
-	const mirac_token_s* const token);
-
-// TODO: write unit tests!
-/**
  * @brief Check if a token is unsigned numeric literal.
  * 
  * @param token[in] token to check

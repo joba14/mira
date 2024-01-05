@@ -90,15 +90,13 @@ int32_t main(
 			mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
-			// TODO: remove:
-			// mirac_ast_unit_print(&unit, 0);
-			// getchar();
+			if (!config.unsafe)
+			{
+				// TODO: implement the checker!
+				mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
+				mirac_checker_type_check_ast_unit(&checker);
+			}
 
-			// TODO: implement the checker!
-			// mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
-			// mirac_checker_type_check_ast_unit(&checker);
-
-			// TODO: implement the compiler!
 			mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit, output_file);
 			mirac_compiler_compile_ast_unit(&compiler);
 		}

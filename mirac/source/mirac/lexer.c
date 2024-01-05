@@ -298,18 +298,6 @@ mirac_string_view_s mirac_token_to_string_view(
 	return mirac_string_view_from_parts(token_string_buffer, written);
 }
 
-bool mirac_token_is_signed_numeric_literal(
-	const mirac_token_s* const token)
-{
-	mirac_debug_assert(token != NULL);
-	return (
-		(mirac_token_type_literal_i08 == token->type) ||
-		(mirac_token_type_literal_i16 == token->type) ||
-		(mirac_token_type_literal_i32 == token->type) ||
-		(mirac_token_type_literal_i64 == token->type)
-	);
-}
-
 bool mirac_token_is_unsigned_numeric_literal(
 	const mirac_token_s* const token)
 {
