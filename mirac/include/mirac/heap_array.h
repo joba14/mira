@@ -59,13 +59,6 @@
 		heap_array.data = (_element_type*)mirac_arena_malloc(                  \
 			heap_array.arena, capacity * sizeof(_element_type));               \
 		                                                                       \
-		if (NULL == heap_array.data)                                           \
-		{                                                                      \
-			mirac_logger_error(                                                \
-				"internal failure -- failed to allocate heap array.");         \
-			mirac_c_exit(-1);                                                  \
-		}                                                                      \
-		                                                                       \
 		heap_array.capacity = capacity;                                        \
 		heap_array.count = 0;                                                  \
 		return heap_array;                                                     \
@@ -85,13 +78,6 @@
 			                                                                   \
 			_element_type* new_data = mirac_arena_malloc(                      \
 				heap_array->arena, new_capacity * sizeof(_element_type));      \
-			                                                                   \
-			if (NULL == new_data)                                              \
-			{                                                                  \
-				mirac_logger_error(                                            \
-					"internal failure -- failed to allocate heap array.");     \
-				mirac_c_exit(-1);                                              \
-			}                                                                  \
 			                                                                   \
 			if (heap_array->count > 0)                                         \
 			{                                                                  \

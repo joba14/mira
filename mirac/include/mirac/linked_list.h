@@ -17,6 +17,8 @@
 #include <mirac/debug.h>
 #include <mirac/arena.h>
 
+// TODO: write unit tests!
+
 #define mirac_define_linked_list_type(_type_name, _element_type)               \
 	typedef struct _type_name ## _node_s _type_name ## _node_s;                \
 	                                                                           \
@@ -61,13 +63,6 @@
 		_type_name ## _node_s* node = (_type_name ## _node_s*)mirac_c_malloc(  \
 			sizeof(_type_name ## _node_s)                                      \
 		);                                                                     \
-		                                                                       \
-		if (NULL == node)                                                      \
-		{                                                                      \
-			mirac_logger_error(                                                \
-				"internal failure -- failed to allocate linked list node.");   \
-			mirac_c_exit(-1);                                                  \
-		}                                                                      \
 		                                                                       \
 		node->data = data;                                                     \
 		node->next = NULL;                                                     \
