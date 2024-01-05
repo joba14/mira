@@ -211,7 +211,7 @@ struct utester_test_s
 		return !(0 == failed_count);                                           \
 	}                                                                          \
 	                                                                           \
-	_Static_assert(1, "") // NOTE: Left fot ';' support after calling the macro.
+	_Static_assert(1, "") // NOTE: Left for ';' support after calling the macro.
 
 /**
  * @example
