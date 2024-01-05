@@ -22,7 +22,6 @@
 static mirac_string_view_s g_program = mirac_string_view_static("");
 static mirac_string_view_s g_supported_architectures[] =
 {
-	[mirac_config_arch_type_fasm_x86_64_linux] = mirac_string_view_static("fasm_x86_64_linux"),
 	[mirac_config_arch_type_nasm_x86_64_linux] = mirac_string_view_static("nasm_x86_64_linux")
 };
 
@@ -57,7 +56,6 @@ mirac_string_view_s mirac_config_arch_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_config_arch_type_fasm_x86_64_linux: { return mirac_string_view_from_cstring("fasm_x86_64_linux"); } break;
 		case mirac_config_arch_type_nasm_x86_64_linux: { return mirac_string_view_from_cstring("nasm_x86_64_linux"); } break;
 
 		default:

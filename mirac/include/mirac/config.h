@@ -18,8 +18,7 @@
 
 typedef enum
 {
-	mirac_config_arch_type_fasm_x86_64_linux = 0,
-	mirac_config_arch_type_nasm_x86_64_linux,
+	mirac_config_arch_type_nasm_x86_64_linux = 0,
 	mirac_config_arch_types_count = mirac_config_arch_type_nasm_x86_64_linux,
 
 	mirac_config_arch_type_none
