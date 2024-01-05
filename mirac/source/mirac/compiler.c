@@ -108,14 +108,6 @@ void mirac_compiler_compile_ast_unit(
 		mirac_debug_assert(defs_iterator->data != NULL);
 		compile_ast_def(compiler, defs_iterator->data);
 	}
-
-	// TODO: implement!
-	// (void)fprintf(compiler->file, "\n");
-	// (void)fprintf(compiler->file, "section .bss\n");
-	// (void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
-	// (void)fprintf(compiler->file, "\tret_stack_rsp: resq 1\n");
-	// (void)fprintf(compiler->file, "\tret_stack: resb 4096\n");
-	// (void)fprintf(compiler->file, "\tret_stack_end:\n");
 }
 
 static void compile_ast_block_expr(
