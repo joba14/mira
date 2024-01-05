@@ -96,6 +96,16 @@ void nasm_x86_64_linux_compile_ast_unit(
 		mirac_debug_assert(defs_iterator->data != NULL);
 		nasm_x86_64_linux_compile_ast_def(compiler, defs_iterator->data);
 	}
+
+	// TODO(#001): This should be reworked to be more dynamic in regard to specific functions.
+	//             In other words - it should NOT be pre-hard-coded!
+	(void)fprintf(compiler->file, "\n");
+	(void)fprintf(compiler->file, "section .bss\n");
+	(void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
+	(void)fprintf(compiler->file, "\tret_stack_rsp: resq 1\n");
+	(void)fprintf(compiler->file, "\tret_stack: resb 4096\n");
+	(void)fprintf(compiler->file, "\tret_stack_end:\n");
+	(void)fprintf(compiler->file, "\n");
 }
 
 static void nasm_x86_64_linux_compile_ast_block_expr(
@@ -574,7 +584,12 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 	{
 		case mirac_ast_def_type_func:
 		{
+			// TODO(#001): This should be reworked as well, since it is part of #001 todo.
+			(void)fprintf(compiler->file, "\tmov rax, rsp\n");
+			(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
 			(void)fprintf(compiler->file, "\tcall func_%lu\n", call_block->def->as.func_def.index);
+			(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
+			(void)fprintf(compiler->file, "\tmov rsp, rax\n");
 		} break;
 
 		case mirac_ast_def_type_mem:
@@ -764,24 +779,30 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 
 	if (func_def->is_entry)
 	{
+		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
 		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_def->identifier.as.ident));
+		(void)fprintf(compiler->file, "\tmov [args_ptr], rsp\n");
+		(void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
+		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rax\n");
 	}
 	else
 	{
+		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- func --- \n");
 		(void)fprintf(compiler->file, "func_%lu:\n", func_def->index);
-		(void)fprintf(compiler->file, "\tpush rbp\n");
-		(void)fprintf(compiler->file, "\tmov rsp, rbp\n");
+		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
+		(void)fprintf(compiler->file, "\tmov rsp, rax\n");
 	}
 
 	nasm_x86_64_linux_compile_ast_block(compiler, func_def->body);
 
 	if (!func_def->is_entry)
 	{
+		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, "\t;; --- func-ret --- \n");
-		(void)fprintf(compiler->file, "\tmov rbp, rsp\n");
-		(void)fprintf(compiler->file, "\tpop rbp\n");
+		(void)fprintf(compiler->file, "\tmov rax, rsp\n");
+		(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
 		(void)fprintf(compiler->file, "\tret\n");
 	}
 }
