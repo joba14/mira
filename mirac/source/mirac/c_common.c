@@ -124,13 +124,3 @@ char* mirac_c_strchr(
 	mirac_debug_assert(string != NULL);
 	return strchr((const char*)string, c);
 }
-
-void* mirac_c_bsearch(
-	const void* key,
-	const void* base,
-	const uint64_t members_count,
-	const uint64_t member_size,
-	int32_t(*compare)(const void*, const void*))
-{
-	return bsearch(key, base, members_count, member_size, compare);
-}

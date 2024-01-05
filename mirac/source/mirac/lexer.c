@@ -139,18 +139,6 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	mirac_token_s* const token);
 
 /**
- * @brief Compare two string views alphabetically.
- * 
- * @param left[in]  pointer to the left string view
- * @param right[in] pointer to the right string view
- * 
- * @return int32_t
- */
-static int32_t compare_text_with_reserved_token(
-	const void* const left,
-	const void* const right);
-
-/**
  * @brief Parse reserved token from the token's text.
  * 
  * @param lexer[in/out] lexer instance
@@ -503,6 +491,11 @@ fetch_line:
 	lexer->line = mirac_string_view_trim_left_white_space(lexer->line, &white_space_length);
 	lexer->locations[0].column += white_space_length;
 
+	if ((lexer->line.length <= 0) && (lexer->buffer.length > 0))
+	{
+		goto fetch_line;
+	}
+
 	if (mirac_string_view_equal_range(lexer->line, mirac_string_view_from_parts(";",  1), 1) ||
 		mirac_string_view_equal_range(lexer->line, mirac_string_view_from_parts("//", 2), 2))
 	{
@@ -732,15 +725,6 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	return token->type;
 }
 
-static int32_t compare_text_with_reserved_token(
-	const void* const left,
-	const void* const right)
-{
-	const mirac_string_view_s* left_string_view = (const mirac_string_view_s*)left;
-	const mirac_string_view_s* right_string_view = (const mirac_string_view_s*)right;
-	return mirac_c_strcmp(left_string_view->data, right_string_view->data);
-}
-
 static mirac_token_type_e parse_reserved_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
@@ -751,20 +735,16 @@ static mirac_token_type_e parse_reserved_token_from_text(
 	mirac_debug_assert(token != NULL);
 	mirac_debug_assert(token->text.length > 0);
 
-	const void* const found_token = (const void* const)mirac_c_bsearch(
-		&token->text, g_reserved_token_types_map, mirac_token_type_reserved_count + 1,
-		sizeof(g_reserved_token_types_map[0]), compare_text_with_reserved_token
-	);
+	for (uint64_t reserved_token_index = 0; reserved_token_index < mirac_token_type_reserved_count + 1; ++reserved_token_index)
+	{
+		if (mirac_string_view_equal(token->text, g_reserved_token_types_map[reserved_token_index]))
+		{
+			token->type = reserved_token_index;
+			return token->type;
+		}
+	}
 
-	if (NULL == found_token)
-	{
-		return mirac_token_type_none;
-	}
-	else
-	{
-		token->type = (mirac_token_type_e)((const mirac_string_view_s*)found_token - g_reserved_token_types_map);
-		return token->type;
-	}
+	return mirac_token_type_none;
 }
 
 static mirac_token_type_e parse_identifier_token_from_text(

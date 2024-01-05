@@ -771,8 +771,8 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	{
 		(void)fprintf(compiler->file, ";; --- func --- \n");
 		(void)fprintf(compiler->file, "func_%lu:\n", func_def->index);
-		(void)fprintf(compiler->file, "\tpushq %%rbp\n");
-		(void)fprintf(compiler->file, "\tmovq %%rsp, %%rbp\n");
+		(void)fprintf(compiler->file, "\tpush rbp\n");
+		(void)fprintf(compiler->file, "\tmov rsp, rbp\n");
 	}
 
 	nasm_x86_64_linux_compile_ast_block(compiler, func_def->body);
@@ -780,8 +780,8 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	if (!func_def->is_entry)
 	{
 		(void)fprintf(compiler->file, "\t;; --- func-ret --- \n");
-		(void)fprintf(compiler->file, "\tmovq %%rbp, %%rsp\n");
-		(void)fprintf(compiler->file, "\tpopq %%rbp\n");
+		(void)fprintf(compiler->file, "\tmov rbp, rsp\n");
+		(void)fprintf(compiler->file, "\tpop rbp\n");
 		(void)fprintf(compiler->file, "\tret\n");
 	}
 }

@@ -159,23 +159,4 @@ char* mirac_c_strchr(
 	const char* const string,
 	const int32_t c);
 
-// TODO: write unit tests!
-/**
- * @brief Wrapper for c's stdlib bsearch function.
- * 
- * @param key[in]           key to look for in the search
- * @param base[in]          pointer to the collection to look into
- * @param members_count[in] collections members count
- * @param member_size[in]   each member size
- * @param compare[in]       comparison function pointer
- * 
- * @return void*
- */
-void* mirac_c_bsearch(
-	const void* key,
-	const void* base,
-	const uint64_t members_count,
-	const uint64_t member_size,
-	int32_t(*compare)(const void*, const void*));
-
 #endif
