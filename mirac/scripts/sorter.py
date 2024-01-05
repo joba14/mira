@@ -58,12 +58,11 @@ tokens = [
 	("mirac_token_type_reserved_mem", "mem"),
 	("mirac_token_type_reserved_func", "func"),
 	("mirac_token_type_reserved_if", "if"),
-	("mirac_token_type_reserved_elif", "elif"),
 	("mirac_token_type_reserved_else", "else"),
 	("mirac_token_type_reserved_loop", "loop"),
-	("mirac_token_type_reserved_as", "as"),
 	("mirac_token_type_reserved_req", "req"),
 	("mirac_token_type_reserved_ret", "ret"),
+	("mirac_token_type_reserved_as", "as"),
 
 	("mirac_token_type_reserved_drop", "\\!."),
 	("mirac_token_type_reserved_dup", "\\+."),
