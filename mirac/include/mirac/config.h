@@ -33,7 +33,7 @@ typedef struct
 	mirac_string_view_s program;
 	mirac_config_arch_type_e arch;
 	mirac_string_view_s entry;
-	mirac_string_view_s output;
+	bool strip;
 } mirac_config_s;
 
 // TODO: write unit tests!

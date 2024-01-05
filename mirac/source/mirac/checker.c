@@ -42,12 +42,6 @@ static void validate_ast_block_if(
 	const uint64_t depth);
 
 // TODO: document!
-static void validate_ast_block_elif(
-	mirac_parser_s* const parser,
-	mirac_ast_block_elif_s* const elif_block,
-	const uint64_t depth);
-
-// TODO: document!
 static void validate_ast_block_else(
 	mirac_parser_s* const parser,
 	mirac_ast_block_else_s* const else_block,
@@ -96,11 +90,6 @@ static void type_check_ast_block_scope(
 static void type_check_ast_block_if(
 	mirac_checker_s* const checker,
 	mirac_ast_block_if_s* const if_block);
-
-// TODO: document!
-static void type_check_ast_block_elif(
-	mirac_checker_s* const checker,
-	mirac_ast_block_elif_s* const elif_block);
 
 // TODO: document!
 static void type_check_ast_block_else(
@@ -215,18 +204,6 @@ static void validate_ast_block_if(
 	validate_ast_block_scope(parser, &if_block->body_scope, depth);
 }
 
-static void validate_ast_block_elif(
-	mirac_parser_s* const parser,
-	mirac_ast_block_elif_s* const elif_block,
-	const uint64_t depth)
-{
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(elif_block != NULL);
-
-	validate_ast_block_scope(parser, &elif_block->cond_scope, depth);
-	validate_ast_block_scope(parser, &elif_block->body_scope, depth);
-}
-
 static void validate_ast_block_else(
 	mirac_parser_s* const parser,
 	mirac_ast_block_else_s* const else_block,
@@ -330,7 +307,6 @@ static void validate_ast_block(
 		case mirac_ast_block_type_as:    { validate_ast_block_as(parser, &block->as.as_block, depth + 1);       } break;
 		case mirac_ast_block_type_scope: { validate_ast_block_scope(parser, &block->as.scope_block, depth + 1); } break;
 		case mirac_ast_block_type_if:    { validate_ast_block_if(parser, &block->as.if_block, depth + 1);       } break;
-		case mirac_ast_block_type_elif:  { validate_ast_block_elif(parser, &block->as.elif_block, depth + 1);   } break;
 		case mirac_ast_block_type_else:  { validate_ast_block_else(parser, &block->as.else_block, depth + 1);   } break;
 		case mirac_ast_block_type_loop:  { validate_ast_block_loop(parser, &block->as.loop_block, depth + 1);   } break;
 		case mirac_ast_block_type_func:  { validate_ast_block_func(parser, &block->as.func_block, depth + 1);   } break;
@@ -385,18 +361,6 @@ static void type_check_ast_block_if(
 	// ... 
 	type_check_ast_block_scope(checker, &if_block->cond_scope);
 	type_check_ast_block_scope(checker, &if_block->body_scope);
-}
-
-static void type_check_ast_block_elif(
-	mirac_checker_s* const checker,
-	mirac_ast_block_elif_s* const elif_block)
-{
-	mirac_debug_assert(checker != NULL);
-	mirac_debug_assert(elif_block != NULL);
-
-	// ... 
-	type_check_ast_block_scope(checker, &elif_block->cond_scope);
-	type_check_ast_block_scope(checker, &elif_block->body_scope);
 }
 
 static void type_check_ast_block_else(
@@ -454,7 +418,6 @@ static void type_check_ast_block(
 		case mirac_ast_block_type_as:    { type_check_ast_block_as(checker, &block->as.as_block);       } break;
 		case mirac_ast_block_type_scope: { type_check_ast_block_scope(checker, &block->as.scope_block); } break;
 		case mirac_ast_block_type_if:    { type_check_ast_block_if(checker, &block->as.if_block);       } break;
-		case mirac_ast_block_type_elif:  { type_check_ast_block_elif(checker, &block->as.elif_block);   } break;
 		case mirac_ast_block_type_else:  { type_check_ast_block_else(checker, &block->as.else_block);   } break;
 		case mirac_ast_block_type_loop:  { type_check_ast_block_loop(checker, &block->as.loop_block);   } break;
 		case mirac_ast_block_type_func:  { type_check_ast_block_func(checker, &block->as.func_block);   } break;

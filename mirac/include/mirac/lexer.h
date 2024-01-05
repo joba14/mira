@@ -84,7 +84,6 @@ typedef enum
 	mirac_token_type_reserved_bxor,
 	mirac_token_type_reserved_lxor,
 	mirac_token_type_reserved_as,
-	mirac_token_type_reserved_elif,
 	mirac_token_type_reserved_else,
 	mirac_token_type_reserved_f32,
 	mirac_token_type_reserved_f64,

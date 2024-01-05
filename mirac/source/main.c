@@ -91,7 +91,7 @@ int32_t main(
 			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
 			// TODO: remove:
-			mirac_ast_unit_print(&unit, 0);
+			// mirac_ast_unit_print(&unit, 0);
 			// getchar();
 
 			// TODO: implement the checker!

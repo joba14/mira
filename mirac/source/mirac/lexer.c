@@ -66,7 +66,6 @@ static const mirac_string_view_s g_reserved_token_types_map[] =
 	[mirac_token_type_reserved_bxor] = mirac_string_view_static("^"),
 	[mirac_token_type_reserved_lxor] = mirac_string_view_static("^^"),
 	[mirac_token_type_reserved_as] = mirac_string_view_static("as"),
-	[mirac_token_type_reserved_elif] = mirac_string_view_static("elif"),
 	[mirac_token_type_reserved_else] = mirac_string_view_static("else"),
 	[mirac_token_type_reserved_f32] = mirac_string_view_static("f32"),
 	[mirac_token_type_reserved_f64] = mirac_string_view_static("f64"),
@@ -710,16 +709,17 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 		}
 	}
 
-	token->type = (has_dot ? mirac_token_type_literal_f64 : mirac_token_type_literal_i64);
+	// NOTE: Defaulting to the unsigned integer (and in else block in line 722):
+	token->type = (has_dot ? mirac_token_type_literal_f64 : mirac_token_type_literal_u64);
 	errno = 0;
 
 	if (mirac_token_type_literal_f64 == token->type)
 	{
 		token->as.fval = strtold(token->text.data, NULL);
 	}
-	else
+	else // NOTE: Defaulting to the unsigned integer.
 	{
-		token->as.ival = strtoll(token->text.data, NULL, 10);
+		token->as.uval = strtoul(token->text.data, NULL, 10);
 	}
 
 	if (errno != 0)
@@ -738,7 +738,7 @@ static int32_t compare_text_with_reserved_token(
 {
 	const mirac_string_view_s* left_string_view = (const mirac_string_view_s*)left;
 	const mirac_string_view_s* right_string_view = (const mirac_string_view_s*)right;
-	return mirac_c_strncmp(left_string_view->data, right_string_view->data, left_string_view->length);
+	return mirac_c_strcmp(left_string_view->data, right_string_view->data);
 }
 
 static mirac_token_type_e parse_reserved_token_from_text(

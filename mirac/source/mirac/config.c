@@ -34,7 +34,7 @@ static const char* const g_usage_banner =
 	"    -v, --version              print version and exit\n"
 	"    -a, --arch <target>        set the architecture for the output\n"
 	"    -e, --entry <symbol>       set the entry symbol\n"
-	"    -o, --output <path>        set output file name\n"
+	"    -s, --strip                strip unused code in the output\n"
 	"\n"
 	"notice:\n"
 	"    this executable is distributed under the \"mira gplv1\" license.\n";
@@ -93,14 +93,14 @@ mirac_config_s mirac_config_from_cli(
 		{ "version",    no_argument,       0, 'v' },
 		{ "arch",       required_argument, 0, 'a' },
 		{ "entry",      required_argument, 0, 'e' },
-		{ "output",     required_argument, 0, 'o' },
+		{ "strip",      no_argument,       0, 's' },
 		{ 0, 0, 0, 0 }
 	};
 
 	mirac_config_s config = {0};
 	int32_t opt = -1;
 
-	while ((opt = (int32_t)getopt_long(argc, (char* const *)argv, "hva:e:o:", options, NULL)) != -1)
+	while ((opt = (int32_t)getopt_long(argc, (char* const *)argv, "hva:e:s", options, NULL)) != -1)
 	{
 		switch (opt)
 		{
@@ -139,9 +139,9 @@ mirac_config_s mirac_config_from_cli(
 				config.entry = mirac_string_view_from_cstring((const char*)optarg);
 			} break;
 
-			case 'o':
+			case 's':
 			{
-				config.output = mirac_string_view_from_cstring((const char*)optarg);
+				config.strip = true;
 			} break;
 
 			default:

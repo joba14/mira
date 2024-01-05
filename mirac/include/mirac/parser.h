@@ -34,7 +34,7 @@ typedef struct
 typedef struct
 {
 	mirac_token_s token;
-	const mirac_ast_def_s* def;
+	mirac_ast_def_s* def;
 } mirac_ast_block_call_s;
 
 typedef struct
@@ -63,23 +63,21 @@ typedef struct
 {
 	mirac_ast_block_s* cond; // NOTE: must be scope block.
 	mirac_ast_block_s* body; // NOTE: must be scope block.
+	mirac_ast_block_s* next;
+	uint64_t index;
 } mirac_ast_block_if_s;
 
 typedef struct
 {
-	mirac_ast_block_s* cond; // NOTE: must be scope block.
 	mirac_ast_block_s* body; // NOTE: must be scope block.
-} mirac_ast_block_elif_s;
-
-typedef struct
-{
-	mirac_ast_block_s* body; // NOTE: must be scope block.
+	uint64_t index;
 } mirac_ast_block_else_s;
 
 typedef struct
 {
 	mirac_ast_block_s* cond; // NOTE: must be scope block.
 	mirac_ast_block_s* body; // NOTE: must be scope block.
+	uint64_t index;
 } mirac_ast_block_loop_s;
 
 typedef enum
@@ -89,7 +87,6 @@ typedef enum
 	mirac_ast_block_type_as,
 	mirac_ast_block_type_scope,
 	mirac_ast_block_type_if,
-	mirac_ast_block_type_elif,
 	mirac_ast_block_type_else,
 	mirac_ast_block_type_loop,
 
@@ -113,7 +110,6 @@ struct mirac_ast_block_s
 		mirac_ast_block_as_s    as_block;
 		mirac_ast_block_scope_s scope_block;
 		mirac_ast_block_if_s    if_block;
-		mirac_ast_block_elif_s  elif_block;
 		mirac_ast_block_else_s  else_block;
 		mirac_ast_block_loop_s  loop_block;
 	} as;
@@ -126,18 +122,21 @@ typedef struct
 	mirac_token_list_s ret_tokens;
 	mirac_ast_block_s* body; // NOTE: must be scope block.
 	bool is_entry;
+	uint64_t index;
 } mirac_ast_def_func_s;
 
 typedef struct
 {
 	mirac_token_s identifier;
 	mirac_token_s capacity;
+	uint64_t index;
 } mirac_ast_def_mem_s;
 
 typedef struct
 {
 	mirac_token_s identifier;
 	mirac_token_s literal;
+	uint64_t index;
 } mirac_ast_def_str_s;
 
 typedef enum
@@ -188,6 +187,13 @@ typedef struct
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;
+	uint64_t if_count;   //   _______ // TODO: move to some sort of statistics struct!
+	uint64_t elif_count; // _//////
+	uint64_t else_count; // _/////
+	uint64_t loop_count; // _////
+	uint64_t func_count; // _///
+	uint64_t mem_count;  // _//
+	uint64_t str_count;  // _/
 	mirac_ast_unit_s unit;
 } mirac_parser_s;
 
