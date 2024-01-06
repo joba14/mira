@@ -52,7 +52,7 @@
 	do                                                                         \
 	{                                                                          \
 		utester_logger_log(stdout,                                             \
-			ansi_green "info " ansi_reset, _format, ## __VA_ARGS__              \
+			"info ", _format, ## __VA_ARGS__                                   \
 		);                                                                     \
 	} while (0)
 
@@ -60,7 +60,7 @@
 	do                                                                         \
 	{                                                                          \
 		utester_logger_log(stdout,                                             \
-			ansi_yellow "warn " ansi_reset, _format, ## __VA_ARGS__             \
+			ansi_yellow "warn " ansi_reset, _format, ## __VA_ARGS__            \
 		);                                                                     \
 	} while (0)
 
