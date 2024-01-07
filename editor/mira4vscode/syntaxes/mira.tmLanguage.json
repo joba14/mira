@@ -7,89 +7,114 @@
 			"include": "#comments"
 		},
 		{
-			"include": "#globalKeywords"
+			"include": "#keywords-g"
 		},
 		{
-			"include": "#keywords"
+			"include": "#keywords-l"
 		},
 		{
-			"include": "#intrinsics"
-		},
-		{
-			"include": "#specifiers"
+			"include": "#types"
 		},
 		{
 			"include": "#numerics"
 		},
 		{
-			"include": "#functions"
+			"include": "#strings"
 		},
 		{
-			"include": "#strings"
+			"include": "#identifiers"
 		}
 	],
 	"repository": {
 		"comments": {
 			"patterns": [
 				{
-					"name": "comment.line.double-slash",
-					"match": "\/\\*.+?\\*\/|\/\/.*(?=[\n\r])"
+				  "name": "comment.line.semicolon.mira",
+				  "match": ";.*"
 				},
 				{
-					"name": "comment.line.double-slash",
-					"match": ";*.+?\\*\/|;.*(?=[\n\r])"
-				},
+				  "name": "comment.line.double-slash.mira",
+				  "match": "//.*"
+				}
+			  ]
+		},
+		"keywords-g": {
+			"patterns": [
 				{
-					"name": "comment.block",
-					"begin": "\\/\\*",
-					"end": "\\*\\/"
+					"name": "entity.name.tag",
+					"match": "\\b(sec|str|mem|func|req|ret|as)\\b"
 				}
 			]
 		},
-		"globalKeywords": {
-			"patterns": [{
-				"name": "entity.name.tag",
-				"match": "\\b(sec|func|req|ret|mem|str|as)\\b"
-			}]
-		},
-		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.mira",
-				"match": "\\b(if|else|loop)\\b"
-			}]
-		},
-		"intrinsics": {
-			"patterns": [{
-				"name": "variable.name",
-				"match": "\\b(TODO)\\b"
-			}]
-		},
-		"specifiers": {
-			"patterns": [{
-				"name": "entity.name.type",
-				"match": "\\b(u08|u16|u32|u64|i08|i16|i32|i64|f32|f64|ptr)\\b"
-			}]
-		},
-		"numerics": {
-			"patterns": [{
-				"name": "constant.numeric",
-				"match": "\\b([-+]\\d+|\\d+)\\b"
-			}]
-		},
-		"functions": {
-			"patterns": [{
-				"name": "entity.name.function",
-				"match": "\\w+|\\w+\\s+"
-			}]
-		},
-		"strings": {
-			"name": "string.quoted.double.mira",
-			"begin": "\"",
-			"end": "\"",
+		"keywords-l": {
 			"patterns": [
 				{
-					"name": "constant.character.escape.mira",
-					"match": "\\\\."
+					"name": "keyword.control.mira",
+					"match": "\\b(if|else|loop)\\b"
+				}
+			]
+		},
+		"types": {
+			"patterns": [
+				{
+				  "name": "entity.name.type.mira",
+				  "match": "\\b(i08|i16|i32|i64|u08|u16|u32|u64|f32|f64|ptr)\\b"
+				}
+			]
+		},
+		"numerics": {
+			"patterns": [
+				{
+				  "name": "constant.numeric.integer.hex.mira",
+				  "match": "\\b0x[0-9A-Fa-f]+\\b"
+				},
+				{
+				  "name": "constant.numeric.integer.binary.mira",
+				  "match": "\\b0b[01]+\\b"
+				},
+				{
+				  "name": "constant.numeric.integer.octal.mira",
+				  "match": "\\b0o[0-7]+\\b"
+				},
+				{
+				  "name": "constant.numeric.integer.decimal.mira",
+				  "match": "\\b[0-9]+\\b"
+				},
+				{
+				  "name": "constant.numeric.float.mira",
+				  "match": "\\b[0-9]+\\.[0-9]+\\b"
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.mira",
+					"begin": "\"",
+					"end": "\"",
+					"patterns": [
+						{
+							"name": "constant.character.escape.mira",
+							"match": "\\\\."
+						}
+					]
+				}
+			]
+		},
+		"identifiers": {
+			"patterns": [
+				{
+				  "name": "entity.name.tag",
+				  "match": "\\b(str|mem|func)\\s+([^\\s]+)\\b",
+				  "captures": {
+					"1": {
+					  "name": "variable.other.mira"
+					}
+				  }
+				},
+				{
+				  "name": "entity.name.function.mira",
+				  "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
 				}
 			]
 		}
