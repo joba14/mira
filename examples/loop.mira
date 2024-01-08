@@ -1,5 +1,5 @@
 
-loop { \+. 0 > } {
+loop { dup 0 > } {
 	0 putu
 	--
 }

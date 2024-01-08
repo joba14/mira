@@ -5,9 +5,9 @@ sec .data str msg3 "hello, posix!\n"
 
 sec .text func _start {
 	if [ 0 ] {
-		14 msg1 1 1 \$3 \!.
+		14 msg1 1 1 sys3 drop
 	}
 	else {
-		14 msg3 1 1 \$3 \!.
+		14 msg3 1 1 sys3 drop
 	}
 }
