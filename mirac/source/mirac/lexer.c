@@ -79,8 +79,6 @@ static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_res
 	[mirac_token_type_reserved_u16] = mirac_string_view_static("u16"),
 	[mirac_token_type_reserved_u32] = mirac_string_view_static("u32"),
 	[mirac_token_type_reserved_u64] = mirac_string_view_static("u64"),
-	[mirac_token_type_reserved_f32] = mirac_string_view_static("f32"),
-	[mirac_token_type_reserved_f64] = mirac_string_view_static("f64"),
 	[mirac_token_type_reserved_ptr] = mirac_string_view_static("ptr"),
 
 	[mirac_token_type_reserved_sec] = mirac_string_view_static("sec"),
@@ -322,27 +320,6 @@ bool mirac_token_is_type_token(
 		(mirac_token_type_reserved_u16 == token->type) ||
 		(mirac_token_type_reserved_u32 == token->type) ||
 		(mirac_token_type_reserved_u64 == token->type) ||
-		(mirac_token_type_reserved_f32 == token->type) ||
-		(mirac_token_type_reserved_f64 == token->type) ||
-		(mirac_token_type_reserved_ptr == token->type)
-	);
-}
-
-bool mirac_token_is_reserved_type(
-	const mirac_token_s* const token)
-{
-	mirac_debug_assert(token != NULL);
-	return (
-		(mirac_token_type_reserved_i08 == token->type) ||
-		(mirac_token_type_reserved_i16 == token->type) ||
-		(mirac_token_type_reserved_i32 == token->type) ||
-		(mirac_token_type_reserved_i64 == token->type) ||
-		(mirac_token_type_reserved_u08 == token->type) ||
-		(mirac_token_type_reserved_u16 == token->type) ||
-		(mirac_token_type_reserved_u32 == token->type) ||
-		(mirac_token_type_reserved_u64 == token->type) ||
-		(mirac_token_type_reserved_f32 == token->type) ||
-		(mirac_token_type_reserved_f64 == token->type) ||
 		(mirac_token_type_reserved_ptr == token->type)
 	);
 }

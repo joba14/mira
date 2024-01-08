@@ -735,8 +735,7 @@ static void type_check_ast_block_expr(
 			}
 
 			if ((b != mirac_token_type_reserved_i32) &&
-				(b != mirac_token_type_reserved_u32) &&
-				(b != mirac_token_type_reserved_f32))
+				(b != mirac_token_type_reserved_u32))
 			{
 				log_checker_error_and_exit(expr_block->token.location,
 					"expected 'i32', 'u32', or'f32' type to be the second in the stack for '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' type.",
@@ -764,8 +763,7 @@ static void type_check_ast_block_expr(
 			}
 
 			if ((b != mirac_token_type_reserved_i64) &&
-				(b != mirac_token_type_reserved_u64) &&
-				(b != mirac_token_type_reserved_f64))
+				(b != mirac_token_type_reserved_u64))
 			{
 				log_checker_error_and_exit(expr_block->token.location,
 					"expected 'i64', 'u64', or'f64' type to be the second in the stack for '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' type.",

@@ -97,8 +97,6 @@ typedef enum
 	mirac_token_type_reserved_u16,
 	mirac_token_type_reserved_u32,
 	mirac_token_type_reserved_u64,
-	mirac_token_type_reserved_f32,
-	mirac_token_type_reserved_f64,
 	mirac_token_type_reserved_ptr,
 
 	mirac_token_type_reserved_sec,
@@ -249,17 +247,6 @@ bool mirac_token_is_unsigned_numeric_literal(
  * @return bool
  */
 bool mirac_token_is_type_token(
-	const mirac_token_s* const token);
-
-// TODO: write unit tests!
-/**
- * @brief Check if a token is a reserved type.
- * 
- * @param token[in] token to check
- * 
- * @return bool
- */
-bool mirac_token_is_reserved_type(
 	const mirac_token_s* const token);
 
 typedef struct
