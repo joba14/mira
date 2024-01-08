@@ -110,6 +110,7 @@ typedef enum
 	mirac_token_type_reserved_loop,
 	mirac_token_type_reserved_req,
 	mirac_token_type_reserved_ret,
+	mirac_token_type_reserved_call,
 	mirac_token_type_reserved_as,
 
 	mirac_token_type_reserved_left_parenthesis,
@@ -130,8 +131,6 @@ typedef enum
 	mirac_token_type_literal_u16,
 	mirac_token_type_literal_u32,
 	mirac_token_type_literal_u64,
-	mirac_token_type_literal_f32,
-	mirac_token_type_literal_f64,
 	mirac_token_type_literal_ptr,
 	mirac_token_type_literal_str,
 

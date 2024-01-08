@@ -92,10 +92,11 @@ static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_res
 	[mirac_token_type_reserved_loop] = mirac_string_view_static("loop"),
 	[mirac_token_type_reserved_req] = mirac_string_view_static("req"),
 	[mirac_token_type_reserved_ret] = mirac_string_view_static("ret"),
+	[mirac_token_type_reserved_call] = mirac_string_view_static("call"),
 	[mirac_token_type_reserved_as] = mirac_string_view_static("as"),
 
-	[mirac_token_type_reserved_left_parenthesis] = mirac_string_view_static("{"),
-	[mirac_token_type_reserved_right_parenthesis] = mirac_string_view_static("}"),
+	[mirac_token_type_reserved_left_parenthesis] = mirac_string_view_static("("),
+	[mirac_token_type_reserved_right_parenthesis] = mirac_string_view_static(")"),
 	[mirac_token_type_reserved_left_bracket] = mirac_string_view_static("["),
 	[mirac_token_type_reserved_right_bracket] = mirac_string_view_static("]"),
 	[mirac_token_type_reserved_left_brace] = mirac_string_view_static("{"),
@@ -184,8 +185,6 @@ mirac_string_view_s mirac_token_type_to_string_view(
 		case mirac_token_type_literal_u16: { return mirac_string_view_from_cstring("literal_u16"); } break;
 		case mirac_token_type_literal_u32: { return mirac_string_view_from_cstring("literal_u32"); } break;
 		case mirac_token_type_literal_u64: { return mirac_string_view_from_cstring("literal_u64"); } break;
-		case mirac_token_type_literal_f32: { return mirac_string_view_from_cstring("literal_f32"); } break;
-		case mirac_token_type_literal_f64: { return mirac_string_view_from_cstring("literal_f64"); } break;
 		case mirac_token_type_literal_ptr: { return mirac_string_view_from_cstring("literal_ptr"); } break;
 		case mirac_token_type_literal_str: { return mirac_string_view_from_cstring("literal_str"); } break;
 		case mirac_token_type_identifier:  { return mirac_string_view_from_cstring("identifier");  } break;
@@ -267,15 +266,6 @@ mirac_string_view_s mirac_token_to_string_view(
 			written += (uint64_t)snprintf(
 				token_string_buffer + written, token_string_buffer_capacity - written,
 				", value='%lu']", token->as.uval
-			);
-		} break;
-
-		case mirac_token_type_literal_f32:
-		case mirac_token_type_literal_f64:
-		{
-			written += (uint64_t)snprintf(
-				token_string_buffer + written, token_string_buffer_capacity - written,
-				", value='%Lf']", token->as.fval
 			);
 		} break;
 
@@ -667,30 +657,11 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 		return mirac_token_type_none;
 	}
 
-	bool has_dot = false;
-
 	for (uint64_t index = (uint8_t)has_sign; index < token->text.length; ++index)
 	{
 		const char curr_char = token->text.data[index];
 
-		if (isdigit(curr_char) || ('.' == curr_char))
-		{
-			if ('.' == curr_char)
-			{
-				if (has_dot)
-				{
-					log_lexer_error_and_exit(token->location,
-						"encountered multiple '%c' symbols in numeric literal.",
-						curr_char
-					);
-				}
-				else
-				{
-					has_dot = true;
-				}
-			}
-		}
-		else
+		if (!isdigit(curr_char))
 		{
 			log_lexer_error_and_exit(token->location,
 				"encountered invalid symbol '%c' in numeric literal.",
@@ -700,17 +671,8 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	}
 
 	// NOTE: Defaulting to the unsigned integer (and in else block in line 722):
-	token->type = (has_dot ? mirac_token_type_literal_f64 : mirac_token_type_literal_u64);
-	errno = 0;
-
-	if (mirac_token_type_literal_f64 == token->type)
-	{
-		token->as.fval = strtold(token->text.data, NULL);
-	}
-	else // NOTE: Defaulting to the unsigned integer.
-	{
-		token->as.uval = strtoul(token->text.data, NULL, 10);
-	}
+	token->type = mirac_token_type_literal_u64; errno = 0;
+	token->as.uval = strtoul(token->text.data, NULL, 10);
 
 	if (errno != 0)
 	{
