@@ -4,9 +4,6 @@
 	"name": "mira",
 	"patterns": [
 		{
-			"include": "#context"
-		},
-		{
 			"include": "#comments"
 		},
 		{
@@ -23,28 +20,9 @@
 		},
 		{
 			"include": "#strings"
-		},
-		{
-			"include": "#identifiers"
 		}
 	],
 	"repository": {
-		"context": {
-			"patterns": [
-				{
-					"name": "entity.name.function",
-					"match": "\\b(?:sec|str|mem|func)\\b\\s+([^\\s]+)",
-					"captures": {
-						"0": {
-							"name": "entity.name.tag"
-						},
-						"1": {
-							"name": "entity.name.function"
-						}
-					}
-				}
-			]
-		},
 		"comments": {
 			"patterns": [
 				{
@@ -61,7 +39,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.tag",
-					"match": "\\b(sec|str|mem|func|req|ret|as)\\b"
+					"match": "\\b(sec|str|mem|func|req|ret|as|drop|dup|over|rot|swap|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys1|sys2|sys3|sys4|sys5|sys6)\\b"
 				}
 			]
 		},
@@ -117,26 +95,6 @@
 							"match": "\\\\."
 						}
 					]
-				}
-			]
-		},
-		"identifiers": {
-			"patterns": [
-				{
-					"name": "entity.name.tag",
-					"match": "\\bsec\\b\\s+([^\\s]+)",
-					"captures": {
-						"0": {
-							"name": "entity.name.tag"
-						},
-						"1": {
-							"name": "keyword.control.mira"
-						}
-					}
-				},
-				{
-					"name": "entity.other.attribute-name.mira",
-					"match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
 				}
 			]
 		}
