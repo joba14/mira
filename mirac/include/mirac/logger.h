@@ -13,6 +13,7 @@
 #ifndef __mirac__include__mirac__logger_h__
 #define __mirac__include__mirac__logger_h__
 
+#include <mirac/debug.h>
 #include <mirac/c_common.h>
 
 /**
@@ -25,6 +26,7 @@ void mirac_logger_log(
 	const char* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 
+#ifndef NDEBUG
 /**
  * @brief Log debug level formattable messages.
  * 
@@ -34,6 +36,9 @@ void mirac_logger_log(
 void mirac_logger_debug(
 	const char* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
+#else
+#	define mirac_logger_debug(_format, ...) (void)(_format)
+#endif
 
 /**
  * @brief Log info level formattable messages.

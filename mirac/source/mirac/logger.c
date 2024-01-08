@@ -45,6 +45,7 @@ void mirac_logger_log(
 	va_end(args);
 }
 
+#ifndef NDEBUG
 void mirac_logger_debug(
 	const char* const format,
 	...)
@@ -54,6 +55,7 @@ void mirac_logger_debug(
 	log_with_tag(stdout, ansi_brown tag_debug ansi_reset, format, args);
 	va_end(args);
 }
+#endif
 
 void mirac_logger_info(
 	const char* const format,
