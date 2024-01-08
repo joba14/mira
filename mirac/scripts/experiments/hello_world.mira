@@ -16,8 +16,9 @@ sec .text func test req u64 u64 i64 ret u64 u64 {
 }
 
 sec .text func _start {
-	10 10 10 test drop drop
+	10 10 10 call test drop drop
 
-	14 msg stdout write
-	0 exit
+	14 msg call stdout call write
+	14 msg stdout write drop drop drop drop
+	0 call exit
 }
