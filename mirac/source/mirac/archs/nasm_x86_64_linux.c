@@ -23,6 +23,11 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 	const mirac_ast_block_expr_s* const expr_block);
 
 // TODO: document!
+static void nasm_x86_64_linux_compile_ast_block_ident(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_block_ident_s* const ident_block);
+
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_call_s* const call_block);
@@ -206,6 +211,62 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 			(void)fprintf(compiler->file, "\tpush rbx\n");
 		} break;
 
+		case mirac_token_type_reserved_add:
+		{
+			(void)fprintf(compiler->file, "\tpop rbx\n");
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tadd rax, rbx\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_inc:
+		{
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tinc rax\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_sub:
+		{
+			(void)fprintf(compiler->file, "\tpop rbx\n");
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tsub rax, rbx\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_dec:
+		{
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tdec rax\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_mul:
+		{
+			(void)fprintf(compiler->file, "\tpop rbx\n");
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tmul rbx\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_div:
+		{
+			(void)fprintf(compiler->file, "\tpop rcx\n");
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tmov rdx, 0\n");
+			(void)fprintf(compiler->file, "\tdiv rcx\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_mod:
+		{
+			(void)fprintf(compiler->file, "\tpop rcx\n");
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tmov rdx, 0\n");
+			(void)fprintf(compiler->file, "\tdiv rcx\n");
+			(void)fprintf(compiler->file, "\tpush rdx\n");
+		} break;
+
 		case mirac_token_type_reserved_eq:
 		{
 			(void)fprintf(compiler->file, "\tmov rcx, 0\n");
@@ -272,60 +333,43 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 			(void)fprintf(compiler->file, "\tpush rcx\n");
 		} break;
 
-		case mirac_token_type_reserved_add:
+		case mirac_token_type_reserved_drop:
 		{
+			(void)fprintf(compiler->file, "\tpop rax\n");
+		} break;
+
+		case mirac_token_type_reserved_dup:
+		{
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_over:
+		{
+			(void)fprintf(compiler->file, "\tpop rax\n");
 			(void)fprintf(compiler->file, "\tpop rbx\n");
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tadd rax, rbx\n");
+			(void)fprintf(compiler->file, "\tpush rbx\n");
 			(void)fprintf(compiler->file, "\tpush rax\n");
+			(void)fprintf(compiler->file, "\tpush rbx\n");
 		} break;
 
-		case mirac_token_type_reserved_inc:
+		case mirac_token_type_reserved_rot:
 		{
 			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tinc rax\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-		} break;
-
-		case mirac_token_type_reserved_sub:
-		{
 			(void)fprintf(compiler->file, "\tpop rbx\n");
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tsub rax, rbx\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-		} break;
-
-		case mirac_token_type_reserved_dec:
-		{
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tdec rax\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-		} break;
-
-		case mirac_token_type_reserved_mul:
-		{
-			(void)fprintf(compiler->file, "\tpop rbx\n");
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tmul rbx\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-		} break;
-
-		case mirac_token_type_reserved_div:
-		{
 			(void)fprintf(compiler->file, "\tpop rcx\n");
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tmov rdx, 0\n");
-			(void)fprintf(compiler->file, "\tdiv rcx\n");
+			(void)fprintf(compiler->file, "\tpush rbx\n");
 			(void)fprintf(compiler->file, "\tpush rax\n");
+			(void)fprintf(compiler->file, "\tpush rcx\n");
 		} break;
 
-		case mirac_token_type_reserved_mod:
+		case mirac_token_type_reserved_swap:
 		{
-			(void)fprintf(compiler->file, "\tpop rcx\n");
 			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tmov rdx, 0\n");
-			(void)fprintf(compiler->file, "\tdiv rcx\n");
-			(void)fprintf(compiler->file, "\tpush rdx\n");
+			(void)fprintf(compiler->file, "\tpop rbx\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+			(void)fprintf(compiler->file, "\tpush rbx\n");
 		} break;
 
 		case mirac_token_type_reserved_ld08:
@@ -451,45 +495,6 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 			(void)fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
-		case mirac_token_type_reserved_drop:
-		{
-			(void)fprintf(compiler->file, "\tpop rax\n");
-		} break;
-
-		case mirac_token_type_reserved_dup:
-		{
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-		} break;
-
-		case mirac_token_type_reserved_over:
-		{
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tpop rbx\n");
-			(void)fprintf(compiler->file, "\tpush rbx\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-			(void)fprintf(compiler->file, "\tpush rbx\n");
-		} break;
-
-		case mirac_token_type_reserved_rot:
-		{
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tpop rbx\n");
-			(void)fprintf(compiler->file, "\tpop rcx\n");
-			(void)fprintf(compiler->file, "\tpush rbx\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-			(void)fprintf(compiler->file, "\tpush rcx\n");
-		} break;
-
-		case mirac_token_type_reserved_swap:
-		{
-			(void)fprintf(compiler->file, "\tpop rax\n");
-			(void)fprintf(compiler->file, "\tpop rbx\n");
-			(void)fprintf(compiler->file, "\tpush rax\n");
-			(void)fprintf(compiler->file, "\tpush rbx\n");
-		} break;
-
 		case mirac_token_type_literal_i08:
 		{
 			(void)fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ival);
@@ -538,22 +543,53 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 			(void)fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
-		case mirac_token_type_literal_f32:
-		{
-			// TODO: implement!
-			mirac_debug_assert(!"TODO: mirac_token_type_literal_f32 @ nasm_x86_64_linux_compile_ast_block_expr() is not implemented yet!");
-		} break;
-
-		case mirac_token_type_literal_f64:
-		{
-			// TODO: implement!
-			mirac_debug_assert(!"TODO: mirac_token_type_literal_f64 @ nasm_x86_64_linux_compile_ast_block_expr() is not implemented yet!");
-		} break;
-
 		case mirac_token_type_literal_ptr:
 		{
 			(void)fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ptr);
 			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		default:
+		{
+			mirac_logger_debug("encountered an invalid token '" mirac_sv_fmt "' while compiling expr block.",
+				mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
+		} break;
+	}
+}
+
+static void nasm_x86_64_linux_compile_ast_block_ident(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_block_ident_s* const ident_block)
+{
+	mirac_debug_assert(compiler != NULL);
+	mirac_debug_assert(compiler->config != NULL);
+	mirac_debug_assert(compiler->arena != NULL);
+	mirac_debug_assert(compiler->unit != NULL);
+	mirac_debug_assert(compiler->file != NULL);
+
+	mirac_debug_assert(ident_block != NULL);
+	mirac_debug_assert(ident_block->def != NULL);
+
+	(void)fprintf(compiler->file, "\t;; --- ident (id: %lu) --- \n",
+		ident_block->token.index
+	);
+
+	switch (ident_block->def->type)
+	{
+		case mirac_ast_def_type_func:
+		{
+			(void)fprintf(compiler->file, "\tpush func_%lu\n", ident_block->def->as.func_def.index);
+		} break;
+
+		case mirac_ast_def_type_mem:
+		{
+			(void)fprintf(compiler->file, "\tpush mem_%lu\n", ident_block->def->as.mem_def.index);
+		} break;
+
+		case mirac_ast_def_type_str:
+		{
+			(void)fprintf(compiler->file, "\tpush str_%lu\n", ident_block->def->as.str_def.index);
 		} break;
 
 		default:
@@ -574,32 +610,23 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_debug_assert(compiler->file != NULL);
 
 	mirac_debug_assert(call_block != NULL);
-	mirac_debug_assert(call_block->def != NULL);
+	mirac_debug_assert(call_block->ident != NULL);
 
-	(void)fprintf(compiler->file, "\t;; --- call (id: %lu) --- \n",
-		call_block->token.index
-	);
+	const mirac_ast_block_ident_s* const ident_block = &call_block->ident->as.ident_block;
+	mirac_debug_assert(ident_block != NULL);
 
-	switch (call_block->def->type)
+	(void)fprintf(compiler->file, "\t;; --- call (id: %lu) --- \n", ident_block->token.index);
+
+	switch (ident_block->def->type)
 	{
 		case mirac_ast_def_type_func:
 		{
 			// TODO(#001): This should be reworked as well, since it is part of #001 todo.
 			(void)fprintf(compiler->file, "\tmov rax, rsp\n");
 			(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
-			(void)fprintf(compiler->file, "\tcall func_%lu\n", call_block->def->as.func_def.index);
+			(void)fprintf(compiler->file, "\tcall func_%lu\n", ident_block->def->as.func_def.index);
 			(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
 			(void)fprintf(compiler->file, "\tmov rsp, rax\n");
-		} break;
-
-		case mirac_ast_def_type_mem:
-		{
-			(void)fprintf(compiler->file, "\tpush mem_%lu\n", call_block->def->as.mem_def.index);
-		} break;
-
-		case mirac_ast_def_type_str:
-		{
-			(void)fprintf(compiler->file, "\tpush str_%lu\n", call_block->def->as.str_def.index);
 		} break;
 
 		default:
@@ -751,6 +778,7 @@ static void nasm_x86_64_linux_compile_ast_block(
 	switch (block->type)
 	{
 		case mirac_ast_block_type_expr:  { nasm_x86_64_linux_compile_ast_block_expr(compiler, &block->as.expr_block);   } break;
+		case mirac_ast_block_type_ident: { nasm_x86_64_linux_compile_ast_block_ident(compiler, &block->as.ident_block); } break;
 		case mirac_ast_block_type_call:  { nasm_x86_64_linux_compile_ast_block_call(compiler, &block->as.call_block);   } break;
 		case mirac_ast_block_type_as:    { nasm_x86_64_linux_compile_ast_block_as(compiler, &block->as.as_block);       } break;
 		case mirac_ast_block_type_scope: { nasm_x86_64_linux_compile_ast_block_scope(compiler, &block->as.scope_block); } break;
