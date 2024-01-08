@@ -17,7 +17,7 @@
 #include <mirac/debug.h>
 #include <mirac/arena.h>
 
-// TODO: write unit tests!
+// TODO: Write unit tests!
 
 #define mirac_define_heap_array_type(_type_name, _element_type)                \
 	typedef struct                                                             \

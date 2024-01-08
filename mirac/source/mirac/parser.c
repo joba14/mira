@@ -30,175 +30,175 @@ mirac_implement_linked_list_type(mirac_ast_def_list, mirac_ast_def_s*);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_ident_s create_ast_block_ident(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_call_s create_ast_block_call(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_as_s create_ast_block_as(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_scope_s create_ast_block_scope(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_if_s create_ast_block_if(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_else_s create_ast_block_else(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_loop_s create_ast_block_loop(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_s* create_ast_block(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_func_s create_ast_def_func(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_mem_s create_ast_def_mem(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_str_s create_ast_def_str(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_s* create_ast_def(
 	mirac_arena_s* const arena);
 
-// TODO: document!
+// TODO: Document!
 static bool is_token_valid_expr_block_token_by_type(
 	const mirac_token_type_e type);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_ident_s parse_ast_block_ident(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_call_s parse_ast_block_call(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_as_s parse_ast_block_as(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_if_s parse_ast_block_if(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_else_s parse_ast_block_else(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_loop_s parse_ast_block_loop(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_block_s* parse_ast_block(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_func_s parse_ast_def_func(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_mem_s parse_ast_def_mem(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_str_s parse_ast_def_str(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static mirac_ast_def_s* parse_ast_def(
 	mirac_parser_s* const parser);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_expr(
 	const mirac_ast_block_expr_s* const expr_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_ident(
 	const mirac_ast_block_ident_s* const ident_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_call(
 	const mirac_ast_block_call_s* const call_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_as(
 	const mirac_ast_block_as_s* const as_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_scope(
 	const mirac_ast_block_scope_s* const scope_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_if(
 	const mirac_ast_block_if_s* const if_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_else(
 	const mirac_ast_block_else_s* const else_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block_loop(
 	const mirac_ast_block_loop_s* const loop_block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_block(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_def_func(
 	const mirac_ast_def_func_s* const func_def,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_def_mem(
 	const mirac_ast_def_mem_s* const mem_def,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_def_str(
 	const mirac_ast_def_str_s* const str_def,
 	const uint64_t indent);
 
-// TODO: document!
+// TODO: Document!
 static void print_ast_def(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
@@ -671,7 +671,7 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 					   (mirac_token_type_reserved_left_bracket     == token.type) ||
 					   (mirac_token_type_reserved_left_brace       == token.type));
 
-	mirac_token_type_e scope_end_token_type;
+	mirac_token_type_e scope_end_token_type = mirac_token_type_none;
 	switch (token.type)
 	{
 		case mirac_token_type_reserved_left_parenthesis:
@@ -698,6 +698,8 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
+
+	mirac_debug_assert(scope_end_token_type != mirac_token_type_none);
 
 	while (1)
 	{

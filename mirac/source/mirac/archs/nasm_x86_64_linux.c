@@ -17,67 +17,67 @@
 
 #include <stdio.h>
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_expr_s* const expr_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_ident_s* const ident_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_call_s* const call_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_as(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_as_s* const as_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_scope_s* const scope_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_if_s* const if_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_else_s* const else_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_loop_s* const loop_block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_func_s* const func_def);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def_mem(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_mem_s* const mem_def);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def_str(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_str_s* const str_def);
 
-// TODO: document!
+// TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
@@ -680,6 +680,10 @@ static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_debug_assert(compiler->file != NULL);
 
 	mirac_debug_assert(if_block != NULL);
+	mirac_debug_assert(if_block->cond != NULL);
+	mirac_debug_assert(if_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == if_block->cond->type);
+	mirac_debug_assert(mirac_ast_block_type_scope == if_block->body->type);
 	
 	(void)fprintf(compiler->file, "\t;; --- if --- \n");
 
@@ -727,6 +731,8 @@ static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_debug_assert(compiler->file != NULL);
 
 	mirac_debug_assert(else_block != NULL);
+	mirac_debug_assert(else_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == else_block->body->type);
 
 	(void)fprintf(compiler->file, "\t;; --- else --- \n");
 
@@ -746,6 +752,10 @@ static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_debug_assert(compiler->file != NULL);
 
 	mirac_debug_assert(loop_block != NULL);
+	mirac_debug_assert(loop_block->cond != NULL);
+	mirac_debug_assert(loop_block->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->cond->type);
+	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->body->type);
 
 	(void)fprintf(compiler->file, "\t;; --- loop --- \n");
 

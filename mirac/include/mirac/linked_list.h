@@ -17,7 +17,7 @@
 #include <mirac/debug.h>
 #include <mirac/arena.h>
 
-// TODO: write unit tests!
+// TODO: Write unit tests!
 
 #define mirac_define_linked_list_type(_type_name, _element_type)               \
 	typedef struct _type_name ## _node_s _type_name ## _node_s;                \
