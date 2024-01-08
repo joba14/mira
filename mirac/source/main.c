@@ -93,6 +93,9 @@ int32_t main(
 			mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
+			// TODO: remove:
+			mirac_ast_unit_print(&unit, 0);
+
 			if (!config.unsafe)
 			{
 				// TODO: implement the checker!
