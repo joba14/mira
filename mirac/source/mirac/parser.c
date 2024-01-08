@@ -149,6 +149,11 @@ static void print_ast_block_ident(
 	const uint64_t indent);
 
 // TODO: document!
+static void print_ast_block_call(
+	const mirac_ast_block_call_s* const call_block,
+	const uint64_t indent);
+
+// TODO: document!
 static void print_ast_block_as(
 	const mirac_ast_block_as_s* const as_block,
 	const uint64_t indent);
@@ -209,6 +214,7 @@ mirac_string_view_s mirac_ast_block_scope_type_to_string_view(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_ast_block_scope_type_e' type with raw value of '%u'.", type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 			return mirac_string_view_from_parts("", 0);
 		} break;
@@ -222,6 +228,7 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 	{
 		case mirac_ast_block_type_expr:  { return mirac_string_view_from_cstring("expr");  } break;
 		case mirac_ast_block_type_ident: { return mirac_string_view_from_cstring("ident"); } break;
+		case mirac_ast_block_type_call:  { return mirac_string_view_from_cstring("call");  } break;
 		case mirac_ast_block_type_as:    { return mirac_string_view_from_cstring("as");    } break;
 		case mirac_ast_block_type_scope: { return mirac_string_view_from_cstring("scope"); } break;
 		case mirac_ast_block_type_if:    { return mirac_string_view_from_cstring("if");    } break;
@@ -231,6 +238,7 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_ast_block_type_e' type with raw value of '%u'.", type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 			return mirac_string_view_from_parts("", 0);
 		} break;
@@ -248,6 +256,7 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_ast_def_type_e' type with raw value of '%u'.", type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 			return mirac_string_view_from_parts("", 0);
 		} break;
@@ -267,6 +276,7 @@ mirac_token_s mirac_ast_def_get_identifier_token(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_ast_def_type_e' type with raw value of '%u'.", def->type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 			return mirac_token_from_type(mirac_token_type_none);
 		} break;
@@ -542,6 +552,7 @@ static mirac_ast_block_ident_s parse_ast_block_ident(
 
 	mirac_ast_block_ident_s ident_block = create_ast_block_ident(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_identifier == token.type);
 
@@ -586,6 +597,7 @@ static mirac_ast_block_call_s parse_ast_block_call(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_ident)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'ident' block after 'call' block, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -682,6 +694,7 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_token_type_e' type with raw value of '%u'.", token.type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
@@ -693,6 +706,7 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 		mirac_lexer_unlex(parser->lexer, &token);
 
 		block = parse_ast_block(parser);
+		mirac_debug_assert(block != NULL);
 
 		if ((mirac_ast_block_type_eou  == block->type) ||
 			(mirac_ast_block_type_none == block->type))
@@ -771,6 +785,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'if' block's condition, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -781,6 +796,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'if' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -810,6 +826,7 @@ static mirac_ast_block_else_s parse_ast_block_else(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'else' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -839,6 +856,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'loop' block's condition, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -849,6 +867,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'loop' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -1011,10 +1030,11 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	}
 
 	mirac_lexer_unlex(parser->lexer, &token);
-	mirac_ast_block_s* block = parse_ast_block(parser);
+	mirac_ast_block_s* block = NULL;
 
-	if (block->type != mirac_ast_block_type_scope)
+	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
+		mirac_debug_assert(block != NULL);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'func' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -1207,9 +1227,10 @@ static void print_ast_block_ident(
 	const uint64_t indent)
 {
 	mirac_debug_assert(ident_block != NULL);
+	mirac_debug_assert(ident_block->def != NULL);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("CallBlock[\n");
+	printf("IdentBlock[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("token:\n");
@@ -1220,6 +1241,26 @@ static void print_ast_block_ident(
 	printf("def:\n");
 	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_ast_def_get_identifier_token(ident_block->def).text));
+
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
+	printf("]\n");
+}
+
+static void print_ast_block_call(
+	const mirac_ast_block_call_s* const call_block,
+	const uint64_t indent)
+{
+	mirac_debug_assert(call_block != NULL);
+	mirac_debug_assert(call_block->ident != NULL);
+	mirac_debug_assert(mirac_ast_block_type_ident == call_block->ident->type);
+
+	const mirac_ast_block_ident_s* const ident_block = &call_block->ident->as.ident_block;
+	mirac_debug_assert(ident_block != NULL);
+
+	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
+	printf("CallBlock[\n");
+
+	print_ast_block_ident(ident_block, indent + 1);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("]\n");
@@ -1346,6 +1387,8 @@ static void print_ast_block(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(block != NULL);
+
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[\n");
 
@@ -1359,6 +1402,7 @@ static void print_ast_block(
 	{
 		case mirac_ast_block_type_expr:  { print_ast_block_expr(&block->as.expr_block, indent + 1);   } break;
 		case mirac_ast_block_type_ident: { print_ast_block_ident(&block->as.ident_block, indent + 1); } break;
+		case mirac_ast_block_type_call:  { print_ast_block_call(&block->as.call_block, indent + 1);   } break;
 		case mirac_ast_block_type_as:    { print_ast_block_as(&block->as.as_block, indent + 1);       } break;
 		case mirac_ast_block_type_scope: { print_ast_block_scope(&block->as.scope_block, indent + 1); } break;
 		case mirac_ast_block_type_if:    { print_ast_block_if(&block->as.if_block, indent + 1);       } break;
@@ -1367,6 +1411,7 @@ static void print_ast_block(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_ast_block_type_e' type with raw value of '%u'.", block->type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
@@ -1468,6 +1513,8 @@ static void print_ast_def(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
+	mirac_debug_assert(def != NULL);
+
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Def[\n");
 
@@ -1490,6 +1537,7 @@ static void print_ast_def(
 
 		default:
 		{
+			mirac_logger_debug("encountered an unknown 'mirac_ast_def_type_e' type with raw value of '%u'.", def->type);
 			mirac_debug_assert(0); // NOTE: Should never reach this block.
 		} break;
 	}
