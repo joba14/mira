@@ -40,6 +40,11 @@ static void type_check_ast_block_expr(
 	const mirac_ast_block_expr_s* const expr_block);
 
 // TODO: document!
+static void type_check_ast_block_ident(
+	mirac_checker_s* const checker,
+	const mirac_ast_block_ident_s* const ident_block);
+
+// TODO: document!
 static void type_check_ast_block_call(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_call_s* const call_block);
@@ -948,17 +953,43 @@ static void type_check_ast_block_expr(
 			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_u64);
 		} break;
 
-		case mirac_token_type_literal_f32:
-		{
-			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_f32);
-		} break;
-
-		case mirac_token_type_literal_f64:
-		{
-			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_f64);
-		} break;
-
 		case mirac_token_type_literal_ptr:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
+		} break;
+
+		case mirac_token_type_identifier:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
+		} break;
+
+		default:
+		{
+			mirac_debug_assert(0); // NOTE: Should never reach this block.
+		} break;
+	}
+}
+
+static void type_check_ast_block_ident(
+	mirac_checker_s* const checker,
+	const mirac_ast_block_ident_s* const ident_block)
+{
+	mirac_debug_assert(checker != NULL);
+	mirac_debug_assert(ident_block != NULL);
+
+	switch (ident_block->def->type)
+	{
+		case mirac_ast_def_type_func:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
+		} break;
+
+		case mirac_ast_def_type_mem:
+		{
+			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
+		} break;
+
+		case mirac_ast_def_type_str:
 		{
 			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
 		} break;
@@ -977,34 +1008,27 @@ static void type_check_ast_block_call(
 	mirac_debug_assert(checker != NULL);
 	mirac_debug_assert(call_block != NULL);
 
-	switch (call_block->def->type)
+	const mirac_ast_block_ident_s* const ident_block = &call_block->ident->as.ident_block;
+	mirac_debug_assert(ident_block != NULL);
+
+	switch (ident_block->def->type)
 	{
 		case mirac_ast_def_type_func:
 		{
-			expect_amount_of_arguments(&checker->stack, &call_block->token, call_block->def->as.func_def.req_tokens.count);
+			expect_amount_of_arguments(&checker->stack, &ident_block->token, ident_block->def->as.func_def.req_tokens.count);
 
-			for (mirac_token_list_node_s* reqs_iterator = call_block->def->as.func_def.req_tokens.begin; reqs_iterator != NULL; reqs_iterator = reqs_iterator->next)
+			for (mirac_token_list_node_s* reqs_iterator = ident_block->def->as.func_def.req_tokens.begin; reqs_iterator != NULL; reqs_iterator = reqs_iterator->next)
 			{
 				mirac_debug_assert(reqs_iterator != NULL);
 				mirac_token_type_e type;
 				(void)mirac_types_stack_pop(&checker->stack, &type);
 			}
 
-			for (mirac_token_list_node_s* rets_iterator = call_block->def->as.func_def.ret_tokens.begin; rets_iterator != NULL; rets_iterator = rets_iterator->next)
+			for (mirac_token_list_node_s* rets_iterator = ident_block->def->as.func_def.ret_tokens.begin; rets_iterator != NULL; rets_iterator = rets_iterator->next)
 			{
 				mirac_debug_assert(rets_iterator != NULL);
 				mirac_types_stack_push(&checker->stack, rets_iterator->data.type);
 			}
-		} break;
-
-		case mirac_ast_def_type_mem:
-		{
-			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
-		} break;
-
-		case mirac_ast_def_type_str:
-		{
-			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
 		} break;
 
 		default:
@@ -1095,6 +1119,7 @@ static void type_check_ast_block(
 	switch (block->type)
 	{
 		case mirac_ast_block_type_expr:  { type_check_ast_block_expr(checker, &block->as.expr_block);   } break;
+		case mirac_ast_block_type_ident: { type_check_ast_block_ident(checker, &block->as.ident_block); } break;
 		case mirac_ast_block_type_call:  { type_check_ast_block_call(checker, &block->as.call_block);   } break;
 		case mirac_ast_block_type_as:    { type_check_ast_block_as(checker, &block->as.as_block);       } break;
 		case mirac_ast_block_type_scope: { type_check_ast_block_scope(checker, &block->as.scope_block); } break;
