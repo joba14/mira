@@ -487,26 +487,26 @@ static bool is_token_valid_expr_block_token_by_type(
 	const mirac_token_type_e type)
 {
 	return (
-		(mirac_token_type_reserved_i08               != type ) &&
-		(mirac_token_type_reserved_i16               != type ) &&
-		(mirac_token_type_reserved_i32               != type ) &&
-		(mirac_token_type_reserved_i64               != type ) &&
-		(mirac_token_type_reserved_u08               != type ) &&
-		(mirac_token_type_reserved_u16               != type ) &&
-		(mirac_token_type_reserved_u32               != type ) &&
-		(mirac_token_type_reserved_u64               != type ) &&
-		(mirac_token_type_reserved_ptr               != type ) &&
-		(mirac_token_type_reserved_sec               != type ) &&
-		(mirac_token_type_reserved_str               != type ) &&
-		(mirac_token_type_reserved_mem               != type ) &&
-		(mirac_token_type_reserved_func              != type ) &&
-		(mirac_token_type_reserved_if                != type ) &&
-		(mirac_token_type_reserved_else              != type ) &&
-		(mirac_token_type_reserved_loop              != type ) &&
-		(mirac_token_type_reserved_req               != type ) &&
-		(mirac_token_type_reserved_ret               != type ) &&
-		(mirac_token_type_reserved_call              != type ) &&
-		(mirac_token_type_reserved_as                != type ) &&
+		(mirac_token_type_reserved_i08               != type) &&
+		(mirac_token_type_reserved_i16               != type) &&
+		(mirac_token_type_reserved_i32               != type) &&
+		(mirac_token_type_reserved_i64               != type) &&
+		(mirac_token_type_reserved_u08               != type) &&
+		(mirac_token_type_reserved_u16               != type) &&
+		(mirac_token_type_reserved_u32               != type) &&
+		(mirac_token_type_reserved_u64               != type) &&
+		(mirac_token_type_reserved_ptr               != type) &&
+		(mirac_token_type_reserved_sec               != type) &&
+		(mirac_token_type_reserved_str               != type) &&
+		(mirac_token_type_reserved_mem               != type) &&
+		(mirac_token_type_reserved_func              != type) &&
+		(mirac_token_type_reserved_if                != type) &&
+		(mirac_token_type_reserved_else              != type) &&
+		(mirac_token_type_reserved_loop              != type) &&
+		(mirac_token_type_reserved_req               != type) &&
+		(mirac_token_type_reserved_ret               != type) &&
+		(mirac_token_type_reserved_call              != type) &&
+		(mirac_token_type_reserved_as                != type) &&
 		(mirac_token_type_reserved_left_parenthesis  != type) &&
 		(mirac_token_type_reserved_right_parenthesis != type) &&
 		(mirac_token_type_reserved_left_bracket      != type) &&
