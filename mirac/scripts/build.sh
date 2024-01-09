@@ -22,11 +22,12 @@ SOURCES="
 	$PROJECT_DIR/source/mirac/config.c
 	$PROJECT_DIR/source/mirac/lexer.c
 	$PROJECT_DIR/source/mirac/parser.c
-	$PROJECT_DIR/source/mirac/checker.c
 	$PROJECT_DIR/source/mirac/compiler.c
 	$PROJECT_DIR/source/mirac/archs/nasm_x86_64_linux.c
 	$PROJECT_DIR/source/main.c
 "
+
+# $PROJECT_DIR/source/mirac/checker.c
 
 LIBRARIES="
 "

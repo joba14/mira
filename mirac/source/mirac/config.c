@@ -33,7 +33,7 @@ static const char* const g_usage_banner =
 	"    -v, --version              print version and exit\n"
 	"    -a, --arch <target>        set the architecture for the output\n"
 	"    -e, --entry <symbol>       set the entry symbol\n"
-	"    -u, --unsafe               disable checker\n"
+	"    -u, --unsafe               disable checker (not added yet)\n"
 	"    -s, --strip                strip unused code in the output\n"
 	"\n"
 	"notice:\n"
