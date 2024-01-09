@@ -544,7 +544,11 @@ static void type_check_ast_block_expr(
 		case mirac_token_type_reserved_inc:
 		{
 			expect_amount_of_arguments(&checker->stack, &expr_block->token, 1);
-			checker->stack.count--;
+
+			mirac_token_type_e  a = mirac_token_type_none;
+			(void)mirac_types_stack_pop(&checker->stack, &a);
+			mirac_debug_assert(a != mirac_token_type_none);
+
 			mirac_types_stack_push(&checker->stack, checker->stack.data[checker->stack.count - 1]);
 		} break;
 
@@ -575,7 +579,11 @@ static void type_check_ast_block_expr(
 		case mirac_token_type_reserved_dec:
 		{
 			expect_amount_of_arguments(&checker->stack, &expr_block->token, 1);
-			checker->stack.count--;
+
+			mirac_token_type_e  a = mirac_token_type_none;
+			(void)mirac_types_stack_pop(&checker->stack, &a);
+			mirac_debug_assert(a != mirac_token_type_none);
+
 			mirac_types_stack_push(&checker->stack, checker->stack.data[checker->stack.count - 1]);
 		} break;
 
@@ -1095,11 +1103,6 @@ static void type_check_ast_block_expr(
 		} break;
 
 		case mirac_token_type_literal_ptr:
-		{
-			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
-		} break;
-
-		case mirac_token_type_identifier:
 		{
 			mirac_types_stack_push(&checker->stack, mirac_token_type_reserved_ptr);
 		} break;
