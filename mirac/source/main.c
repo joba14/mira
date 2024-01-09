@@ -18,6 +18,7 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
+#include <mirac/checker.h>
 #include <mirac/compiler.h>
 
 #include <sys/stat.h>
@@ -91,6 +92,16 @@ int32_t main(
 			mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path, source_file);
 			mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
 			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
+
+			// TODO: Remove:
+			// mirac_ast_unit_print(&unit, 0);
+
+			if (!config.unsafe)
+			{
+				// TODO: Implement the checker!
+				mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
+				mirac_checker_type_check_ast_unit(&checker);
+			}
 
 			mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit, output_file);
 			mirac_compiler_compile_ast_unit(&compiler);
