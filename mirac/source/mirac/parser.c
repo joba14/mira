@@ -497,6 +497,7 @@ static bool is_token_valid_expr_block_token_by_type(
 		(mirac_token_type_reserved_u64               != type) &&
 		(mirac_token_type_reserved_ptr               != type) &&
 		(mirac_token_type_reserved_sec               != type) &&
+		(mirac_token_type_reserved_glob              != type) &&
 		(mirac_token_type_reserved_str               != type) &&
 		(mirac_token_type_reserved_mem               != type) &&
 		(mirac_token_type_reserved_func              != type) &&
@@ -1155,15 +1156,25 @@ static mirac_ast_def_s* parse_ast_def(
 	if (token.type != mirac_token_type_identifier)
 	{
 		log_parser_error_and_exit(token.location,
-			"expected 'str literal' token after 'sec' token, but found '" mirac_sv_fmt "' token.",
+			"expected 'identifier' token after 'sec' token, but found '" mirac_sv_fmt "' token.",
 			mirac_sv_arg(token.text)
 		);
 	}
 
 	def->section = token;
-	def->is_used = false;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	if (mirac_lexer_should_stop_lexing(token.type))
+	{ goto parse_def_by_token; }
+
+	if (mirac_token_type_reserved_glob == token.type)
+	{
+		def->is_global = true;
+
+		(void)mirac_lexer_lex_next(parser->lexer, &token);
+		if (mirac_lexer_should_stop_lexing(token.type))
+		{ goto parse_def_by_token; }
+	}
 
 parse_def_by_token:
 	switch (token.type)
@@ -1527,6 +1538,9 @@ static void print_ast_def(
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("type: '" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_def_type_to_string_view(def->type)));
+
+	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
+	printf("is_global: %s\n", def->is_global ? "yes" : "no");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("is_used: %s\n", def->is_used ? "yes" : "no");

@@ -100,6 +100,7 @@ typedef enum
 	mirac_token_type_reserved_ptr,
 
 	mirac_token_type_reserved_sec,
+	mirac_token_type_reserved_glob,
 	mirac_token_type_reserved_str,
 	mirac_token_type_reserved_mem,
 	mirac_token_type_reserved_func,

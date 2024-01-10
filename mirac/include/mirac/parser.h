@@ -183,6 +183,7 @@ struct mirac_ast_def_s
 {
 	mirac_token_s section;
 	mirac_ast_def_type_e type;
+	bool is_global;
 	bool is_used;
 
 	union
