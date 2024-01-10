@@ -15,7 +15,7 @@ sec .text func test req u64 u64 i64 ret u64 u64 {
 	as u64 + + dup
 }
 
-sec .text glob func _start {
+sec .text func _start {
 	10 10 10 call test drop drop
 
 	14 msg call stdout call write

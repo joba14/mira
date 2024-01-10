@@ -497,7 +497,6 @@ static bool is_token_valid_expr_block_token_by_type(
 		(mirac_token_type_reserved_u64               != type) &&
 		(mirac_token_type_reserved_ptr               != type) &&
 		(mirac_token_type_reserved_sec               != type) &&
-		(mirac_token_type_reserved_glob              != type) &&
 		(mirac_token_type_reserved_str               != type) &&
 		(mirac_token_type_reserved_mem               != type) &&
 		(mirac_token_type_reserved_func              != type) &&
@@ -1164,17 +1163,6 @@ static mirac_ast_def_s* parse_ast_def(
 	def->section = token;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
-	if (mirac_lexer_should_stop_lexing(token.type))
-	{ goto parse_def_by_token; }
-
-	if (mirac_token_type_reserved_glob == token.type)
-	{
-		def->is_global = true;
-
-		(void)mirac_lexer_lex_next(parser->lexer, &token);
-		if (mirac_lexer_should_stop_lexing(token.type))
-		{ goto parse_def_by_token; }
-	}
 
 parse_def_by_token:
 	switch (token.type)
