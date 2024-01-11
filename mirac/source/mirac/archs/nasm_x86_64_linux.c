@@ -17,67 +17,80 @@
 
 #include <stdio.h>
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_expr_s* const expr_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_ident_s* const ident_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_call_s* const call_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_as(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_as_s* const as_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_scope_s* const scope_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_if_s* const if_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_else_s* const else_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_loop_s* const loop_block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_block(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_func_s* const func_def);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_def_mem(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_mem_s* const mem_def);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_def_str(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_str_s* const str_def);
 
-// TODO: Document!
+// TODO: write unit tests!
+// TODO: document!
 static void nasm_x86_64_linux_compile_ast_def(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
