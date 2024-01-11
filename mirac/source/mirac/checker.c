@@ -28,72 +28,86 @@ mirac_implement_heap_array_type(mirac_types_stack, mirac_token_type_e);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void expect_amount_of_arguments(
 	mirac_types_stack_s* const stack,
 	const mirac_token_s* const token,
 	const uint64_t amount);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_expr(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_expr_s* const expr_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_ident(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_ident_s* const ident_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_call(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_call_s* const call_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_as(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_as_s* const as_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_scope(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_scope_s* const scope_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_if(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_if_s* const if_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_else(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_else_s* const else_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block_loop(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_loop_s* const loop_block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_block(
 	mirac_checker_s* const checker,
 	const mirac_ast_block_s* const block);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_def_func(
 	mirac_checker_s* const checker,
 	const mirac_ast_def_func_s* const func_def);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_def_mem(
 	mirac_checker_s* const checker,
 	const mirac_ast_def_mem_s* const mem_def);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_def_str(
 	mirac_checker_s* const checker,
 	const mirac_ast_def_str_s* const str_def);
 
+// TODO: Write unit tests!
 // TODO: Document!
 static void type_check_ast_def(
 	mirac_checker_s* const checker,
