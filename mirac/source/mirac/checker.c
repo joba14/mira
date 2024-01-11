@@ -765,7 +765,7 @@ static void type_check_ast_block_expr(
 				log_checker_error_and_exit(expr_block->token.location,
 					"expected 'i08' or 'u08' type to be the second in the stack for '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' type.",
 					mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type)),
-					mirac_sv_arg(mirac_token_type_to_string_view(a))
+					mirac_sv_arg(mirac_token_type_to_string_view(b))
 				);
 			}
 		} break;
@@ -796,7 +796,7 @@ static void type_check_ast_block_expr(
 				log_checker_error_and_exit(expr_block->token.location,
 					"expected 'i16' or 'u16' type to be the second in the stack for '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' type.",
 					mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type)),
-					mirac_sv_arg(mirac_token_type_to_string_view(a))
+					mirac_sv_arg(mirac_token_type_to_string_view(b))
 				);
 			}
 		} break;
@@ -827,7 +827,7 @@ static void type_check_ast_block_expr(
 				log_checker_error_and_exit(expr_block->token.location,
 					"expected 'i32', 'u32', or'f32' type to be the second in the stack for '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' type.",
 					mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type)),
-					mirac_sv_arg(mirac_token_type_to_string_view(a))
+					mirac_sv_arg(mirac_token_type_to_string_view(b))
 				);
 			}
 		} break;
@@ -858,7 +858,7 @@ static void type_check_ast_block_expr(
 				log_checker_error_and_exit(expr_block->token.location,
 					"expected 'i64', 'u64', or'f64' type to be the second in the stack for '" mirac_sv_fmt "' token, but found '" mirac_sv_fmt "' type.",
 					mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type)),
-					mirac_sv_arg(mirac_token_type_to_string_view(a))
+					mirac_sv_arg(mirac_token_type_to_string_view(b))
 				);
 			}
 		} break;

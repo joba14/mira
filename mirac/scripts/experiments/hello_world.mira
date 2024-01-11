@@ -9,13 +9,15 @@ sec .text func write req u64 ptr i32 {
 	1 sys3 drop
 }
 
-sec .rodata str msg "hello, world!\n\0"
+sec .data str msg "hello, world!\n\0"
 
 sec .text func test req u64 u64 i64 ret u64 u64 {
 	as u64 + + dup
 }
 
 sec .text func _start {
+	msg msg st08
+
 	10 10 10 call test drop drop
 
 	14 msg call stdout call write
