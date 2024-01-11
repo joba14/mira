@@ -764,6 +764,11 @@ static void type_check_ast_block_expr(
 			mirac_debug_assert(a != mirac_token_type_none);
 			mirac_debug_assert(b != mirac_token_type_none);
 
+			// TODO: remove:
+			mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_type_to_string_view(a)));
+			mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_type_to_string_view(b)));
+			getchar();
+
 			if (a != mirac_token_type_reserved_ptr)
 			{
 				log_checker_error_and_exit(expr_block->token.location,
@@ -1140,6 +1145,11 @@ static void type_check_ast_block_ident(
 
 	mirac_debug_assert(ident_block != NULL);
 
+	// TODO: remove:
+	mirac_logger_debug("def->type='" mirac_sv_fmt "'",
+		mirac_sv_arg(mirac_ast_def_type_to_string_view(ident_block->def->type))
+	);
+
 	switch (ident_block->def->type)
 	{
 		case mirac_ast_def_type_func:
@@ -1348,7 +1358,6 @@ static void type_check_ast_def_func(
 	mirac_debug_assert(checker->unit != NULL);
 
 	mirac_debug_assert(func_def != NULL);
-
 	checker->stack.count = 0;
 
 	for (mirac_token_list_node_s* reqs_iterator = func_def->req_tokens.begin; reqs_iterator != NULL; reqs_iterator = reqs_iterator->next)
