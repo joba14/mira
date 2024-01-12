@@ -22,11 +22,9 @@ mirac_implement_linked_list_type(mirac_ast_def_list, mirac_ast_def_s*);
 #define log_parser_error_and_exit(_location, _format, ...)                     \
 	do                                                                         \
 	{                                                                          \
-		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                       \
-			mirac_sv_arg((_location).file),                                    \
-			(_location).line,                                                  \
-			(_location).column);                                               \
-		mirac_logger_error(_format, ## __VA_ARGS__);                           \
+		mirac_logger_error(mirac_sv_fmt ":%lu:%lu: " _format,                  \
+			mirac_sv_arg((_location).file), (_location).line,                  \
+			(_location).column, ## __VA_ARGS__);                               \
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 

@@ -20,11 +20,9 @@ mirac_implement_heap_array_type(mirac_types_stack, mirac_token_type_e);
 #define log_checker_error_and_exit(_location, _format, ...)                    \
 	do                                                                         \
 	{                                                                          \
-		(void)fprintf(stderr, mirac_sv_fmt ":%lu:%lu: ",                       \
-			mirac_sv_arg((_location).file),                                    \
-			(_location).line,                                                  \
-			(_location).column);                                               \
-		mirac_logger_error(_format, ## __VA_ARGS__);                           \
+		mirac_logger_error(mirac_sv_fmt ":%lu:%lu: " _format,                  \
+			mirac_sv_arg((_location).file), (_location).line,                  \
+			(_location).column, ## __VA_ARGS__);                               \
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
@@ -537,8 +535,10 @@ static void type_check_ast_block_expr(
 
 			mirac_token_type_e  a = mirac_token_type_none,
 								b = mirac_token_type_none;
-			(void)mirac_types_stack_pop(&checker->stack, &a);
-			(void)mirac_types_stack_pop(&checker->stack, &b);
+			const bool a_st = mirac_types_stack_pop(&checker->stack, &a);
+			const bool b_st = mirac_types_stack_pop(&checker->stack, &b);
+			mirac_debug_assert(a_st);
+			mirac_debug_assert(b_st);
 			mirac_debug_assert(a != mirac_token_type_none);
 			mirac_debug_assert(b != mirac_token_type_none);
 
@@ -763,12 +763,7 @@ static void type_check_ast_block_expr(
 			(void)mirac_types_stack_pop(&checker->stack, &b);
 			mirac_debug_assert(a != mirac_token_type_none);
 			mirac_debug_assert(b != mirac_token_type_none);
-
-			// TODO: remove:
-			mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_type_to_string_view(a)));
-			mirac_logger_debug(mirac_sv_fmt, mirac_sv_arg(mirac_token_type_to_string_view(b)));
-			getchar();
-
+			
 			if (a != mirac_token_type_reserved_ptr)
 			{
 				log_checker_error_and_exit(expr_block->token.location,
@@ -1144,11 +1139,6 @@ static void type_check_ast_block_ident(
 	mirac_debug_assert(checker->unit != NULL);
 
 	mirac_debug_assert(ident_block != NULL);
-
-	// TODO: remove:
-	mirac_logger_debug("def->type='" mirac_sv_fmt "'",
-		mirac_sv_arg(mirac_ast_def_type_to_string_view(ident_block->def->type))
-	);
 
 	switch (ident_block->def->type)
 	{
