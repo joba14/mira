@@ -120,8 +120,8 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 
 struct mirac_ast_block_s
 {
-	mirac_ast_block_type_e type;
 	mirac_location_s location;
+	mirac_ast_block_type_e type;
 
 	union
 	{
@@ -181,6 +181,7 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 
 struct mirac_ast_def_s
 {
+	mirac_location_s location;
 	mirac_token_s section;
 	mirac_ast_def_type_e type;
 	bool is_global;

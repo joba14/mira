@@ -26,7 +26,7 @@ static mirac_string_view_s g_supported_architectures[mirac_config_arch_types_cou
 };
 
 static const char* const g_usage_banner =
-	"usage: " mirac_sv_fmt " [options] <in+out files...>\n"
+	"usage: " mirac_sv_fmt " [options] <src+out files...>\n"
 	"\n"
 	"options:\n"
 	"    -h, --help                 print the help message\n"
