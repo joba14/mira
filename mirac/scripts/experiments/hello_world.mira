@@ -1,27 +1,18 @@
 
-; sec .text func exit req i32 {
-; 	60 sys1 drop
-; }
-; 
-; sec .text func stdout ret i32 { 1 }
-; 
-; sec .text func write req u64 ptr i32 {
-; 	1 sys3 drop
-; }
+sec .text func exit req i32 {
+	60 sys1 drop
+}
 
-sec .data str msg "hello, world!\n\0"
+sec .text func stdout ret i32 { 1 }
 
-; sec .text func test req u64 u64 i64 ret u64 u64 {
-; 	as u64 + + dup
-; }
+sec .text func write req u64 ptr i32 {
+	1 sys3 drop
+}
+
+sec .rodata str msg "hello, world!\n\0"
 
 sec .text func _start {
-	1 1 +
-	; msg 53 st08
-
-	; 10 10 10 call test drop drop
-
-	; 14 msg call stdout call write
-	; 14 msg stdout write drop drop drop drop
-	; 0 call exit
+	10 as u08 drop
+	14 msg call stdout call write
+	0 call exit
 }
