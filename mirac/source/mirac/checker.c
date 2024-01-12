@@ -542,6 +542,7 @@ static void type_check_ast_block_expr(
 			mirac_debug_assert(a != mirac_token_type_none);
 			mirac_debug_assert(b != mirac_token_type_none);
 
+			/*
 			if (a != b)
 			{
 				log_checker_error_and_exit(expr_block->token.location,
@@ -551,6 +552,7 @@ static void type_check_ast_block_expr(
 					mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type))
 				);
 			}
+			*/
 
 			mirac_types_stack_push(&checker->stack, a);
 		} break;
@@ -612,6 +614,7 @@ static void type_check_ast_block_expr(
 			mirac_debug_assert(a != mirac_token_type_none);
 			mirac_debug_assert(b != mirac_token_type_none);
 
+			/*
 			if (a != b)
 			{
 				log_checker_error_and_exit(expr_block->token.location,
@@ -621,6 +624,7 @@ static void type_check_ast_block_expr(
 					mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type))
 				);
 			}
+			*/
 
 			mirac_types_stack_push(&checker->stack, a);
 		} break;
@@ -1074,6 +1078,7 @@ static void type_check_ast_block_expr(
 			mirac_debug_assert(b != mirac_token_type_none);
 
 			mirac_types_stack_push(&checker->stack, a);
+			mirac_types_stack_push(&checker->stack, b);
 		} break;
 
 		case mirac_token_type_literal_i08:
@@ -1270,6 +1275,11 @@ static void type_check_ast_block_if(
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->body->type);
 
 	type_check_ast_block(checker, if_block->cond);
+
+	mirac_token_type_e a = mirac_token_type_none;
+	const bool status = mirac_types_stack_pop(&checker->stack, &a);
+	mirac_debug_assert(status);
+
 	type_check_ast_block(checker, if_block->body);
 }
 
@@ -1305,6 +1315,11 @@ static void type_check_ast_block_loop(
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->body->type);
 
 	type_check_ast_block(checker, loop_block->cond);
+
+	mirac_token_type_e a = mirac_token_type_none;
+	const bool status = mirac_types_stack_pop(&checker->stack, &a);
+	mirac_debug_assert(status);
+
 	type_check_ast_block(checker, loop_block->body);
 }
 

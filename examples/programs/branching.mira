@@ -1,13 +1,14 @@
 
-sec .data str msg1 "hello, world!\n"
-sec .data str msg2 "hello, linux!\n"
-sec .data str msg3 "hello, posix!\n"
+sec .rodata str msg1 "hello, world!\n"
+sec .rodata str msg2 "hello, linux!\n"
 
 sec .text func _start {
 	if [ 0 ] {
 		14 msg1 1 1 sys3 drop
 	}
 	else {
-		14 msg3 1 1 sys3 drop
+		14 msg2 1 1 sys3 drop
 	}
+
+	0 60 sys1 drop
 }

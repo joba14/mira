@@ -1,2 +1,5 @@
 
+*.mira_processed
 *.asm
+*.o
+*.out

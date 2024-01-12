@@ -1,4 +1,5 @@
 
 sec .text func _start {
 	; todo: implement the rule 110!
+	0 60 sys1 drop
 }

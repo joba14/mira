@@ -1,6 +1,8 @@
 
+#define EXIT_SYSCALL_ID 60
+
 sec .text func exit req i32 {
-	60 sys1 drop
+	EXIT_SYSCALL_ID sys1 drop
 }
 
 sec .text func stdout ret i32 { 1 }
