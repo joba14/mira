@@ -12,7 +12,6 @@ sec .text func write req u64 ptr i32 {
 sec .rodata str msg "hello, world!\n\0"
 
 sec .text func _start {
-	10 as u08 drop
 	14 msg call stdout call write
 	0 call exit
 }

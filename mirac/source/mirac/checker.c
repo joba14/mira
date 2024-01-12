@@ -154,7 +154,7 @@ static void expect_amount_of_arguments(
 	if (stack->count < amount)
 	{
 		log_checker_error_and_exit(token->location,
-			"token '" mirac_sv_fmt "' requires %lu argument to be on the stack, but found %lu.",
+			"token '" mirac_sv_fmt "' requires %lu argument(s) to be on the stack, but found %lu argument(s).",
 			mirac_sv_arg(mirac_token_type_to_string_view(token->type)), amount, stack->count
 		);
 	}
