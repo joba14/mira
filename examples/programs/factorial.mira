@@ -1,0 +1,24 @@
+
+#include "./stdio.mira"
+
+sec .rodata str nl "\n"
+
+sec .text func factorial req u64 ret u64 {
+	if [ dup 0 <= ] {
+		0
+	}
+	else {
+		1 swap loop [ dup 0 > ] {
+			swap over * swap --
+		} drop
+	}
+}
+
+sec .text func _start {
+	0 loop [ dup 10 < ] {
+		dup as u64 call factorial stdout call fputu 1 nl stdout call fputs
+		++
+	} drop
+
+	60 sys1 drop
+}
