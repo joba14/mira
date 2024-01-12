@@ -106,7 +106,7 @@
 			return false;                                                      \
 		}                                                                      \
 		                                                                       \
-		*element = heap_array->data[heap_array->count--];                      \
+		*element = heap_array->data[--heap_array->count];                      \
 		return true;                                                           \
 	}                                                                          \
 	                                                                           \
