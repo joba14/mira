@@ -234,16 +234,21 @@ void mirac_ast_unit_print(
 
 typedef struct
 {
+	uint64_t if_count;
+	uint64_t elif_count;
+	uint64_t else_count;
+	uint64_t loop_count;
+	uint64_t func_count;
+	uint64_t mem_count;
+	uint64_t str_count;
+} mirac_ast_statistics_s;
+
+typedef struct
+{
 	mirac_config_s* config;
 	mirac_arena_s* arena;
 	mirac_lexer_s* lexer;
-	uint64_t if_count;   //   _______ // TODO: Move to some sort of statistics struct!
-	uint64_t elif_count; // _//////
-	uint64_t else_count; // _/////
-	uint64_t loop_count; // _////
-	uint64_t func_count; // _///
-	uint64_t mem_count;  // _//
-	uint64_t str_count;  // _/
+	mirac_ast_statistics_s stats;
 	mirac_ast_unit_s unit;
 } mirac_parser_s;
 

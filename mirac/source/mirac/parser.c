@@ -845,7 +845,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 
 	if_block.body = block;
 
-	if_block.index = parser->if_count++;
+	if_block.index = parser->stats.if_count++;
 	return if_block;
 }
 
@@ -875,7 +875,7 @@ static mirac_ast_block_else_s parse_ast_block_else(
 
 	else_block.body = block;
 
-	else_block.index = parser->else_count++;
+	else_block.index = parser->stats.else_count++;
 	return else_block;
 }
 
@@ -916,7 +916,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 
 	loop_block.body = block;
 
-	loop_block.index = parser->loop_count++;
+	loop_block.index = parser->stats.loop_count++;
 	return loop_block;
 }
 
@@ -1082,7 +1082,7 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	}
 
 	func_def.body = block;
-	func_def.index = parser->func_count++;
+	func_def.index = parser->stats.func_count++;
 	return func_def;
 }
 
@@ -1125,7 +1125,7 @@ static mirac_ast_def_mem_s parse_ast_def_mem(
 	}
 
 	mem_def.capacity = token;
-	mem_def.index = parser->mem_count++;
+	mem_def.index = parser->stats.mem_count++;
 	return mem_def;
 }
 
@@ -1159,7 +1159,7 @@ static mirac_ast_def_str_s parse_ast_def_str(
 	}
 
 	str_def.literal = token;
-	str_def.index = parser->str_count++;
+	str_def.index = parser->stats.str_count++;
 	return str_def;
 }
 
