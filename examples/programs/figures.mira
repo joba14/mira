@@ -1,0 +1,85 @@
+
+; ------------------------------------------------------------------
+; the program below prints out to figures: a square and a triangle.
+; ---
+; ##########
+; ##########
+; ##########
+; ##########
+; ##########
+; ##########
+; ##########
+; ##########
+; ##########
+; ##########
+; 
+; #
+; ##
+; ###
+; ####
+; #####
+; ######
+; #######
+; ########
+; #########
+; ##########
+; 
+; ------------------------------------------------------------------
+
+; constants
+#define width 11
+#define height 10
+#define N 110
+
+; nl - new line string
+sec .rodata str nl "\n"
+; nl - array for the grid
+sec .bss mem grid N
+
+; --- 
+; print a square on a 10x10 grid.
+; --- 
+sec .text func print-square {
+	0 loop [ dup height < ] {
+		0 loop [ dup width 1 - < ] {
+			swap over over
+			width * + grid + 35
+			as u08 swap st08
+			swap ++
+		} drop
+
+		dup 1 + width * 1 - grid + 10 as u08 swap st08 ++
+	} drop
+
+	N grid 1 1 sys3 drop
+	1 nl 1 1 sys3 drop
+}
+
+; --- 
+; print a trianle on a 10x10 grid.
+; --- 
+sec .text func print-triangle {
+	0 loop [ dup height < ] {
+		0 loop [ dup width 1 - < ] {
+			swap over over
+			if [ over over <= ] { width * + grid + 35 }
+			else                { width * + grid + 32 }
+			as u08 swap st08
+			swap ++
+		} drop
+
+		dup 1 + width * 1 - grid + 10 as u08 swap st08 ++
+	} drop
+
+	N grid 1 1 sys3 drop
+	1 nl 1 1 sys3 drop
+}
+
+; --- 
+; entry.
+; --- 
+sec .text func _start {
+	call print-square
+	call print-triangle
+	0 60 sys1 drop
+}
