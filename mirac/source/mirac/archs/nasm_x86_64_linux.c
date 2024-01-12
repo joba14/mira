@@ -21,49 +21,49 @@
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_expr_s* const expr_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_ident_s* const ident_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_call_s* const call_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_as(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_as_s* const as_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_scope_s* const scope_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_if_s* const if_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_else_s* const else_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_loop_s* const loop_block);
+	const mirac_ast_block_s* const block);
 
 // TODO: Write unit tests!
 // TODO: Document!
@@ -75,19 +75,19 @@ static void nasm_x86_64_linux_compile_ast_block(
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_def_func_s* const func_def);
+	const mirac_ast_def_s* const def);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def_mem(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_def_mem_s* const mem_def);
+	const mirac_ast_def_s* const def);
 
 // TODO: Write unit tests!
 // TODO: Document!
 static void nasm_x86_64_linux_compile_ast_def_str(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_def_str_s* const str_def);
+	const mirac_ast_def_s* const def);
 
 // TODO: Write unit tests!
 // TODO: Document!
@@ -128,7 +128,7 @@ void nasm_x86_64_linux_compile_ast_unit(
 
 static void nasm_x86_64_linux_compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_expr_s* const expr_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -136,6 +136,10 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_expr == block->type);
+
+	const mirac_ast_block_expr_s* const expr_block = &block->as.expr_block;
 	mirac_debug_assert(expr_block != NULL);
 
 	(void)fprintf(compiler->file, "\t;; --- " mirac_sv_fmt " (id: %lu) --- \n",
@@ -573,7 +577,7 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 
 static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_ident_s* const ident_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -581,6 +585,10 @@ static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_ident == block->type);
+
+	const mirac_ast_block_ident_s* const ident_block = &block->as.ident_block;
 	mirac_debug_assert(ident_block != NULL);
 	mirac_debug_assert(ident_block->def != NULL);
 
@@ -614,7 +622,7 @@ static void nasm_x86_64_linux_compile_ast_block_ident(
 
 static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_call_s* const call_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -622,8 +630,13 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_call == block->type);
+
+	const mirac_ast_block_call_s* const call_block = &block->as.call_block;
 	mirac_debug_assert(call_block != NULL);
 	mirac_debug_assert(call_block->ident != NULL);
+	mirac_debug_assert(mirac_ast_block_type_ident == call_block->ident->type);
 
 	const mirac_ast_block_ident_s* const ident_block = &call_block->ident->as.ident_block;
 	mirac_debug_assert(ident_block != NULL);
@@ -651,7 +664,7 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 
 static void nasm_x86_64_linux_compile_ast_block_as(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_as_s* const as_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -659,12 +672,13 @@ static void nasm_x86_64_linux_compile_ast_block_as(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
-	mirac_debug_assert(as_block != NULL);
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_as == block->type);
 }
 
 static void nasm_x86_64_linux_compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_scope_s* const scope_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -672,6 +686,10 @@ static void nasm_x86_64_linux_compile_ast_block_scope(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == block->type);
+
+	const mirac_ast_block_scope_s* const scope_block = &block->as.scope_block;
 	mirac_debug_assert(scope_block != NULL);
 
 	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block->blocks.begin; blocks_iterator != NULL; blocks_iterator = blocks_iterator->next)
@@ -684,7 +702,7 @@ static void nasm_x86_64_linux_compile_ast_block_scope(
 
 static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_if_s* const if_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -692,6 +710,10 @@ static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_if == block->type);
+
+	const mirac_ast_block_if_s* const if_block = &block->as.if_block;
 	mirac_debug_assert(if_block != NULL);
 	mirac_debug_assert(if_block->cond != NULL);
 	mirac_debug_assert(if_block->body != NULL);
@@ -735,7 +757,7 @@ static void nasm_x86_64_linux_compile_ast_block_if(
 
 static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_else_s* const else_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -743,6 +765,10 @@ static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_else == block->type);
+
+	const mirac_ast_block_else_s* const else_block = &block->as.else_block;
 	mirac_debug_assert(else_block != NULL);
 	mirac_debug_assert(else_block->body != NULL);
 	mirac_debug_assert(mirac_ast_block_type_scope == else_block->body->type);
@@ -756,7 +782,7 @@ static void nasm_x86_64_linux_compile_ast_block_else(
 
 static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_block_loop_s* const loop_block)
+	const mirac_ast_block_s* const block)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -764,6 +790,10 @@ static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_loop == block->type);
+
+	const mirac_ast_block_loop_s* const loop_block = &block->as.loop_block;
 	mirac_debug_assert(loop_block != NULL);
 	mirac_debug_assert(loop_block->cond != NULL);
 	mirac_debug_assert(loop_block->body != NULL);
@@ -800,14 +830,14 @@ static void nasm_x86_64_linux_compile_ast_block(
 
 	switch (block->type)
 	{
-		case mirac_ast_block_type_expr:  { nasm_x86_64_linux_compile_ast_block_expr(compiler, &block->as.expr_block);   } break;
-		case mirac_ast_block_type_ident: { nasm_x86_64_linux_compile_ast_block_ident(compiler, &block->as.ident_block); } break;
-		case mirac_ast_block_type_call:  { nasm_x86_64_linux_compile_ast_block_call(compiler, &block->as.call_block);   } break;
-		case mirac_ast_block_type_as:    { nasm_x86_64_linux_compile_ast_block_as(compiler, &block->as.as_block);       } break;
-		case mirac_ast_block_type_scope: { nasm_x86_64_linux_compile_ast_block_scope(compiler, &block->as.scope_block); } break;
-		case mirac_ast_block_type_if:    { nasm_x86_64_linux_compile_ast_block_if(compiler, &block->as.if_block);       } break;
-		case mirac_ast_block_type_else:  { nasm_x86_64_linux_compile_ast_block_else(compiler, &block->as.else_block);   } break;
-		case mirac_ast_block_type_loop:  { nasm_x86_64_linux_compile_ast_block_loop(compiler, &block->as.loop_block);   } break;
+		case mirac_ast_block_type_expr:  { nasm_x86_64_linux_compile_ast_block_expr(compiler, block);  } break;
+		case mirac_ast_block_type_ident: { nasm_x86_64_linux_compile_ast_block_ident(compiler, block); } break;
+		case mirac_ast_block_type_call:  { nasm_x86_64_linux_compile_ast_block_call(compiler, block);  } break;
+		case mirac_ast_block_type_as:    { nasm_x86_64_linux_compile_ast_block_as(compiler, block);    } break;
+		case mirac_ast_block_type_scope: { nasm_x86_64_linux_compile_ast_block_scope(compiler, block); } break;
+		case mirac_ast_block_type_if:    { nasm_x86_64_linux_compile_ast_block_if(compiler, block);    } break;
+		case mirac_ast_block_type_else:  { nasm_x86_64_linux_compile_ast_block_else(compiler, block);  } break;
+		case mirac_ast_block_type_loop:  { nasm_x86_64_linux_compile_ast_block_loop(compiler, block);  } break;
 
 		default:
 		{
@@ -818,7 +848,7 @@ static void nasm_x86_64_linux_compile_ast_block(
 
 static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_def_func_s* const func_def)
+	const mirac_ast_def_s* const def)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -826,7 +856,13 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(mirac_ast_def_type_func == def->type);
+
+	const mirac_ast_def_func_s* const func_def = &def->as.func_def;
 	mirac_debug_assert(func_def != NULL);
+	mirac_debug_assert(func_def->body != NULL);
+	mirac_debug_assert(mirac_ast_block_type_scope == func_def->body->type);
 
 	if (func_def->is_entry)
 	{
@@ -859,7 +895,7 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 
 static void nasm_x86_64_linux_compile_ast_def_mem(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_def_mem_s* const mem_def)
+	const mirac_ast_def_s* const def)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -867,6 +903,10 @@ static void nasm_x86_64_linux_compile_ast_def_mem(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(mirac_ast_def_type_mem == def->type);
+
+	const mirac_ast_def_mem_s* const mem_def = &def->as.mem_def;
 	mirac_debug_assert(mem_def != NULL);
 
 	(void)fprintf(compiler->file, "\tmem_%lu resb %lu\n", mem_def->index, mem_def->capacity.as.uval);
@@ -874,7 +914,7 @@ static void nasm_x86_64_linux_compile_ast_def_mem(
 
 static void nasm_x86_64_linux_compile_ast_def_str(
 	mirac_compiler_s* const compiler,
-	const mirac_ast_def_str_s* const str_def)
+	const mirac_ast_def_s* const def)
 {
 	mirac_debug_assert(compiler != NULL);
 	mirac_debug_assert(compiler->config != NULL);
@@ -882,6 +922,10 @@ static void nasm_x86_64_linux_compile_ast_def_str(
 	mirac_debug_assert(compiler->unit != NULL);
 	mirac_debug_assert(compiler->file != NULL);
 
+	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(mirac_ast_def_type_str == def->type);
+
+	const mirac_ast_def_str_s* const str_def = &def->as.str_def;
 	mirac_debug_assert(str_def != NULL);
 
 	(void)fprintf(compiler->file, "\tstr_%lu db ", str_def->index);
@@ -916,9 +960,9 @@ static void nasm_x86_64_linux_compile_ast_def(
 
 	switch (def->type)
 	{
-		case mirac_ast_def_type_func: { nasm_x86_64_linux_compile_ast_def_func(compiler, &def->as.func_def); } break;
-		case mirac_ast_def_type_mem:  { nasm_x86_64_linux_compile_ast_def_mem(compiler, &def->as.mem_def);   } break;
-		case mirac_ast_def_type_str:  { nasm_x86_64_linux_compile_ast_def_str(compiler, &def->as.str_def);   } break;
+		case mirac_ast_def_type_func: { nasm_x86_64_linux_compile_ast_def_func(compiler, def); } break;
+		case mirac_ast_def_type_mem:  { nasm_x86_64_linux_compile_ast_def_mem(compiler, def);  } break;
+		case mirac_ast_def_type_str:  { nasm_x86_64_linux_compile_ast_def_str(compiler, def);  } break;
 
 		default:
 		{

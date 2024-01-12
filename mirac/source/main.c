@@ -18,7 +18,6 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 #include <mirac/parser.h>
-#include <mirac/checker.h>
 #include <mirac/compiler.h>
 
 #include <sys/stat.h>
@@ -210,8 +209,7 @@ static void process_source_file_into_output_file(
 
 	if (!config->unsafe)
 	{
-		mirac_checker_s checker = mirac_checker_from_parts(config, &arena, &unit);
-		mirac_checker_type_check_ast_unit(&checker);
+		// TODO: implement checker and use it here!
 	}
 
 	mirac_compiler_s compiler = mirac_compiler_from_parts(config, &arena, &unit, output_file);
