@@ -45,8 +45,12 @@ static FILE* validate_and_open_file_for_reading(
 static FILE* validate_and_open_file_for_writing(
 	const mirac_string_view_s file_path);
 
-mirac_define_linked_list_type(ints_list, int32_t);
-mirac_implement_linked_list_type(ints_list, int32_t);
+// TODO: Document!
+// TODO: Write unit tests!
+static void process_source_file_into_output_file(
+	const mirac_string_view_s source_file_path,
+	const mirac_string_view_s output_file_path,
+	mirac_config_s* const config);
 
 int32_t main(
 	const int32_t argc,
@@ -80,38 +84,7 @@ int32_t main(
 
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_file_pointer);
 		const mirac_string_view_s output_file_path = mirac_string_view_from_cstring(output_file_pointer);
-
-		FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
-		FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
-		mirac_debug_assert(source_file != NULL);
-		mirac_debug_assert(output_file != NULL);
-
-		mirac_arena_s arena = mirac_arena_from_parts();
-		const mirac_seconds_t start_time = mirac_timer_get_time_in_seconds();
-		{
-			mirac_lexer_s lexer = mirac_lexer_from_parts(&config, &arena, source_file_path, source_file);
-			mirac_parser_s parser = mirac_parser_from_parts(&config, &arena, &lexer);
-			mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
-
-			// TODO: Remove:
-			// mirac_ast_unit_print(&unit, 0);
-
-			if (!config.unsafe)
-			{
-				// TODO: Implement the checker!
-				mirac_checker_s checker = mirac_checker_from_parts(&config, &arena, &unit);
-				mirac_checker_type_check_ast_unit(&checker);
-			}
-
-			mirac_compiler_s compiler = mirac_compiler_from_parts(&config, &arena, &unit, output_file);
-			mirac_compiler_compile_ast_unit(&compiler);
-		}
-		const mirac_seconds_t elapsed_time = mirac_timer_get_elapsed_time_in_seconds(start_time);
-		mirac_logger_info("file '" mirac_sv_fmt "' was compiled in %.3Lf secs.", mirac_sv_arg(source_file_path), elapsed_time);
-
-		mirac_arena_destroy(&arena);
-		fclose(source_file);
-		fclose(output_file);
+		process_source_file_into_output_file(source_file_path, output_file_path, &config);
 	}
 
 	return 0;
@@ -213,4 +186,35 @@ static FILE* validate_and_open_file_for_writing(
 	}
 
 	return file;
+}
+
+static void process_source_file_into_output_file(
+	const mirac_string_view_s source_file_path,
+	const mirac_string_view_s output_file_path,
+	mirac_config_s* const config)
+{
+	mirac_debug_assert(config != NULL);
+
+	FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
+	FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
+	mirac_debug_assert(source_file != NULL);
+	mirac_debug_assert(output_file != NULL);
+
+	mirac_arena_s arena = mirac_arena_from_parts();
+	mirac_lexer_s lexer = mirac_lexer_from_parts(config, &arena, source_file_path, source_file);
+	mirac_parser_s parser = mirac_parser_from_parts(config, &arena, &lexer);
+	mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
+
+	if (!config->unsafe)
+	{
+		mirac_checker_s checker = mirac_checker_from_parts(config, &arena, &unit);
+		mirac_checker_type_check_ast_unit(&checker);
+	}
+
+	mirac_compiler_s compiler = mirac_compiler_from_parts(config, &arena, &unit, output_file);
+	mirac_compiler_compile_ast_unit(&compiler);
+
+	mirac_arena_destroy(&arena);
+	fclose(source_file);
+	fclose(output_file);
 }
