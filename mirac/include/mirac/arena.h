@@ -28,7 +28,7 @@ struct mirac_node_s
 /**
  * @brief Create arena node, allocate it's pointer with provided size.
  * 
- * @param size[in] size of to-be-allocated memory block
+ * @param size size of to-be-allocated memory block
  * 
  * @return mirac_node_s*
  */
@@ -39,7 +39,7 @@ mirac_node_s* mirac_node_from_size(
 /**
  * @brief Destroy and deallocate the inner pointer and the node itself.
  * 
- * @param node[in/out] node to destroy
+ * @param node node to destroy
  */
 void mirac_node_destroy(
 	mirac_node_s* const node);
@@ -64,7 +64,7 @@ mirac_arena_s mirac_arena_from_parts(
 /**
  * @brief Destroy and deallocate the entire arena (and it's nodes).
  * 
- * @param arena[in/out] arena instance
+ * @param arena arena instance
  */
 void mirac_arena_destroy(
 	mirac_arena_s* const arena);
@@ -74,8 +74,8 @@ void mirac_arena_destroy(
  * @brief Allocate a region of memory with provided size and store the pointer
  * to it wihtin arena's node.
  * 
- * @param arena[in/out] arena instance
- * @param size[in]      size of to-be-allocated memory block
+ * @param arena arena instance
+ * @param size  size of to-be-allocated memory block
  * 
  * @return void*
  */

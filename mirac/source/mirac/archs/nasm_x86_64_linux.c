@@ -284,6 +284,16 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 			(void)fprintf(compiler->file, "\tpush rdx\n");
 		} break;
 
+		case mirac_token_type_reserved_divmod:
+		{
+			(void)fprintf(compiler->file, "\txor rdx, rdx\n");
+			(void)fprintf(compiler->file, "\tpop rbx\n");
+			(void)fprintf(compiler->file, "\tpop rax\n");
+			(void)fprintf(compiler->file, "\tdiv rbx\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+			(void)fprintf(compiler->file, "\tpush rdx\n");
+		} break;
+
 		case mirac_token_type_reserved_eq:
 		{
 			(void)fprintf(compiler->file, "\tmov rcx, 0\n");

@@ -44,8 +44,8 @@ typedef struct
 /**
  * @brief Create string view from a const-pointer to a string or sequence of characters and its length.
  * 
- * @param data[in]   pointer to a string or sequence of characters
- * @param length[in] length of the string or sequence of characters
+ * @param data   pointer to a string or sequence of characters
+ * @param length length of the string or sequence of characters
  * 
  * @return mirac_string_view_s
  */
@@ -56,7 +56,7 @@ mirac_string_view_s mirac_string_view_from_parts(
 /**
  * @brief Create string view from a cstring.
  * 
- * @param cstring[in] pointer to a cstring
+ * @param cstring pointer to a cstring
  * 
  * @return mirac_string_view_s
  */
@@ -66,9 +66,9 @@ mirac_string_view_s mirac_string_view_from_cstring(
 /**
  * @brief Check if two string views are equal for provided length (range).
  * 
- * @param left[in]   left comparison string view
- * @param right[in]  right comparison string view
- * @param length[in] length of a range to check for equality
+ * @param left   left comparison string view
+ * @param right  right comparison string view
+ * @param length length of a range to check for equality
  * 
  * @return bool
  */
@@ -80,8 +80,8 @@ bool mirac_string_view_equal_range(
 /**
  * @brief Check if two string views are equal.
  * 
- * @param left[in]  left comparison string view
- * @param right[in] right comparison string view
+ * @param left  left comparison string view
+ * @param right right comparison string view
  * 
  * @return bool
  */
@@ -92,9 +92,9 @@ bool mirac_string_view_equal(
 /**
  * @brief Trim left side of the string view of provided char.
  * 
- * @param string_view[in]     string view to trim
- * @param char_to_trim[in]    char to trim
- * @param trimmed_length[out] length of the trimmed string (optional)
+ * @param string_view    string view to trim
+ * @param char_to_trim   char to trim
+ * @param trimmed_length length of the trimmed string (optional)
  * 
  * @return mirac_string_view_s
  */
@@ -106,9 +106,9 @@ mirac_string_view_s mirac_string_view_trim_left(
 /**
  * @brief Trim right side of the string view of provided char.
  * 
- * @param string_view[in]     string view to trim
- * @param char_to_trim[in]    char to trim
- * @param trimmed_length[out] length of the trimmed string (optional)
+ * @param string_view    string view to trim
+ * @param char_to_trim   char to trim
+ * @param trimmed_length length of the trimmed string (optional)
  * 
  * @return mirac_string_view_s
  */
@@ -120,8 +120,8 @@ mirac_string_view_s mirac_string_view_trim_right(
 /**
  * @brief Trim left and right sides of the string view of provided char.
  * 
- * @param string_view[in]  string view to trim
- * @param char_to_trim[in] char to trim
+ * @param string_view  string view to trim
+ * @param char_to_trim char to trim
  * 
  * @return mirac_string_view_s
  */
@@ -132,8 +132,8 @@ mirac_string_view_s mirac_string_view_trim(
 /**
  * @brief Trim white spaces on the left side of the string view of provided char.
  * 
- * @param string_view[in]     string view to trim
- * @param trimmed_length[out] length of the trimmed string (optional)
+ * @param string_view    string view to trim
+ * @param trimmed_length length of the trimmed string (optional)
  * 
  * @return mirac_string_view_s
  */
@@ -148,8 +148,8 @@ mirac_string_view_s mirac_string_view_trim_left_white_space(
  * view, while the right split part will be set to the original string that is
  * passed by reference.
  * 
- * @param string_view[in/out]  string view to split
- * @param char_to_split_at[in] char to split at
+ * @param string_view      string view to split
+ * @param char_to_split_at char to split at
  * 
  * @return mirac_string_view_s
  */
@@ -164,8 +164,8 @@ mirac_string_view_s mirac_string_view_split_left(
  * the string views. To get the length of the ignored white space use optional
  * parameter 'white_space_length'.
  * 
- * @param string_view[in/out]     string view to split
- * @param white_space_length[out] white space length (optional)
+ * @param string_view        string view to split
+ * @param white_space_length white space length (optional)
  * 
  * @return mirac_string_view_s
  */

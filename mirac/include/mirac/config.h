@@ -40,9 +40,9 @@ typedef struct
 /**
  * @brief Create config object by parsing cli arguments.
  * 
- * @param argc[in]              command line arguments count
- * @param argv[in]              command line arguments pointer
- * @param config_end_index[out] options end index
+ * @param argc             command line arguments count
+ * @param argv             command line arguments pointer
+ * @param config_end_index options end index
  * 
  * @return mirac_config_s
  */

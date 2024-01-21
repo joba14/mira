@@ -19,10 +19,10 @@
 /**
  * @brief Debug assert implementation.
  * 
- * @param expression[in]        expression to evaluate
- * @param expression_string[in] stringified expression
- * @param file[in]              file in which assert exists
- * @param line[in]              line in which assert exists
+ * @param expression        expression to evaluate
+ * @param expression_string stringified expression
+ * @param file              file in which assert exists
+ * @param line              line in which assert exists
  */
 void mirac_debug_assert_impl(
 	const bool expression,

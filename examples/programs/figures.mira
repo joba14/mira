@@ -26,14 +26,14 @@
 ; 
 ; ------------------------------------------------------------------
 
+#include "./../std/io.mira"
+
 ; constants
 #define width 11
 #define height 10
 #define N 110
 
-; nl - new line string
-sec .rodata str nl "\n"
-; nl - array for the grid
+; grid - array for the grid
 sec .bss mem grid N
 
 ; --- 
@@ -51,8 +51,8 @@ sec .text func print-square {
 		dup 1 + width * 1 - grid + 10 as u08 swap st08 ++
 	} drop
 
-	N grid 1 1 sys3 drop
-	1 nl 1 1 sys3 drop
+	N grid call puts
+	10 call putc
 }
 
 ; --- 
@@ -71,8 +71,8 @@ sec .text func print-triangle {
 		dup 1 + width * 1 - grid + 10 as u08 swap st08 ++
 	} drop
 
-	N grid 1 1 sys3 drop
-	1 nl 1 1 sys3 drop
+	N grid call puts
+	10 call putc
 }
 
 ; --- 
@@ -81,5 +81,5 @@ sec .text func print-triangle {
 sec .text func _start {
 	call print-square
 	call print-triangle
-	0 60 sys1 drop
+	0 call exit
 }

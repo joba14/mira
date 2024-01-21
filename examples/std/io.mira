@@ -1,0 +1,74 @@
+
+#include "./posix.mira"
+
+; ---
+; :brief: print a char into the provided file.
+; 
+; :depends:
+  sec .bss mem __fputc_buffer 1
+  sec .bss mem __fputc_fd_buffer 8
+; ---
+sec .text func fputc req u08 i64 {
+	__fputc_fd_buffer st64 __fputc_buffer st08
+	1 __fputc_buffer __fputc_fd_buffer ld08 call write drop
+}
+
+; ---
+; :brief: print an unsigned integer into the provided file.
+; 
+; :depends:
+  sec .bss mem __fputu_buffer 32
+  sec .bss mem __fputu_fd 8
+; ---
+sec .text func fputu req u64 i64 {
+	__fputu_fd st64
+
+	if [ dup 0 == ] {
+		48 __fputu_fd ld64 call fputc
+	}
+	else {
+		__fputu_buffer 32 +
+		loop [ over 0 != ] { -- dup rot 10 /% rot swap 48 + swap st08 swap }
+		dup __fputu_buffer 32 + swap - swap __fputu_fd ld64 call write drop
+	}
+
+	drop
+}
+
+; ---
+; :brief: print a signed integer into the provided file.
+; ---
+sec .text func fputi req u64 i64 {
+	if [ over 0 < ] { dup 45 swap call fputc swap ~ 1 + swap }
+	call fputu
+}
+
+; ---
+; :brief: print a string into the provided file.
+; ---
+sec .text func fputs req u64 ptr i64 {
+	call write drop
+}
+
+#define stdout 1
+#define stderr 2
+
+; ---
+; :brief: print a char into the stdout.
+; ---
+sec .text func putc req u08 { stdout call fputc }
+
+; ---
+; :brief: print an unsigned integer into the stdout.
+; ---
+sec .text func putu req u64 { stdout call fputu }
+
+; ---
+; :brief: print a signed integer into the stdout.
+; ---
+sec .text func puti req u64 { stdout call fputi }
+
+; ---
+; :brief: print a string into the stdout.
+; ---
+sec .text func puts req u64 ptr { stdout call fputs }

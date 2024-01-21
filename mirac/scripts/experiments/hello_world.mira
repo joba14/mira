@@ -1,19 +1,25 @@
 
-#define EXIT_SYSCALL_ID 60
+#include "./../../../examples/std/io.mira"
 
-sec .text func exit req i32 {
-	EXIT_SYSCALL_ID sys1 drop
-}
-
-sec .text func stdout ret i32 { 1 }
-
-sec .text func write req u64 ptr i32 {
-	1 sys3 drop
-}
-
-sec .rodata str msg "hello, world!\n\0"
+sec .data str msg "hello!\0"
 
 sec .text func _start {
-	14 msg call stdout call write
+	49 call putc 10 call putc
+	50 call putc 10 call putc
+	51 call putc 10 call putc
+	10 call putc
+
+	49 call putu 10 call putc
+	50 call putu 10 call putc
+	51 call putu 10 call putc
+	10 call putc
+
+	-1 call puti 10 call putc
+	00 call puti 10 call putc
+	10 call puti 10 call putc
+	10 call putc
+
+	6 msg call puts
+
 	0 call exit
 }

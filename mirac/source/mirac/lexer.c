@@ -41,6 +41,7 @@ static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_res
 	[mirac_token_type_reserved_mul] = mirac_string_view_static("*"),
 	[mirac_token_type_reserved_div] = mirac_string_view_static("/"),
 	[mirac_token_type_reserved_mod] = mirac_string_view_static("%"),
+	[mirac_token_type_reserved_divmod] = mirac_string_view_static("/%"),
 
 	[mirac_token_type_reserved_eq] = mirac_string_view_static("=="),
 	[mirac_token_type_reserved_neq] = mirac_string_view_static("!="),
@@ -115,7 +116,7 @@ static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_res
 /**
  * @brief Get the next token as text from the lexer's buffer.
  * 
- * @param lexer[in/out] lexer instance
+ * @param lexer lexer instance
  * 
  * @return mirac_string_view_s
  */
@@ -125,8 +126,8 @@ static mirac_string_view_s get_next_token_as_text(
 /**
  * @brief Parse string literal token from the token's text.
  * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
+ * @param lexer lexer instance
+ * @param token token to parse
  * 
  * @return mirac_token_type_e
  */
@@ -137,8 +138,8 @@ static mirac_token_type_e parse_string_literal_token_from_text(
 /**
  * @brief Parse numeric literal token from the token's text.
  * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
+ * @param lexer lexer instance
+ * @param token token to parse
  * 
  * @return mirac_token_type_e
  */
@@ -149,8 +150,8 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 /**
  * @brief Parse reserved token from the token's text.
  * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
+ * @param lexer lexer instance
+ * @param token token to parse
  * 
  * @return mirac_token_type_e
  */
@@ -161,8 +162,8 @@ static mirac_token_type_e parse_reserved_token_from_text(
 /**
  * @brief Parse identifier token from the token's text.
  * 
- * @param lexer[in/out] lexer instance
- * @param token[in/out] token to parse
+ * @param lexer lexer instance
+ * @param token token to parse
  * 
  * @return mirac_token_type_e
  */

@@ -24,7 +24,7 @@
  * 
  * @note It will exit with code -1 if malloc fails to allocate heap region.
  * 
- * @param size[in] size of to-be-allocated memory region
+ * @param size size of to-be-allocated memory region
  * 
  * @return void*
  */
@@ -37,8 +37,8 @@ void* mirac_c_malloc(
  * 
  * @note It will exit with code -1 if malloc fails to reallocate heap region.
  * 
- * @param pointer[in/out] pointer to the memory region to reallocate
- * @param size[in]        size of to-be-allocated memory region
+ * @param pointer pointer to the memory region to reallocate
+ * @param size    size of to-be-allocated memory region
  * 
  * @return void*
  */
@@ -52,7 +52,7 @@ void* mirac_c_realloc(
  * 
  * @note After freeing the memory, the pointer will be set to NULL.
  * 
- * @param pointer[in/out] pointer to the memory region to free
+ * @param pointer pointer to the memory region to free
  */
 void mirac_c_free(
 	const void* pointer);
@@ -61,7 +61,7 @@ void mirac_c_free(
 /**
  * @brief Wrapper for c's stdlib exit function.
  * 
- * @param code[in] code to exit with
+ * @param code code to exit with
  */
 void mirac_c_exit(
 	const int32_t code);
@@ -70,9 +70,9 @@ void mirac_c_exit(
 /**
  * @brief Wrapper for c's stdlib memset function.
  * 
- * @param pointer[in/out] pointer to a memory region to memset
- * @param value[in]       value to set throughout the memory region 
- * @param length[in]      length of the memory region
+ * @param pointer pointer to a memory region to memset
+ * @param value   value to set throughout the memory region 
+ * @param length  length of the memory region
  */
 void mirac_c_memset(
 	void* const pointer,
@@ -83,9 +83,9 @@ void mirac_c_memset(
 /**
  * @brief Wrapper for c's stdlib memcpy function.
  * 
- * @param destination[in/out] pointer to the destination memory region
- * @param source[in]          pointer to the source memory region
- * @param length[in]          length of the memory region to copy over
+ * @param destination pointer to the destination memory region
+ * @param source      pointer to the source memory region
+ * @param length      length of the memory region to copy over
  */
 void mirac_c_memcpy(
 	void* const destination,
@@ -96,9 +96,9 @@ void mirac_c_memcpy(
 /**
  * @brief Wrapper for c's stdlib memcmp function.
  * 
- * @param left[in]   left memory region
- * @param right[in]  right memory region
- * @param length[in] length of the memory regions
+ * @param left   left memory region
+ * @param right  right memory region
+ * @param length length of the memory regions
  * 
  * @return int32_t
  */
@@ -111,7 +111,7 @@ int32_t mirac_c_memcmp(
 /**
  * @brief Wrapper for c's stdlib strlen function.
  * 
- * @param cstring[in] pointer to a c string to have the length calculated of
+ * @param cstring pointer to a c string to have the length calculated of
  * 
  * @return uint64_t
  */
@@ -122,8 +122,8 @@ uint64_t mirac_c_strlen(
 /**
  * @brief Wrapper for c's stdlib strcmp function.
  * 
- * @param left[in]  left c string
- * @param right[in] right c string
+ * @param left  left c string
+ * @param right right c string
  * 
  * @return int32_t
  */
@@ -135,9 +135,9 @@ int32_t mirac_c_strcmp(
 /**
  * @brief Wrapper for c's stdlib strcmp function.
  * 
- * @param left[in]   left c string
- * @param right[in]  right c string
- * @param length[in] length of the strings
+ * @param left   left c string
+ * @param right  right c string
+ * @param length length of the strings
  * 
  * @return int32_t
  */
@@ -150,8 +150,8 @@ int32_t mirac_c_strncmp(
 /**
  * @brief Wrapper for c's stdlib strchr function.
  * 
- * @param string[in] string to search in
- * @param c[in]      char to search
+ * @param string string to search in
+ * @param c      char to search
  * 
  * @return char*
  */

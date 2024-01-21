@@ -13,7 +13,6 @@
 #include <main.h>
 
 #include <mirac/logger.h>
-#include <mirac/timer.h>
 #include <mirac/config.h>
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
@@ -27,7 +26,7 @@
 /**
  * @brief Validate file path and open file for reading.
  * 
- * @param file_path[in] path of the file to be opened
+ * @param file_path path of the file to be opened
  * 
  * @return FILE*
  */
@@ -37,7 +36,7 @@ static FILE* validate_and_open_file_for_reading(
 /**
  * @brief Validate file path and open file for writing.
  * 
- * @param file_path[in] path of the file to be opened
+ * @param file_path path of the file to be opened
  * 
  * @return FILE*
  */

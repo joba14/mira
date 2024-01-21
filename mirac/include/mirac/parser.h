@@ -58,7 +58,7 @@ typedef enum
 /**
  * @brief Stringify ast scope block type and return the string view.
  * 
- * @param type[in] ast scope block type to stringify
+ * @param type ast scope block type to stringify
  * 
  * @return mirac_string_view_s
  */
@@ -111,7 +111,7 @@ typedef enum
 /**
  * @brief Stringify ast block type and return the string view.
  * 
- * @param type[in] ast block type to stringify
+ * @param type ast block type to stringify
  * 
  * @return mirac_string_view_s
  */
@@ -172,7 +172,7 @@ typedef enum
 /**
  * @brief Stringify ast def type and return the string view.
  * 
- * @param type[in] ast def type to stringify
+ * @param type ast def type to stringify
  * 
  * @return mirac_string_view_s
  */
@@ -199,7 +199,7 @@ struct mirac_ast_def_s
 /**
  * @brief Get identifier token of a provided st def structure.
  * 
- * @param def[in] ast def to fetch identifier token from
+ * @param def ast def to fetch identifier token from
  * 
  * @return mirac_token_s
  */
@@ -215,7 +215,7 @@ typedef struct
 /**
  * @brief Create ast unit with provided arena.
  * 
- * @param arena[in] arena reference
+ * @param arena arena reference
  * 
  * @return mirac_ast_unit_s
  */
@@ -225,8 +225,8 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 /**
  * @brief Print ast unit.
  * 
- * @param unit[in]   ast unit to print
- * @param indent[in] indent from left side (in tabs)
+ * @param unit   ast unit to print
+ * @param indent indent from left side (in tabs)
  */
 void mirac_ast_unit_print(
 	const mirac_ast_unit_s* const unit,
@@ -256,9 +256,9 @@ typedef struct
 /**
  * @brief Create parser from config, arena, and lexer.
  * 
- * @param config[in] config reference
- * @param arena[in]  arena reference
- * @param lexer[in]  lexer reference
+ * @param config config reference
+ * @param arena  arena reference
+ * @param lexer  lexer reference
  * 
  * @return mirac_parser_s
  */
@@ -271,7 +271,7 @@ mirac_parser_s mirac_parser_from_parts(
 /**
  * @brief Destroy parser.
  * 
- * @param parser[in/out] parser to destroy
+ * @param parser parser to destroy
  */
 void mirac_parser_destroy(
 	mirac_parser_s* const parser);
@@ -280,7 +280,7 @@ void mirac_parser_destroy(
 /**
  * @brief Parse ast unit.
  * 
- * @param parser[in] parser reference
+ * @param parser parser reference
  * 
  * @return mirac_ast_unit_s
  */

@@ -19,8 +19,8 @@
 /**
  * @brief Log tagless level formattable messages.
  * 
- * @param format[in] format of the log
- * @param ...[in]    arguments of the log
+ * @param format format of the log
+ * @param ...    arguments of the log
  */
 void mirac_logger_log(
 	const char* const format,
@@ -30,8 +30,8 @@ void mirac_logger_log(
 /**
  * @brief Log debug level formattable messages.
  * 
- * @param format[in] format of the log
- * @param ...[in]    arguments of the log
+ * @param format format of the log
+ * @param ...    arguments of the log
  */
 void mirac_logger_debug(
 	const char* const format,
@@ -43,8 +43,8 @@ void mirac_logger_debug(
 /**
  * @brief Log info level formattable messages.
  * 
- * @param format[in] format of the log
- * @param ...[in]    arguments of the log
+ * @param format format of the log
+ * @param ...    arguments of the log
  */
 void mirac_logger_info(
 	const char* const format,
@@ -53,8 +53,8 @@ void mirac_logger_info(
 /**
  * @brief Log warn level formattable messages.
  * 
- * @param format[in] format of the log
- * @param ...[in]    arguments of the log
+ * @param format format of the log
+ * @param ...    arguments of the log
  */
 void mirac_logger_warn(
 	const char* const format,
@@ -63,8 +63,8 @@ void mirac_logger_warn(
 /**
  * @brief Log error level formattable messages.
  * 
- * @param format[in] format of the log
- * @param ...[in]    arguments of the log
+ * @param format format of the log
+ * @param ...    arguments of the log
  */
 void mirac_logger_error(
 	const char* const format,

@@ -59,6 +59,7 @@ typedef enum
 	mirac_token_type_reserved_mul,
 	mirac_token_type_reserved_div,
 	mirac_token_type_reserved_mod,
+	mirac_token_type_reserved_divmod,
 
 	mirac_token_type_reserved_eq,
 	mirac_token_type_reserved_neq,
@@ -143,7 +144,7 @@ typedef enum
 /**
  * @brief Stringify token type and return the string view.
  * 
- * @param token_type[in] token type to stringify
+ * @param token_type token type to stringify
  * 
  * @return mirac_string_view_s
  */
@@ -177,10 +178,10 @@ struct mirac_token_s
  * 
  * @note All the rest of the fields will be initialized to 0.
  * 
- * @param token_type[in] token type to assign to the new token
- * @param location[in]   location to set to the token
- * @param index[in]      global index of the token
- * @param text[in]       text representation from the file
+ * @param token_type token type to assign to the new token
+ * @param location   location to set to the token
+ * @param index      global index of the token
+ * @param text       text representation from the file
  * 
  * @return mirac_token_s
  */
@@ -196,7 +197,7 @@ mirac_token_s mirac_token_from_parts(
  * 
  * @note All the rest of the fields will be initialized to 0.
  * 
- * @param type[in] token type to assign to the new token
+ * @param type token type to assign to the new token
  * 
  * @return mirac_token_s
  */
@@ -211,7 +212,7 @@ mirac_token_s mirac_token_from_type(
  * with this function. It can be freed only with the arena that was used as the
  * allocator in the lexer.
  * 
- * @param token[in/out] token to destroy
+ * @param token token to destroy
  */
 void mirac_token_destroy(
 	mirac_token_s* const token);
@@ -220,7 +221,7 @@ void mirac_token_destroy(
 /**
  * @brief Stringify token and return the string view.
  * 
- * @param token[in] token type to stringify
+ * @param token token type to stringify
  * 
  * @return mirac_string_view_s
  */
@@ -231,7 +232,7 @@ mirac_string_view_s mirac_token_to_string_view(
 /**
  * @brief Check if a token is unsigned numeric literal.
  * 
- * @param token[in] token to check
+ * @param token token to check
  * 
  * @return bool
  */
@@ -242,7 +243,7 @@ bool mirac_token_is_unsigned_numeric_literal(
 /**
  * @brief Check if a token is a type token.
  * 
- * @param token[in] token to check
+ * @param token token to check
  * 
  * @return bool
  */
@@ -265,10 +266,10 @@ typedef struct
 /**
  * @brief Create a lexer with provided source string.
  * 
- * @param config[in]    config instance
- * @param arena[in]     arena instance for memory management
- * @param file_path[in] file path
- * @param file[in]      file for lexing
+ * @param config    config instance
+ * @param arena     arena instance for memory management
+ * @param file_path file path
+ * @param file      file for lexing
  * 
  * @return mirac_lexer_s
  */
@@ -288,7 +289,7 @@ mirac_lexer_s mirac_lexer_from_parts(
  * @warning This function does not close the file, used by lexer! It is left for the
  * user of the lexer to close the file after finishing with the lexer.
  * 
- * @param lexer[in/out] lexer instance
+ * @param lexer lexer instance
  */
 void mirac_lexer_destroy(
 	mirac_lexer_s* const lexer);
@@ -306,8 +307,8 @@ void mirac_lexer_destroy(
  * and determine if one needs to stop lexing or not:
  * see @ref mirac_lexer_should_stop_lexing().
  * 
- * @param lexer[in/out] lexer instance
- * @param token[out]    token to be lexed
+ * @param lexer lexer instance
+ * @param token token to be lexed
  * 
  * @return mirac_token_type_e
  */
@@ -319,7 +320,7 @@ mirac_token_type_e mirac_lexer_lex_next(
 /**
  * @brief Check if lexer has reached end of file or failed to lex a token.
  * 
- * @param type[in] newly lexed token type
+ * @param type newly lexed token type
  * 
  * @return bool
  */
@@ -330,8 +331,8 @@ bool mirac_lexer_should_stop_lexing(
 /**
  * @brief Cache a token in the lexer.
  * 
- * @param lexer[in/out] lexer instance
- * @param token[in]     token to cache
+ * @param lexer lexer instance
+ * @param token token to cache
  */
 void mirac_lexer_unlex(
 	mirac_lexer_s* const lexer,

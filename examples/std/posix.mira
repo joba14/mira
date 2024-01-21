@@ -1,0 +1,15 @@
+
+sec .text func read req u64 ptr u32 ret i32 {
+	#define read_syscall_id 0
+	read_syscall_id sys3 as i32
+}
+
+sec .text func write req u64 ptr u32 ret i32 {
+	#define write_syscall_id 1
+	write_syscall_id sys3 as i32
+}
+
+sec .text func exit req i32 {
+	#define exit_syscall_id 60
+	exit_syscall_id sys1 drop
+}
