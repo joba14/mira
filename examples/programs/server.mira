@@ -66,21 +66,19 @@ sec .text func _start {
 		dup client_addr_len client_addr rot call accept dup if [ 0 >= ] {
 			dup _client_buf_cap client_buffer rot call read dup if [ 0 > ] {
 				client_buffer call puts
-
 				; writing back to the client
 				dup server_message call cstrlen server_message rot call write drop
 			}
 			else {
 				drop
 			}
-		}
-
-		call close drop
+		} call close drop
 	}
 
 	; closing server socket
 	call close drop
 
+	; exiting with status code 0
 	0 call exit
 }
 
