@@ -51,7 +51,7 @@ typedef enum
 {
 	mirac_ast_block_scope_type_parentheses = 0,
 	mirac_ast_block_scope_type_brackets,
-	mirac_ast_block_scope_type_braces,
+	mirac_ast_block_scope_type_braces
 } mirac_ast_block_scope_type_e;
 
 // TODO: Write unit tests!
