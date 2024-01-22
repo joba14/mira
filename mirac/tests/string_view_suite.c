@@ -50,14 +50,14 @@ utester_define_test(equal_range)
 	{
 		const mirac_string_view_s left = mirac_string_view_from_parts("left", 4);
 		const mirac_string_view_s right = mirac_string_view_from_parts("right", 5);
-		const bool are_equal = mirac_string_view_equal_range(left, right, 4);
+		const bool_t are_equal = mirac_string_view_equal_range(left, right, 4);
 		utester_assert_true(false == are_equal);
 	}
 
 	{
 		const mirac_string_view_s left = mirac_string_view_from_parts("world", 5);
 		const mirac_string_view_s right = mirac_string_view_from_parts("world", 5);
-		const bool are_equal = mirac_string_view_equal_range(left, right, 4);
+		const bool_t are_equal = mirac_string_view_equal_range(left, right, 4);
 		utester_assert_true(true == are_equal);
 	}
 }
@@ -67,14 +67,14 @@ utester_define_test(equal)
 	{
 		const mirac_string_view_s left = mirac_string_view_from_parts("left", 4);
 		const mirac_string_view_s right = mirac_string_view_from_parts("right", 5);
-		const bool are_equal = mirac_string_view_equal(left, right);
+		const bool_t are_equal = mirac_string_view_equal(left, right);
 		utester_assert_true(false == are_equal);
 	}
 
 	{
 		const mirac_string_view_s left = mirac_string_view_from_parts("world", 5);
 		const mirac_string_view_s right = mirac_string_view_from_parts("world", 5);
-		const bool are_equal = mirac_string_view_equal(left, right);
+		const bool_t are_equal = mirac_string_view_equal(left, right);
 		utester_assert_true(true == are_equal);
 	}
 }

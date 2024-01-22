@@ -36,7 +36,7 @@
 		_type_name ## _s* const heap_array,                                    \
 		_element_type element);                                                \
 	                                                                           \
-	bool _type_name ## _pop(                                                   \
+	bool_t _type_name ## _pop(                                                 \
 		_type_name ## _s* const heap_array,                                    \
 		_element_type* const element);                                         \
 	                                                                           \
@@ -95,7 +95,7 @@
 		heap_array->data[heap_array->count++] = element;                       \
 	}                                                                          \
 	                                                                           \
-	bool _type_name ## _pop(                                                   \
+	bool_t _type_name ## _pop(                                                 \
 		_type_name ## _s* const heap_array,                                    \
 		_element_type* const element)                                          \
 	{                                                                          \

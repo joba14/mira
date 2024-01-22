@@ -37,7 +37,7 @@ mirac_string_view_s mirac_string_view_from_cstring(
 	return mirac_string_view_from_parts(cstring, length);
 }
 
-bool mirac_string_view_equal_range(
+bool_t mirac_string_view_equal_range(
 	const mirac_string_view_s left,
 	const mirac_string_view_s right,
 	const uint64_t length)
@@ -53,7 +53,7 @@ bool mirac_string_view_equal_range(
 	return (mirac_c_memcmp((const uint8_t* const)left.data, (const uint8_t* const)right.data, length) == 0);
 }
 
-bool mirac_string_view_equal(
+bool_t mirac_string_view_equal(
 	const mirac_string_view_s left,
 	const mirac_string_view_s right)
 {

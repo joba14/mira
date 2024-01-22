@@ -18,6 +18,8 @@
 #include <stdint.h>
 #include <limits.h>
 
+typedef bool bool_t;
+
 // TODO: Write unit tests!
 /**
  * @brief Wrapper for c's stdlib malloc function.

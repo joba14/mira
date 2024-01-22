@@ -78,8 +78,8 @@ struct utester_test_s
 {
 	const char* name;
 	void(*function)(utester_test_s* const);
-	bool verbose;
-	bool status;
+	bool_t verbose;
+	bool_t status;
 };
 
 #define utester_define_test(_test_name)                                        \

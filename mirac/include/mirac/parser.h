@@ -142,7 +142,7 @@ typedef struct
 	mirac_token_list_s req_tokens;
 	mirac_token_list_s ret_tokens;
 	mirac_ast_block_s* body; // NOTE: Must be scope block.
-	bool is_entry;
+	bool_t is_entry;
 	uint64_t index;
 } mirac_ast_def_func_s;
 
@@ -184,8 +184,8 @@ struct mirac_ast_def_s
 	mirac_location_s location;
 	mirac_token_s section;
 	mirac_ast_def_type_e type;
-	bool is_global;
-	bool is_used;
+	bool_t is_global;
+	bool_t is_used;
 
 	union
 	{

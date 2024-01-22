@@ -296,7 +296,7 @@ mirac_string_view_s mirac_token_to_string_view(
 	return mirac_string_view_from_parts(token_string_buffer, written);
 }
 
-bool mirac_token_is_unsigned_numeric_literal(
+bool_t mirac_token_is_unsigned_numeric_literal(
 	const mirac_token_s* const token)
 {
 	mirac_debug_assert(token != NULL);
@@ -308,7 +308,7 @@ bool mirac_token_is_unsigned_numeric_literal(
 	);
 }
 
-bool mirac_token_is_type_token(
+bool_t mirac_token_is_type_token(
 	const mirac_token_s* const token)
 {
 	mirac_debug_assert(token != NULL);
@@ -415,7 +415,7 @@ mirac_token_type_e mirac_lexer_lex_next(
 	return mirac_token_type_none; // NOTE: To prevent compiler error '-Werror=return-type'.
 }
 
-bool mirac_lexer_should_stop_lexing(
+bool_t mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type)
 {
 	return (
@@ -628,7 +628,7 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 		return mirac_token_type_none;
 	}
 
-	const bool has_sign = ('-' == token->text.data[0]) || ('+' == token->text.data[0]);
+	const bool_t has_sign = ('-' == token->text.data[0]) || ('+' == token->text.data[0]);
 
 	if (has_sign && (token->text.length <= 1))
 	{

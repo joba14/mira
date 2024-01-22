@@ -70,9 +70,9 @@ mirac_string_view_s mirac_string_view_from_cstring(
  * @param right  right comparison string view
  * @param length length of a range to check for equality
  * 
- * @return bool
+ * @return bool_t
  */
-bool mirac_string_view_equal_range(
+bool_t mirac_string_view_equal_range(
 	const mirac_string_view_s left,
 	const mirac_string_view_s right,
 	const uint64_t length);
@@ -83,9 +83,9 @@ bool mirac_string_view_equal_range(
  * @param left  left comparison string view
  * @param right right comparison string view
  * 
- * @return bool
+ * @return bool_t
  */
-bool mirac_string_view_equal(
+bool_t mirac_string_view_equal(
 	const mirac_string_view_s left,
 	const mirac_string_view_s right);
 

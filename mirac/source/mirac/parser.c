@@ -95,7 +95,7 @@ static mirac_ast_def_s* create_ast_def(
 
 // TODO: Write unit tests!
 // TODO: Document!
-static bool is_token_valid_expr_block_token_by_type(
+static bool_t is_token_valid_expr_block_token_by_type(
 	const mirac_token_type_e type);
 
 // TODO: Write unit tests!
@@ -521,7 +521,7 @@ static mirac_ast_def_s* create_ast_def(
 	return def;
 }
 
-static bool is_token_valid_expr_block_token_by_type(
+static bool_t is_token_valid_expr_block_token_by_type(
 	const mirac_token_type_e type)
 {
 	return (

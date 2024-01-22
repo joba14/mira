@@ -234,9 +234,9 @@ mirac_string_view_s mirac_token_to_string_view(
  * 
  * @param token token to check
  * 
- * @return bool
+ * @return bool_t
  */
-bool mirac_token_is_unsigned_numeric_literal(
+bool_t mirac_token_is_unsigned_numeric_literal(
 	const mirac_token_s* const token);
 
 // TODO: Write unit tests!
@@ -245,9 +245,9 @@ bool mirac_token_is_unsigned_numeric_literal(
  * 
  * @param token token to check
  * 
- * @return bool
+ * @return bool_t
  */
-bool mirac_token_is_type_token(
+bool_t mirac_token_is_type_token(
 	const mirac_token_s* const token);
 
 typedef struct
@@ -322,9 +322,9 @@ mirac_token_type_e mirac_lexer_lex_next(
  * 
  * @param type newly lexed token type
  * 
- * @return bool
+ * @return bool_t
  */
-bool mirac_lexer_should_stop_lexing(
+bool_t mirac_lexer_should_stop_lexing(
 	const mirac_token_type_e type);
 
 // TODO: Write unit tests!

@@ -16,7 +16,7 @@
 #	include <stdio.h>
 
 void mirac_debug_assert_impl(
-	const bool expression,
+	const bool_t expression,
 	const char* const expression_string,
 	const char* const file,
 	const uint64_t line)
