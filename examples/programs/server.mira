@@ -1,0 +1,87 @@
+
+#ifndef __server_mira__
+#define __server_mira__
+
+#include "./../std/posix.mira"
+#include "./../std/io.mira"
+
+sec .data str socket_failure "error: failed to create a socket!\n\0"
+sec .data str socket_success "info: created a socket!\n\0"
+sec .data str bind_failure   "error: failed to bind the socket!\n\0"
+sec .data str bind_success   "info: bound a socket!\n\0"
+sec .data str listen_failure "error: failed to listen with the socket!\n\0"
+sec .data str listen_success "info: listening with the socket!\n\0"
+sec .data str accept_failure "error: failed to accept an incomming socket!\n\0"
+sec .data str accept_success "info: accepted the incomming socket!\n\0"
+sec .data str read_failure   "error: failed to read from client!\n\0"
+sec .data str read_success   "info: read from the client!\n\0"
+sec .data str server_message "<!DOCTYPE html><head></head><body><h1>Hello, World!</h1></body><footer>this was made with mira language - the only language you should not do anything this serious with :)</footer></html>\0"
+
+sec .text func cstrlen req ptr ret i32 {
+	dup loop [ dup ld08 0 != ] { ++ } swap -
+}
+
+sec .text func put-cstr req ptr ret i32 {
+	dup call cstrlen swap call puts
+}
+
+sec .text func eput-cstr req ptr ret i32 {
+	dup call cstrlen swap stderr call fputs
+}
+
+#define _sockaddr_size 16
+sec .bss mem server_addr _sockaddr_size
+sec .bss mem client_addr _sockaddr_size
+sec .bss mem client_addr_len 4
+
+#define _client_buf_cap 1024
+sec .bss mem client_buffer _client_buf_cap
+
+#define port 80
+
+sec .text func _start {
+	; creating a socket
+	0 sock_stream af_inet call socket dup if [ 0 < ] {
+		socket_failure call eput-cstr 1 call exit
+	} socket_success call put-cstr
+
+	; setting the server address
+	0 loop [ dup _sockaddr_size < ] { server_addr over + 0 swap st08 ++ } drop
+	af_inet         server_addr 0 + st16
+	port call htons server_addr 2 + st16
+	inaddr_any      server_addr 4 + st32
+
+	; binding the socket
+	dup _sockaddr_size server_addr rot call bind if [ 0 < ] {
+		bind_failure call eput-cstr 1 call exit
+	} bind_success call put-cstr
+
+	; listening with the socket
+	dup 1 swap call listen if [ 0 < ] {
+		listen_failure call eput-cstr 1 call exit
+	} listen_success call put-cstr
+
+	; accepting new connections
+	loop [ 1 ] {
+		dup client_addr_len client_addr rot call accept dup if [ 0 >= ] {
+			dup _client_buf_cap client_buffer rot call read dup if [ 0 > ] {
+				client_buffer call puts
+
+				; writing back to the client
+				dup server_message call cstrlen server_message rot call write drop
+			}
+			else {
+				drop
+			}
+		}
+
+		call close drop
+	}
+
+	; closing server socket
+	call close drop
+
+	0 call exit
+}
+
+#endif

@@ -47,7 +47,7 @@ sec .text func fputi req u64 i64 {
 }
 
 ; ---
-; :brief: print a string into the provided file.
+; :brief: print a string of provided length into the provided file.
 ; ---
 sec .text func fputs req u64 ptr i64 {
 	call write drop
@@ -72,8 +72,28 @@ sec .text func putu req u64 { stdout call fputu }
 sec .text func puti req u64 { stdout call fputi }
 
 ; ---
-; :brief: print a string into the stdout.
+; :brief: print a string of provided length into the stdout.
 ; ---
 sec .text func puts req u64 ptr { stdout call fputs }
+
+; ---
+; :brief: print a char into the stderr.
+; ---
+sec .text func eputc req u08 { stderr call fputc }
+
+; ---
+; :brief: print an unsigned integer into the stderr.
+; ---
+sec .text func eputu req u64 { stderr call fputu }
+
+; ---
+; :brief: print a signed integer into the stderr.
+; ---
+sec .text func eputi req u64 { stderr call fputi }
+
+; ---
+; :brief: print a string of provided length into the stderr.
+; ---
+sec .text func eputs req u64 ptr { stderr call fputs }
 
 #endif
