@@ -3,6 +3,7 @@
 #define __server_mira__
 
 #include "./../std/posix.mira"
+#include "./../std/string.mira"
 #include "./../std/io.mira"
 
 sec .data str socket_failure "error: failed to create a socket!\n\0"
@@ -16,18 +17,6 @@ sec .data str accept_success "info: accepted the incomming socket!\n\0"
 sec .data str read_failure   "error: failed to read from client!\n\0"
 sec .data str read_success   "info: read from the client!\n\0"
 sec .data str server_message "<!DOCTYPE html><head></head><body><h1>Hello, World!</h1></body><footer>this was made with mira language - the only language you should not do anything this serious with :)</footer></html>\0"
-
-sec .text func cstrlen req ptr ret i32 {
-	dup loop [ dup ld08 0 != ] { ++ } swap -
-}
-
-sec .text func put-cstr req ptr ret i32 {
-	dup call cstrlen swap call puts
-}
-
-sec .text func eput-cstr req ptr ret i32 {
-	dup call cstrlen swap stderr call fputs
-}
 
 #define _sockaddr_size 16
 sec .bss mem server_addr _sockaddr_size
