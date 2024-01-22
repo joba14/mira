@@ -1,0 +1,12 @@
+
+#ifndef __string_mira__
+#define __string_mira__
+
+; ---
+; :brief: get the length of the cstring.
+; ---
+sec .text func cstrlen req ptr ret i32 {
+	dup loop [ dup ld08 0 != ] { ++ } swap -
+}
+
+#endif

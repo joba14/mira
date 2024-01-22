@@ -2,46 +2,75 @@
 #ifndef __posix_mira__
 #define __posix_mira__
 
+; ---
+; :brief: read syscall wrapper.
+; ---
 sec .text func read req u64 ptr u32 ret i32 {
 	#define read_syscall_id 0
 	read_syscall_id sys3 as i32
 }
 
+; ---
+; :brief: write syscall wrapper.
+; ---
 sec .text func write req u64 ptr u32 ret i32 {
 	#define write_syscall_id 1
 	write_syscall_id sys3 as i32
 }
 
+; ---
+; :brief: close syscall wrapper.
+; ---
 sec .text func close req i32 ret i32 {
 	#define close_syscall_id 3
 	close_syscall_id sys1 as i32
 }
 
+; ---
+; :brief: socket syscall wrapper.
+; ---
 sec .text func socket req i32 i32 i32 ret i32 {
 	#define socket_syscall_id 41
 	socket_syscall_id sys3 as i32
 }
 
+; ---
+; :brief: accept syscall wrapper.
+; ---
 sec .text func accept req ptr ptr i32 ret i32 {
 	#define accept_syscall_id 43
 	accept_syscall_id sys3 as i32
 }
 
+; ---
+; :brief: bind syscall wrapper.
+; ---
 sec .text func bind req i32 ptr i32 ret i32 {
 	#define bind_syscall_id 49
 	bind_syscall_id sys3 as i32
 }
 
+; ---
+; :brief: listen syscall wrapper.
+; ---
 sec .text func listen req i32 i32 ret i32 {
 	#define listen_syscall_id 50
 	listen_syscall_id sys2 as i32
 }
 
+; ---
+; :brief: exit syscall wrapper.
+; ---
 sec .text func exit req i32 {
 	#define exit_syscall_id 60
 	exit_syscall_id sys1 drop
 }
 
+; ---
+; :brief: host to network short integer.
+; 
+; :warning: not actually cross-platform/cross-architecture/cross-compiler!
+; ---
 sec .text func htons req i32 ret i32 {
 	dup 255 && 8 << swap 8 >> 255 && ||
 }
