@@ -1,7 +1,9 @@
 
-#include "./stdio.mira"
+#ifndef __factorial_mira__
+#define __factorial_mira__
 
-sec .rodata str nl "\n"
+#include "./../std/posix.mira"
+#include "./../std/io.mira"
 
 sec .text func factorial req u64 ret u64 {
 	if [ dup 0 <= ] {
@@ -16,9 +18,13 @@ sec .text func factorial req u64 ret u64 {
 
 sec .text func _start {
 	0 loop [ dup 10 < ] {
-		dup as u64 call factorial stdout call fputu 1 nl stdout call fputs
+		dup as u64 call factorial
+		stdout call fputu
+		10 stdout call fputc
 		++
 	} drop
 
-	60 sys1 drop
+	0 call exit
 }
+
+#endif

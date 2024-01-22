@@ -1,4 +1,7 @@
 
+#ifndef __io_mira__
+#define __io_mira__
+
 #include "./posix.mira"
 
 sec .bss mem __io_fd 8
@@ -72,3 +75,5 @@ sec .text func puti req u64 { stdout call fputi }
 ; :brief: print a string into the stdout.
 ; ---
 sec .text func puts req u64 ptr { stdout call fputs }
+
+#endif

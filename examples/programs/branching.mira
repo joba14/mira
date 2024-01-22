@@ -1,4 +1,7 @@
 
+#ifndef __branching_mira__
+#define __branching_mira__
+
 sec .rodata str msg1 "hello, world!\n"
 sec .rodata str msg2 "hello, linux!\n"
 
@@ -12,3 +15,5 @@ sec .text func _start {
 
 	0 60 sys1 drop
 }
+
+#endif
