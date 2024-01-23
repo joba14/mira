@@ -26,7 +26,7 @@ sec .bss mem client_addr_len 4
 #define _client_buf_cap 1024
 sec .bss mem client_buffer _client_buf_cap
 
-#define port 80
+#define port 25510
 
 sec .text func _start {
 	; creating a socket
