@@ -1310,6 +1310,7 @@ static void print_ast_block_call(
 
 	const mirac_ast_block_s* const ident_block = call_block->ident;
 	mirac_debug_assert(ident_block != NULL);
+	mirac_debug_assert(mirac_ast_block_type_ident == ident_block->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("CallBlock[\n");

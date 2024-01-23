@@ -650,6 +650,8 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 
 	const mirac_ast_block_ident_s* const ident_block = &call_block->ident->as.ident_block;
 	mirac_debug_assert(ident_block != NULL);
+	mirac_debug_assert(ident_block->def != NULL);
+	mirac_debug_assert(mirac_ast_def_type_func == ident_block->def->type);
 
 	(void)fprintf(compiler->file, "\t;; --- call (id: %lu) --- \n", ident_block->token.index);
 
