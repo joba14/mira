@@ -17,7 +17,7 @@
 
 #define mirac_version_major 1
 #define mirac_version_minor 0
-#define mirac_version_patch 0
+#define mirac_version_patch 1
 
 /**
  * @brief Version formatting macro for printf-like functions.

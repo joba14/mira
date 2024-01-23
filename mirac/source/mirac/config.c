@@ -91,7 +91,7 @@ mirac_config_s mirac_config_from_cli(
 
 			case 'v':
 			{
-				mirac_logger_log("%s " mirac_version_fmt, argv[0], mirac_version_arg);
+				mirac_logger_log(mirac_version_fmt, mirac_version_arg);
 				mirac_c_exit(0);
 			} break;
 
