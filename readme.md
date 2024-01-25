@@ -43,6 +43,7 @@ Here is the list of the main features the language has:
 - arithmetic, bitwise, and logical operations
 - comparison operators
 - intrinsic functionalities like syscalls and stack manipulation operations
+- very minimal std library
 
 [(to the top)](#mira)
 
