@@ -3,6 +3,7 @@
 **The Mira General Purpose License (Mira GPLv1)**<br>
 Version 1, 2023-09-30
 
+
 ## Definitions
  - **License** - refers to the terms and conditions of this Mira General Purpose License (Mira GPLv1).
  - **Project** - refers to the Mira Project, including its components, documentation, and related materials.
@@ -11,20 +12,24 @@ Version 1, 2023-09-30
 
 [(to the top)](#mira)
 
+
 ## License Grant
 The **Creator** grants a worldwide, royalty-free, non-exclusive, revocable license to use, reproduce, modify, and distribute the Project subject to the terms and conditions of this **License**.
 
 [(to the top)](#mira)
+
 
 ## General Purpose Rights
 All rights, title, and interest in the **Project**, including but not limited to the source code, design, documentation, logos, and trademarks, are and will remain with the **Creator**. The **License** does not transfer ownership of these rights to the **User**.
 
 [(to the top)](#mira)
 
+
 ## Permitted Usage
 The **User** may use, modify, and distribute the **Project** for any purpose, including personal, non-commercial, commercial, educational, and open-source purposes, subject to the terms and conditions of this **License**.
 
 [(to the top)](#mira)
+
 
 ## Prohibited Usage
 The **User** is expressly prohibited from:
@@ -33,25 +38,30 @@ The **User** is expressly prohibited from:
 
 [(to the top)](#mira)
 
+
 ## Intellectual Property
 The **User** acknowledges and agrees that the **Project**, including all intellectual property rights therein, is the sole property of the **Creator**. The **User** shall not remove, alter, or obscure any copyright, trademark, or proprietary notice contained within the **Project**.
 
 [(to the top)](#mira)
+
 
 ## No Warranty
 The **Project** is provided "as is", without warranty of any kind, express or implied. The **Creator** disclaims all warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
 
 [(to the top)](#mira)
 
+
 ## Limitation of Liability
 In no event shall the **Creator** be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including but not limited to procurement of substitute goods or services, loss of use, data, or profits) arising in any way out of the use, inability to use, or performance of the **Project**, even if advised of the possibility of such damages.
 
 [(to the top)](#mira)
 
+
 ## Termination
 This **License** shall automatically terminate if the **User** fails to comply with any of its terms and conditions. Upon termination, the **User** must cease all use of the **Project** and destroy any copies or modifications thereof in their possession.
 
 [(to the top)](#mira)
+
 
 ## Miscellaneous
 This **License** represents the entire agreement between the **Creator** and the **User** concerning the **Project** and supersedes any prior agreements or understandings. This **License** may only be modified in writing and signed by both parties.

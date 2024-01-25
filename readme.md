@@ -37,14 +37,12 @@ This language already supports many (and too often taken for-granted) features c
 
 ### Features
 Here is the list of the main features the language has:
-- functions
-- strings
-- fixed size arrays
-- if-else blocks
-- loops
+- sections, functions, memories, and strings
+- if-else and loops blocks
+- comments :)
 - arithmetic, bitwise, and logical operations
 - comparison operators
-- intrinsic functionalities like syscalls, stack manipulation operations
+- intrinsic functionalities like syscalls and stack manipulation operations
 
 [(to the top)](#mira)
 
@@ -53,27 +51,34 @@ Here is the list of the main features the language has:
 To get started with mira, follow these simple steps:
 
 ### Building
-Clone the [Your Language Name] repository from GitHub. Navigate to the project directory and run the build script or compiler. This will generate the executable for your specific platform:
+The repo provides various syntax and project examples in the [examples](./examples) directory. The project examples use the makefiles and uses various building steps such as pre-processor, assembler and linker to automate the building process. To build and run the example project, follow the steps below:
 ```sh
-git clone https://github.com/joba14/mira.git ./mira
-cd mira/mirac/scripts
-./build.sh debug
+> cd <root-of-the-example-project>
+> make && make run
+```
+
+### Building
+Clone the mira repository from GitHub. Navigate to the project directory and run the build script or compiler. This will generate the executable for your specific platform:
+```sh
+> git clone https://github.com/joba14/mira.git ./mira
+> cd mira/mirac/scripts
+> ./build.sh debug
 ```
 
 ### Running
 To get help and learn more about the compiler, use the following:
 ```sh
-cd mira/mirac/build
-./mirac --help
+> cd mira/mirac/build
+> ./mirac --help
 ```
 
 Once built successfully, you can run mira programs by providing the source code file as an argument to the compiler:
 ```sh
-cd mira/mirac/build
-./mirac -a nasm_x86_64_linux <path-to-mira-source-file> <path-to-output-asm-file>
-nasm -f elf64 <path-to-output-asm-file> -o <path-to-output-obj-file>
-ld <path-to-output-obj-file> -o <path-to-output-elf-file>
-<path-to-output-elf-file>
+> cd mira/mirac/build
+> ./mirac -a nasm_x86_64_linux <path-to-mira-source-file> <path-to-output-asm-file>
+> nasm -f elf64 <path-to-output-asm-file> -o <path-to-output-obj-file>
+> ld <path-to-output-obj-file> -o <path-to-output-elf-file>
+> <path-to-output-elf-file>
 ```
 
 [(to the top)](#mira)
