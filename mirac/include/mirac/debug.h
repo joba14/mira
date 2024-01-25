@@ -26,8 +26,8 @@
  */
 void mirac_debug_assert_impl(
 	const bool_t expression,
-	const char* const expression_string,
-	const char* const file,
+	const char_t* const expression_string,
+	const char_t* const file,
 	const uint64_t line);
 
 /**
@@ -40,7 +40,7 @@ void mirac_debug_assert_impl(
 		mirac_debug_assert_impl(                                               \
 			_expression,                                                       \
 			#_expression,                                                      \
-			(const char* const)__FILE__,                                       \
+			(const char_t* const)__FILE__,                                       \
 			(const uint64_t)__LINE__                                           \
 		)
 #else

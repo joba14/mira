@@ -1,10 +1,10 @@
 
-#ifndef __server_mira__
-#define __server_mira__
+#ifndef __main_mira__
+#define __main_mira__
 
-#include "./../std/posix.mira"
-#include "./../std/string.mira"
-#include "./../std/io.mira"
+#include "std/posix.mira"
+#include "std/string.mira"
+#include "std/io.mira"
 
 sec .data str socket_failure "error: failed to create a socket!\n\0"
 sec .data str socket_success "info: created a socket!\n\0"

@@ -39,7 +39,7 @@ typedef struct
 
 typedef struct
 {
-	mirac_ast_block_s* ident; // NOTE: Must be ident block.
+	mirac_ast_block_s* ident; // note: must be ident block.
 } mirac_ast_block_call_s;
 
 typedef struct
@@ -54,7 +54,7 @@ typedef enum
 	mirac_ast_block_scope_type_braces
 } mirac_ast_block_scope_type_e;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Stringify ast scope block type and return the string view.
  * 
@@ -73,22 +73,22 @@ typedef struct
 
 typedef struct
 {
-	mirac_ast_block_s* cond; // NOTE: Must be scope block.
-	mirac_ast_block_s* body; // NOTE: Must be scope block.
+	mirac_ast_block_s* cond; // note: must be scope block.
+	mirac_ast_block_s* body; // note: must be scope block.
 	mirac_ast_block_s* next;
 	uint64_t index;
 } mirac_ast_block_if_s;
 
 typedef struct
 {
-	mirac_ast_block_s* body; // NOTE: Must be scope block.
+	mirac_ast_block_s* body; // note: must be scope block.
 	uint64_t index;
 } mirac_ast_block_else_s;
 
 typedef struct
 {
-	mirac_ast_block_s* cond; // NOTE: Must be scope block.
-	mirac_ast_block_s* body; // NOTE: Must be scope block.
+	mirac_ast_block_s* cond; // note: must be scope block.
+	mirac_ast_block_s* body; // note: must be scope block.
 	uint64_t index;
 } mirac_ast_block_loop_s;
 
@@ -107,7 +107,7 @@ typedef enum
 	mirac_ast_block_type_none
 } mirac_ast_block_type_e;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Stringify ast block type and return the string view.
  * 
@@ -141,7 +141,7 @@ typedef struct
 	mirac_token_s identifier;
 	mirac_token_list_s req_tokens;
 	mirac_token_list_s ret_tokens;
-	mirac_ast_block_s* body; // NOTE: Must be scope block.
+	mirac_ast_block_s* body; // note: must be scope block.
 	bool_t is_entry;
 	uint64_t index;
 } mirac_ast_def_func_s;
@@ -168,7 +168,7 @@ typedef enum
 	mirac_ast_def_type_none
 } mirac_ast_def_type_e;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Stringify ast def type and return the string view.
  * 
@@ -195,7 +195,7 @@ struct mirac_ast_def_s
 	} as;
 };
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Get identifier token of a provided st def structure.
  * 
@@ -211,7 +211,7 @@ typedef struct
 	mirac_ast_def_list_s defs;
 } mirac_ast_unit_s;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Create ast unit with provided arena.
  * 
@@ -252,7 +252,7 @@ typedef struct
 	mirac_ast_unit_s unit;
 } mirac_parser_s;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Create parser from config, arena, and lexer.
  * 
@@ -267,7 +267,7 @@ mirac_parser_s mirac_parser_from_parts(
 	mirac_arena_s* const arena,
 	mirac_lexer_s* const lexer);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Destroy parser.
  * 
@@ -276,7 +276,7 @@ mirac_parser_s mirac_parser_from_parts(
 void mirac_parser_destroy(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Parse ast unit.
  * 

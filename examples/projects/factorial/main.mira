@@ -1,9 +1,9 @@
 
-#ifndef __factorial_mira__
-#define __factorial_mira__
+#ifndef __main_mira__
+#define __main_mira__
 
-#include "./../std/posix.mira"
-#include "./../std/io.mira"
+#include "std/posix.mira"
+#include "std/io.mira"
 
 sec .text func factorial req u64 ret u64 {
 	if [ dup 0 <= ] {

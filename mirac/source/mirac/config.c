@@ -25,7 +25,7 @@ static mirac_string_view_s g_supported_architectures[mirac_config_arch_types_cou
 	[mirac_config_arch_type_nasm_x86_64_linux] = mirac_string_view_static("nasm_x86_64_linux")
 };
 
-static const char* const g_usage_banner =
+static const char_t* const g_usage_banner =
 	"usage: " mirac_sv_fmt " [options] <src+out files...>\n"
 	"\n"
 	"options:\n"
@@ -48,7 +48,7 @@ mirac_string_view_s mirac_config_arch_type_to_string_view(
 
 mirac_config_s mirac_config_from_cli(
 	const int32_t argc,
-	const char** const argv,
+	const char_t** const argv,
 	uint64_t* const config_end_index)
 {
 	mirac_debug_assert(argc > 0);
@@ -79,7 +79,7 @@ mirac_config_s mirac_config_from_cli(
 	mirac_config_s config = {0};
 	int32_t opt = -1;
 
-	while ((opt = (int32_t)getopt_long(argc, (char* const *)argv, "hva:e:us", options, NULL)) != -1)
+	while ((opt = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:us", options, NULL)) != -1)
 	{
 		switch (opt)
 		{
@@ -98,7 +98,7 @@ mirac_config_s mirac_config_from_cli(
 			case 'a':
 			{
 				config.arch = mirac_config_arch_type_none;
-				mirac_string_view_s arch_as_string = mirac_string_view_from_cstring((const char*)optarg);
+				mirac_string_view_s arch_as_string = mirac_string_view_from_cstring((const char_t*)optarg);
 
 				for (uint64_t arch_index = 0; arch_index < mirac_config_arch_types_count; ++arch_index)
 				{
@@ -112,7 +112,7 @@ mirac_config_s mirac_config_from_cli(
 
 			case 'e':
 			{
-				config.entry = mirac_string_view_from_cstring((const char*)optarg);
+				config.entry = mirac_string_view_from_cstring((const char_t*)optarg);
 			} break;
 
 			case 'u':
@@ -141,7 +141,7 @@ mirac_config_s mirac_config_from_cli(
 		mirac_c_exit(-1);
 	}
 
-	// NOTE: If entry symbol is not provided, default to 'main'.
+	// note: if entry symbol is not provided, default to 'main'.
 	if (config.entry.length <= 0)
 	{
 		config.entry = mirac_string_view_from_cstring("main");

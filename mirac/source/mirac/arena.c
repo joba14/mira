@@ -19,7 +19,7 @@ mirac_node_s* mirac_node_from_size(
 	const uint64_t size)
 {
 	mirac_debug_assert(size > 0);
-	mirac_node_s* node = (mirac_node_s*)mirac_c_malloc(sizeof(mirac_node_s));
+	mirac_node_s* const node = (mirac_node_s* const)mirac_c_malloc(sizeof(mirac_node_s));
 
 	if (NULL == node)
 	{

@@ -17,8 +17,8 @@
 
 void mirac_debug_assert_impl(
 	const bool_t expression,
-	const char* const expression_string,
-	const char* const file,
+	const char_t* const expression_string,
+	const char_t* const file,
 	const uint64_t line)
 {
 	if (!expression)
@@ -30,5 +30,5 @@ void mirac_debug_assert_impl(
 	}
 }
 #else
-_Static_assert(1, ""); // NOTE: To prevent empty translation unit error.
+_Static_assert(1, ""); // note: to prevent empty translation unit error.
 #endif

@@ -19,8 +19,9 @@
 #include <limits.h>
 
 typedef bool bool_t;
+typedef char char_t;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib malloc function.
  * 
@@ -33,7 +34,7 @@ typedef bool bool_t;
 void* mirac_c_malloc(
 	const uint64_t size);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib realloc function.
  * 
@@ -48,7 +49,7 @@ void* mirac_c_realloc(
 	void* pointer,
 	const uint64_t size);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib free function.
  * 
@@ -59,7 +60,7 @@ void* mirac_c_realloc(
 void mirac_c_free(
 	const void* pointer);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib exit function.
  * 
@@ -68,7 +69,7 @@ void mirac_c_free(
 void mirac_c_exit(
 	const int32_t code);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib memset function.
  * 
@@ -81,7 +82,7 @@ void mirac_c_memset(
 	const uint8_t value,
 	const uint64_t length);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib memcpy function.
  * 
@@ -94,7 +95,7 @@ void mirac_c_memcpy(
 	const void* const source,
 	const uint64_t length);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib memcmp function.
  * 
@@ -109,7 +110,7 @@ int32_t mirac_c_memcmp(
 	const uint8_t* const right,
 	const uint64_t length);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strlen function.
  * 
@@ -118,9 +119,9 @@ int32_t mirac_c_memcmp(
  * @return uint64_t
  */
 uint64_t mirac_c_strlen(
-	const char* const cstring);
+	const char_t* const cstring);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strcmp function.
  * 
@@ -130,10 +131,10 @@ uint64_t mirac_c_strlen(
  * @return int32_t
  */
 int32_t mirac_c_strcmp(
-	const char* const left,
-	const char* const right);
+	const char_t* const left,
+	const char_t* const right);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strcmp function.
  * 
@@ -144,21 +145,21 @@ int32_t mirac_c_strcmp(
  * @return int32_t
  */
 int32_t mirac_c_strncmp(
-	const char* const left,
-	const char* const right,
+	const char_t* const left,
+	const char_t* const right,
 	const uint64_t length);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Wrapper for c's stdlib strchr function.
  * 
  * @param string string to search in
  * @param c      char to search
  * 
- * @return char*
+ * @return char_t*
  */
-char* mirac_c_strchr(
-	const char* const string,
+char_t* mirac_c_strchr(
+	const char_t* const string,
 	const int32_t c);
 
 #endif

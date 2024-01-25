@@ -23,7 +23,7 @@
  * @param ...    arguments of the log
  */
 void mirac_logger_log(
-	const char* const format,
+	const char_t* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 
 #ifndef NDEBUG
@@ -34,7 +34,7 @@ void mirac_logger_log(
  * @param ...    arguments of the log
  */
 void mirac_logger_debug(
-	const char* const format,
+	const char_t* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 #else
 #	define mirac_logger_debug(_format, ...) (void)(_format)
@@ -47,7 +47,7 @@ void mirac_logger_debug(
  * @param ...    arguments of the log
  */
 void mirac_logger_info(
-	const char* const format,
+	const char_t* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 
 /**
@@ -57,7 +57,7 @@ void mirac_logger_info(
  * @param ...    arguments of the log
  */
 void mirac_logger_warn(
-	const char* const format,
+	const char_t* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 
 /**
@@ -67,7 +67,7 @@ void mirac_logger_warn(
  * @param ...    arguments of the log
  */
 void mirac_logger_error(
-	const char* const format,
+	const char_t* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 
 #endif

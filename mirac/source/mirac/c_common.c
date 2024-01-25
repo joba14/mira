@@ -92,35 +92,35 @@ int32_t mirac_c_memcmp(
 }
 
 uint64_t mirac_c_strlen(
-	const char* const cstring)
+	const char_t* const cstring)
 {
 	mirac_debug_assert(cstring != NULL);
 	return (uint64_t)strlen(cstring);
 }
 
 int32_t mirac_c_strcmp(
-	const char* const left,
-	const char* const right)
+	const char_t* const left,
+	const char_t* const right)
 {
 	mirac_debug_assert(left != NULL);
 	mirac_debug_assert(right != NULL);
-	return strcmp((const char*)left, (const char*)right);
+	return strcmp((const char_t*)left, (const char_t*)right);
 }
 
 int32_t mirac_c_strncmp(
-	const char* const left,
-	const char* const right,
+	const char_t* const left,
+	const char_t* const right,
 	const uint64_t length)
 {
 	mirac_debug_assert(left != NULL);
 	mirac_debug_assert(right != NULL);
-	return strncmp((const char*)left, (const char*)right, (size_t)length);
+	return strncmp((const char_t*)left, (const char_t*)right, (size_t)length);
 }
 
-char* mirac_c_strchr(
-	const char* const string,
+char_t* mirac_c_strchr(
+	const char_t* const string,
 	const int32_t c)
 {
 	mirac_debug_assert(string != NULL);
-	return strchr((const char*)string, c);
+	return strchr((const char_t*)string, c);
 }

@@ -1,0 +1,15 @@
+
+#ifndef __main_mira__
+#define __main_mira__
+
+#include "std/posix.mira"
+#include "std/io.mira"
+
+sec .data str msg "hello, world!\n"
+
+sec .text func _start {
+	msg call put-cstr
+	0 call exit
+}
+
+#endif

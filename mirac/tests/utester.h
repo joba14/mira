@@ -20,6 +20,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+typedef bool bool_t;
+typedef char char_t;
+
 #define ansi_red    "\033[91m"
 #define ansi_green  "\033[92m"
 #define ansi_yellow "\033[93m"
@@ -76,7 +79,7 @@ typedef struct utester_test_s utester_test_s;
 
 struct utester_test_s
 {
-	const char* name;
+	const char_t* name;
 	void(*function)(utester_test_s* const);
 	bool_t verbose;
 	bool_t status;
@@ -118,7 +121,7 @@ struct utester_test_s
 		if (!test->status)                                                     \
 		{                                                                      \
 			utester_logger_error("|   assert '%s' failed at %s:%lu",           \
-				#_expression, (const char*)__FILE__, (uint64_t)__LINE__        \
+				#_expression, (const char_t*)__FILE__, (uint64_t)__LINE__        \
 			);                                                                 \
 			return;                                                            \
 		}                                                                      \
@@ -157,7 +160,7 @@ struct utester_test_s
 	                                                                           \
 	int32_t main(void)                                                         \
 	{                                                                          \
-		const char* const name = #_suite_name;                                 \
+		const char_t* const name = #_suite_name;                                 \
 		utester_test_s* const * tests =                                        \
 			(utester_test_s* const *)_va_tests_to_array(__VA_ARGS__);          \
 		uint64_t tests_count = _va_tests_get_length(__VA_ARGS__);              \
@@ -211,7 +214,7 @@ struct utester_test_s
 		return !(0 == failed_count);                                           \
 	}                                                                          \
 	                                                                           \
-	_Static_assert(1, "") // NOTE: Left for ';' support after calling the macro.
+	_Static_assert(1, "") // note: left for ';' support after calling the macro.
 
 /**
  * @example

@@ -15,8 +15,8 @@
 
 #include <mirac/compiler.h>
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 void nasm_x86_64_linux_compile_ast_unit(
 	mirac_compiler_s* const compiler);
 

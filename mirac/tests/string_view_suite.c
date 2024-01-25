@@ -10,7 +10,7 @@
  * @date 2023-12-16
  */
 
-#include <utester.h>
+#include "utester.h"
 
 #include <mirac/c_common.h>
 #include <mirac/string_view.h>
@@ -199,7 +199,7 @@ utester_define_test(trim_left_white_space)
 
 utester_define_test(split_left)
 {
-	const char* test_string = "General Kenobi, you are a bold one!";
+	const char_t* test_string = "General Kenobi, you are a bold one!";
 	mirac_string_view_s text = mirac_string_view_from_cstring(test_string);
 	mirac_string_view_s left = {0};
 
@@ -242,7 +242,7 @@ utester_define_test(split_left)
 
 utester_define_test(split_left_white_space)
 {
-	const char* test_string = "General Kenobi,  you   are    a     bold      one!";
+	const char_t* test_string = "General Kenobi,  you   are    a     bold      one!";
 	mirac_string_view_s text = mirac_string_view_from_cstring(test_string);
 	mirac_string_view_s left = {0};
 	uint64_t white_space_length;

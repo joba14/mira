@@ -43,8 +43,8 @@ static FILE* validate_and_open_file_for_reading(
 static FILE* validate_and_open_file_for_writing(
 	const mirac_string_view_s file_path);
 
-// TODO: Document!
-// TODO: Write unit tests!
+// todo: document!
+// todo: write unit tests!
 static void process_source_file_into_output_file(
 	const mirac_string_view_s source_file_path,
 	const mirac_string_view_s output_file_path,
@@ -52,11 +52,11 @@ static void process_source_file_into_output_file(
 
 int32_t main(
 	const int32_t argc,
-	const char** const argv)
+	const char_t** const argv)
 {
 	uint64_t options_index;
 	mirac_config_s config = mirac_config_from_cli(argc, argv, &options_index);
-	const char** const source_files = argv + options_index;
+	const char_t** const source_files = argv + options_index;
 	const uint64_t source_files_count = (uint64_t)argc - options_index;
 
 	if (source_files_count <= 0)
@@ -75,8 +75,8 @@ int32_t main(
 
 	for (uint64_t source_file_index = 0; source_file_index < source_files_count; source_file_index += 2)
 	{
-		const char* const source_file_pointer = source_files[source_file_index + 0];
-		const char* const output_file_pointer = source_files[source_file_index + 1];
+		const char_t* const source_file_pointer = source_files[source_file_index + 0];
+		const char_t* const output_file_pointer = source_files[source_file_index + 1];
 		mirac_debug_assert(source_file_pointer != NULL);
 		mirac_debug_assert(output_file_pointer != NULL);
 
@@ -203,12 +203,12 @@ static void process_source_file_into_output_file(
 	mirac_parser_s parser = mirac_parser_from_parts(config, &arena, &lexer);
 	mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
-	// TODO: remove:
+	// todo: remove:
 	// mirac_ast_unit_print(&unit, 0);
 
 	if (!config->unsafe)
 	{
-		// TODO: implement checker and use it here!
+		// todo: implement checker and use it here!
 	}
 
 	mirac_compiler_s compiler = mirac_compiler_from_parts(config, &arena, &unit, output_file);

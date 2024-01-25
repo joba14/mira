@@ -4,7 +4,6 @@ Here is a template for shell scripts, used to build and run the tests suite:
 # !/bin/sh
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-UTESTER_DIR="$SCRIPT_DIR/../../tools/utester"
 MIRAC_DIR="$SCRIPT_DIR/.."
 
 # --------------------------------------------------------------------------- #
@@ -12,7 +11,6 @@ MIRAC_DIR="$SCRIPT_DIR/.."
 PROJECT_NAME="<ENTER_TESTS_SUITE_FILE_NAME>"
 
 INCLUDES="
-	-I$UTESTER_DIR/include
 	-I$MIRAC_DIR/include
 "
 

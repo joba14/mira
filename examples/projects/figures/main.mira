@@ -1,4 +1,7 @@
 
+#ifndef __main_mira__
+#define __main_mira__
+
 ; ------------------------------------------------------------------
 ; the program below prints out to figures: a square and a triangle.
 ; ---
@@ -26,7 +29,7 @@
 ; 
 ; ------------------------------------------------------------------
 
-#include "./../std/io.mira"
+#include "std/io.mira"
 
 ; constants
 #define width 11
@@ -83,3 +86,5 @@ sec .text func _start {
 	call print-triangle
 	0 call exit
 }
+
+#endif

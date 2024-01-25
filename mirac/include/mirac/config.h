@@ -36,7 +36,7 @@ typedef struct
 	bool_t strip;
 } mirac_config_s;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Create config object by parsing cli arguments.
  * 
@@ -48,10 +48,10 @@ typedef struct
  */
 mirac_config_s mirac_config_from_cli(
 	const int32_t argc,
-	const char** const argv,
+	const char_t** const argv,
 	uint64_t* const config_end_index);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Print the usage banner.
  */

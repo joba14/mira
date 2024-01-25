@@ -2,7 +2,6 @@
 # !/bin/sh
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-UTESTER_DIR="$SCRIPT_DIR/../../tools/utester"
 MIRAC_DIR="$SCRIPT_DIR/.."
 
 # --------------------------------------------------------------------------- #
@@ -10,7 +9,6 @@ MIRAC_DIR="$SCRIPT_DIR/.."
 PROJECT_NAME="string_view_suite"
 
 INCLUDES="
-	-I$UTESTER_DIR/include
 	-I$MIRAC_DIR/include
 "
 

@@ -17,7 +17,7 @@
 #include <mirac/debug.h>
 #include <mirac/arena.h>
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 
 #define mirac_define_linked_list_type(_type_name, _element_type)               \
 	typedef struct _type_name ## _node_s _type_name ## _node_s;                \
@@ -44,7 +44,7 @@
 		_type_name ## _s* const linked_list,                                   \
 		_element_type data);                                                   \
 	                                                                           \
-	_Static_assert(1, "") // NOTE: Left for ';' support after calling the macro.
+	_Static_assert(1, "") // note: left for ';' support after calling the macro.
 
 #define mirac_implement_linked_list_type(_type_name, _element_type)            \
 	_type_name ## _s _type_name ## _from_parts(                                \
@@ -92,6 +92,6 @@
 		linked_list->count++;                                                  \
 	}                                                                          \
 	                                                                           \
-	_Static_assert(1, "") // NOTE: Left for ';' support after calling the macro.
+	_Static_assert(1, "") // note: left for ';' support after calling the macro.
 
 #endif

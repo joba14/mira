@@ -49,7 +49,7 @@ void mirac_compiler_compile_ast_unit(
 
 		default:
 		{
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 }

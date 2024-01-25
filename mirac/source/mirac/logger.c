@@ -31,12 +31,12 @@
 
 static void log_with_tag(
 	FILE* const stream,
-	const char* const tag,
-	const char* const format,
+	const char_t* const tag,
+	const char_t* const format,
 	va_list args);
 
 void mirac_logger_log(
-	const char* const format,
+	const char_t* const format,
 	...)
 {
 	mirac_debug_assert(format != NULL);
@@ -47,7 +47,7 @@ void mirac_logger_log(
 
 #ifndef NDEBUG
 void mirac_logger_debug(
-	const char* const format,
+	const char_t* const format,
 	...)
 {
 	mirac_debug_assert(format != NULL);
@@ -58,7 +58,7 @@ void mirac_logger_debug(
 #endif
 
 void mirac_logger_info(
-	const char* const format,
+	const char_t* const format,
 	...)
 {
 	mirac_debug_assert(format != NULL);
@@ -68,7 +68,7 @@ void mirac_logger_info(
 }
 
 void mirac_logger_warn(
-	const char* const format,
+	const char_t* const format,
 	...)
 {
 	mirac_debug_assert(format != NULL);
@@ -78,7 +78,7 @@ void mirac_logger_warn(
 }
 
 void mirac_logger_error(
-	const char* const format,
+	const char_t* const format,
 	...)
 {
 	mirac_debug_assert(format != NULL);
@@ -89,8 +89,8 @@ void mirac_logger_error(
 
 static void log_with_tag(
 	FILE* const stream,
-	const char* const tag,
-	const char* const format,
+	const char_t* const tag,
+	const char_t* const format,
 	va_list args)
 {
 	mirac_debug_assert(stream != NULL);

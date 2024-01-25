@@ -17,80 +17,80 @@
 
 #include <stdio.h>
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_expr(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_as(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_scope(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_def_mem(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_def_str(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_def(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
@@ -115,7 +115,7 @@ void nasm_x86_64_linux_compile_ast_unit(
 		nasm_x86_64_linux_compile_ast_def(compiler, defs_iterator->data);
 	}
 
-	// TODO(#001): This should be reworked to be more dynamic in regard to specific functions.
+	// todo(#001): this should be reworked to be more dynamic in regard to specific functions.
 	//             In other words - it should NOT be pre-hard-coded!
 	(void)fprintf(compiler->file, "\n");
 	(void)fprintf(compiler->file, "section .bss\n");
@@ -580,7 +580,7 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 		{
 			mirac_logger_debug("encountered an invalid token '" mirac_sv_fmt "' while compiling expr block.",
 				mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 }
@@ -625,7 +625,7 @@ static void nasm_x86_64_linux_compile_ast_block_ident(
 
 		default:
 		{
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 }
@@ -659,7 +659,7 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 	{
 		case mirac_ast_def_type_func:
 		{
-			// TODO(#001): This should be reworked as well, since it is part of #001 todo.
+			// todo(#001): this should be reworked as well, since it is part of #001 todo.
 			(void)fprintf(compiler->file, "\tmov rax, rsp\n");
 			(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
 			(void)fprintf(compiler->file, "\tcall func_%lu\n", ident_block->def->as.func_def.index);
@@ -669,7 +669,7 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 
 		default:
 		{
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 }
@@ -853,7 +853,7 @@ static void nasm_x86_64_linux_compile_ast_block(
 
 		default:
 		{
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 }
@@ -878,7 +878,7 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 
 	if (func_def->is_entry)
 	{
-		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
+		// todo(#001): this should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
 		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_def->identifier.as.ident));
 		(void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
@@ -886,7 +886,7 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	}
 	else
 	{
-		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
+		// todo(#001): this should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- func --- \n");
 		(void)fprintf(compiler->file, "func_%lu:\n", func_def->index);
 		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
@@ -897,7 +897,7 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 
 	if (!func_def->is_entry)
 	{
-		// TODO(#001): This should be reworked as well, since it is part of #001 todo.
+		// todo(#001): this should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, "\t;; --- func-ret --- \n");
 		(void)fprintf(compiler->file, "\tmov rax, rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
@@ -978,7 +978,7 @@ static void nasm_x86_64_linux_compile_ast_def(
 
 		default:
 		{
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 

@@ -24,7 +24,7 @@ struct mirac_node_s
 	mirac_node_s* next;
 };
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Create arena node, allocate it's pointer with provided size.
  * 
@@ -35,7 +35,7 @@ struct mirac_node_s
 mirac_node_s* mirac_node_from_size(
 	const uint64_t size);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Destroy and deallocate the inner pointer and the node itself.
  * 
@@ -51,7 +51,7 @@ typedef struct
 	bool_t is_used;
 } mirac_arena_s;
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Create arena object.
  * 
@@ -60,7 +60,7 @@ typedef struct
 mirac_arena_s mirac_arena_from_parts(
 	void);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Destroy and deallocate the entire arena (and it's nodes).
  * 
@@ -69,7 +69,7 @@ mirac_arena_s mirac_arena_from_parts(
 void mirac_arena_destroy(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 /**
  * @brief Allocate a region of memory with provided size and store the pointer
  * to it wihtin arena's node.

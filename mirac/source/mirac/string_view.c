@@ -18,7 +18,7 @@
 #include <string.h>
 
 mirac_string_view_s mirac_string_view_from_parts(
-	const char* const data,
+	const char_t* const data,
 	const uint64_t length)
 {
 	mirac_debug_assert(data != NULL);
@@ -30,7 +30,7 @@ mirac_string_view_s mirac_string_view_from_parts(
 }
 
 mirac_string_view_s mirac_string_view_from_cstring(
-	const char* const cstring)
+	const char_t* const cstring)
 {
 	mirac_debug_assert(cstring != NULL);
 	const uint64_t length = (uint64_t)strlen(cstring);
@@ -70,7 +70,7 @@ bool_t mirac_string_view_equal(
 
 mirac_string_view_s mirac_string_view_trim_left(
 	const mirac_string_view_s string_view,
-	const char char_to_trim,
+	const char_t char_to_trim,
 	uint64_t* const trimmed_length)
 {
 	mirac_debug_assert(string_view.data != NULL);
@@ -97,7 +97,7 @@ mirac_string_view_s mirac_string_view_trim_left(
 
 mirac_string_view_s mirac_string_view_trim_right(
 	const mirac_string_view_s string_view,
-	const char char_to_trim,
+	const char_t char_to_trim,
 	uint64_t* const trimmed_length)
 {
 	mirac_debug_assert(string_view.data != NULL);
@@ -124,7 +124,7 @@ mirac_string_view_s mirac_string_view_trim_right(
 
 mirac_string_view_s mirac_string_view_trim(
 	const mirac_string_view_s string_view,
-	const char char_to_trim)
+	const char_t char_to_trim)
 {
 	mirac_debug_assert(string_view.data != NULL);
 	return mirac_string_view_trim_left(
@@ -165,7 +165,7 @@ mirac_string_view_s mirac_string_view_trim_left_white_space(
 
 mirac_string_view_s mirac_string_view_split_left(
 	mirac_string_view_s* const string_view,
-	const char char_to_split_at)
+	const char_t char_to_split_at)
 {
 	mirac_debug_assert(string_view != NULL);
 	mirac_debug_assert(string_view->data != NULL);

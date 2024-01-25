@@ -28,215 +28,215 @@ mirac_implement_linked_list_type(mirac_ast_def_list, mirac_ast_def_s*);
 		mirac_c_exit(-1);                                                      \
 	} while (0)
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_ident_s create_ast_block_ident(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_call_s create_ast_block_call(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_as_s create_ast_block_as(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_scope_s create_ast_block_scope(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_if_s create_ast_block_if(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_else_s create_ast_block_else(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_loop_s create_ast_block_loop(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_s* create_ast_block(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_func_s create_ast_def_func(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_mem_s create_ast_def_mem(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_str_s create_ast_def_str(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_s* create_ast_def(
 	mirac_arena_s* const arena);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static bool_t is_token_valid_expr_block_token_by_type(
 	const mirac_token_type_e type);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_ident_s parse_ast_block_ident(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_call_s parse_ast_block_call(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_as_s parse_ast_block_as(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_if_s parse_ast_block_if(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_else_s parse_ast_block_else(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_loop_s parse_ast_block_loop(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_s* parse_ast_block(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_func_s parse_ast_def_func(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_mem_s parse_ast_def_mem(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_str_s parse_ast_def_str(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_def_s* parse_ast_def(
 	mirac_parser_s* const parser);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_expr(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_ident(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_call(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_as(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_scope(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_if(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_else(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block_loop(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_def_func(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_def_mem(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_def_str(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
-// TODO: Write unit tests!
-// TODO: Document!
+// todo: write unit tests!
+// todo: document!
 static void print_ast_def(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
@@ -253,7 +253,7 @@ mirac_string_view_s mirac_ast_block_scope_type_to_string_view(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_ast_block_scope_type_e' type with raw value of '%u'.", type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 			return mirac_string_view_from_parts("", 0);
 		} break;
 	}
@@ -277,7 +277,7 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_ast_block_type_e' type with raw value of '%u'.", type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 			return mirac_string_view_from_parts("", 0);
 		} break;
 	}
@@ -295,7 +295,7 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_ast_def_type_e' type with raw value of '%u'.", type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 			return mirac_string_view_from_parts("", 0);
 		} break;
 	}
@@ -315,7 +315,7 @@ mirac_token_s mirac_ast_def_get_identifier_token(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_ast_def_type_e' type with raw value of '%u'.", def->type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 			return mirac_token_from_type(mirac_token_type_none);
 		} break;
 	}
@@ -733,7 +733,7 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_token_type_e' type with raw value of '%u'.", token.type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 
@@ -1211,7 +1211,7 @@ parse_def_by_token:
 		{
 			def->type = mirac_ast_def_type_func;
 			def->as.func_def = parse_ast_def_func(parser);
-			// NOTE: If the func is an entry, it is marked as used to prevent error in the cross referencing:
+			// note: If the func is an entry, it is marked as used to prevent error in the cross referencing:
 			if (def->as.func_def.is_entry) { def->is_used = true; }
 		} break;
 
@@ -1245,7 +1245,7 @@ parse_def_by_token:
 	return def;
 }
 
-// TODO(#002): Update and standardize the priting of AST unit and all its components!
+// todo(#002): update and standardize the priting of AST unit and all its components!
 
 static void print_ast_block_expr(
 	const mirac_ast_block_s* const block,
@@ -1487,7 +1487,7 @@ static void print_ast_block(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_ast_block_type_e' type with raw value of '%u'.", block->type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 
@@ -1631,7 +1631,7 @@ static void print_ast_def(
 		default:
 		{
 			mirac_logger_debug("encountered an unknown 'mirac_ast_def_type_e' type with raw value of '%u'.", def->type);
-			mirac_debug_assert(0); // NOTE: Should never reach this block.
+			mirac_debug_assert(0); // note: should never reach this block.
 		} break;
 	}
 

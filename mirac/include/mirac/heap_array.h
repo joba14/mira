@@ -17,7 +17,7 @@
 #include <mirac/debug.h>
 #include <mirac/arena.h>
 
-// TODO: Write unit tests!
+// todo: write unit tests!
 
 #define mirac_define_heap_array_type(_type_name, _element_type)                \
 	typedef struct                                                             \
@@ -44,7 +44,7 @@
 		_type_name ## _s* const heap_array,                                    \
 		const uint64_t index);                                                 \
 	                                                                           \
-	_Static_assert(1, "") // NOTE: Left for ';' support after calling the macro.
+	_Static_assert(1, "") // note: left for ';' support after calling the macro.
 
 #define mirac_implement_heap_array_type(_type_name, _element_type)             \
 	_type_name ## _s _type_name ## _from_parts(                                \
@@ -119,6 +119,6 @@
 		return &heap_array->data[index];                                       \
 	}                                                                          \
 	                                                                           \
-	_Static_assert(1, "") // NOTE: Left for ';' support after calling the macro.
+	_Static_assert(1, "") // note: left for ';' support after calling the macro.
 
 #endif
