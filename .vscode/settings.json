@@ -2,10 +2,10 @@
 {
 	"todo-tree.general.showIconsInsteadOfTagsInStatusBar": true,
 	"todo-tree.general.tags": [
-		"BUG",
-		"FIXME",
-		"TODO",
-		"NOTE"
+		"bug",
+		"fixme",
+		"todo",
+		"note"
 	],
 	"todo-tree.highlights.backgroundColourScheme": [
 		"red",
