@@ -54,7 +54,7 @@ int32_t main(
 	const int32_t argc,
 	const char_t** const argv)
 {
-	uint64_t options_index;
+	uint64_t options_index = 0;
 	mirac_config_s config = mirac_config_from_cli(argc, argv, &options_index);
 	const char_t** const source_files = argv + options_index;
 	const uint64_t source_files_count = (uint64_t)argc - options_index;
@@ -77,11 +77,13 @@ int32_t main(
 	{
 		const char_t* const source_file_pointer = source_files[source_file_index + 0];
 		const char_t* const output_file_pointer = source_files[source_file_index + 1];
+
 		mirac_debug_assert(source_file_pointer != NULL);
 		mirac_debug_assert(output_file_pointer != NULL);
 
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_file_pointer);
 		const mirac_string_view_s output_file_path = mirac_string_view_from_cstring(output_file_pointer);
+
 		process_source_file_into_output_file(source_file_path, output_file_path, &config);
 	}
 
@@ -215,6 +217,6 @@ static void process_source_file_into_output_file(
 	mirac_compiler_compile_ast_unit(&compiler);
 
 	mirac_arena_destroy(&arena);
-	fclose(source_file);
-	fclose(output_file);
+	(void)fclose(source_file);
+	(void)fclose(output_file);
 }
