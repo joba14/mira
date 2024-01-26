@@ -54,6 +54,7 @@ sec .text func fputs req u64 ptr i64 {
 	call write drop
 }
 
+#define stdin  0
 #define stdout 1
 #define stderr 2
 
