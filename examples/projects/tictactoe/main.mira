@@ -1,0 +1,172 @@
+
+#ifndef __main_mira__
+#define __main_mira__
+
+#include "std/posix.mira"
+#include "std/io.mira"
+
+sec .bss mem curr_player 1
+sec .bss mem logical_grid 9
+sec .bss mem input_buffer 1
+
+sec .data str invalid_input1 "invalid input was provided - not in range [1; 9]!\n\0"
+sec .data str invalid_input2 "invalid input was provided - cell already was picked!\n\0"
+sec .data str win_message " has won!\n\0"
+sec .data str stale_mate_message "stale mate!\n\0"
+
+
+sec .text func input_logical_grid {
+	2 input_buffer stdin call read drop
+	10 call putc input_buffer ld08
+
+	if [ dup 49 < ] {
+		invalid_input1 call eput-cstr
+		1 call exit
+	}
+
+	if [ dup 57 > ] {
+		invalid_input1 call eput-cstr
+		1 call exit
+	}
+
+	dup 49 - logical_grid + ld08 dup if [ 88 == swap 79 == || ] {
+		invalid_input2 call eput-cstr
+		1 call exit
+	}
+
+	49 - logical_grid + curr_player ld08 swap st08
+}
+
+sec .text func draw_logical_grid {
+	0 loop [ dup 3 < ] {
+		0 loop [ dup 3 < ] {
+			over over swap 3 * + logical_grid + ld08
+			call putc 32 call putc
+			++
+		} drop
+
+		10 call putc
+		++
+	} drop
+}
+
+sec .text func check_for_win {
+	if [
+		logical_grid 0 + ld08
+		logical_grid 1 + ld08 dup
+		logical_grid 2 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 3 + ld08
+		logical_grid 4 + ld08 dup
+		logical_grid 5 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 6 + ld08
+		logical_grid 7 + ld08 dup
+		logical_grid 8 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 0 + ld08
+		logical_grid 3 + ld08 dup
+		logical_grid 6 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 1 + ld08
+		logical_grid 4 + ld08 dup
+		logical_grid 7 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 2 + ld08
+		logical_grid 5 + ld08 dup
+		logical_grid 8 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 0 + ld08
+		logical_grid 4 + ld08 dup
+		logical_grid 8 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+
+	if [
+		logical_grid 2 + ld08
+		logical_grid 4 + ld08 dup
+		logical_grid 6 + ld08
+		== rot rot == &&
+	] {
+		curr_player ld08 call putc win_message call put-cstr
+		0 call exit
+	}
+}
+
+sec .text func _start {
+	49 logical_grid 0 + st08
+	50 logical_grid 1 + st08
+	51 logical_grid 2 + st08
+	52 logical_grid 3 + st08
+	53 logical_grid 4 + st08
+	54 logical_grid 5 + st08
+	55 logical_grid 6 + st08
+	56 logical_grid 7 + st08
+	57 logical_grid 8 + st08
+
+	call draw_logical_grid
+	88 curr_player st08
+
+	0 loop [ dup 9 < ] {
+		curr_player ld08 call putc
+		58 call putc
+		32 call putc
+		call input_logical_grid
+
+		call draw_logical_grid
+		call check_for_win
+
+		curr_player ld08 if [ 88 == ] {
+			79 curr_player st08
+		}
+		else {
+			88 curr_player st08
+		}
+		
+		++
+	} drop
+
+	stale_mate_message call put-cstr
+	0 call exit
+}
+
+#endif
