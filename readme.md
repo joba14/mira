@@ -25,7 +25,7 @@
 
 This programming language is currently in early stages of development. Use with caution! This language is highly experimental and may not have all the safety features in place.
 
-Expect rapid changes, and be aware that the language is not yet stable for production use. Feedback and contributions are welcome as we work towards a more robust and reliable version.
+Expect rapid changes, and be aware that the language is not yet stable for production use. Feedback and contributions are welcome.
 
 [(to the top)](#mira)
 
