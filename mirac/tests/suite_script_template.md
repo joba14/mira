@@ -3,7 +3,7 @@ Here is a template for shell scripts, used to build and run the tests suite:
 ```sh
 # !/bin/sh
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/mirac_null && pwd )"
 MIRAC_DIR="$SCRIPT_DIR/.."
 
 # --------------------------------------------------------------------------- #

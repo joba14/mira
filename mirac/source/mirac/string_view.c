@@ -21,7 +21,7 @@ mirac_string_view_s mirac_string_view_from_parts(
 	const char_t* const data,
 	const uint64_t length)
 {
-	mirac_debug_assert(data != NULL);
+	mirac_debug_assert(data != mirac_null);
 	return (mirac_string_view_s)
 	{
 		.data = data,
@@ -32,7 +32,7 @@ mirac_string_view_s mirac_string_view_from_parts(
 mirac_string_view_s mirac_string_view_from_cstring(
 	const char_t* const cstring)
 {
-	mirac_debug_assert(cstring != NULL);
+	mirac_debug_assert(cstring != mirac_null);
 	const uint64_t length = (uint64_t)strlen(cstring);
 	return mirac_string_view_from_parts(cstring, length);
 }
@@ -42,8 +42,8 @@ bool_t mirac_string_view_equal_range(
 	const mirac_string_view_s right,
 	const uint64_t length)
 {
-	mirac_debug_assert(left.data != NULL);
-	mirac_debug_assert(right.data != NULL);
+	mirac_debug_assert(left.data != mirac_null);
+	mirac_debug_assert(right.data != mirac_null);
 
 	if (left.length < length || right.length < length)
 	{
@@ -57,8 +57,8 @@ bool_t mirac_string_view_equal(
 	const mirac_string_view_s left,
 	const mirac_string_view_s right)
 {
-	mirac_debug_assert(left.data != NULL);
-	mirac_debug_assert(right.data != NULL);
+	mirac_debug_assert(left.data != mirac_null);
+	mirac_debug_assert(right.data != mirac_null);
 
 	if (left.length != right.length)
 	{
@@ -73,7 +73,7 @@ mirac_string_view_s mirac_string_view_trim_left(
 	const char_t char_to_trim,
 	uint64_t* const trimmed_length)
 {
-	mirac_debug_assert(string_view.data != NULL);
+	mirac_debug_assert(string_view.data != mirac_null);
 
 	if (string_view.length <= 0)
 	{
@@ -87,7 +87,7 @@ mirac_string_view_s mirac_string_view_trim_left(
 		++index;
 	}
 
-	if (trimmed_length != NULL)
+	if (trimmed_length != mirac_null)
 	{
 		*trimmed_length = index;
 	}
@@ -100,7 +100,7 @@ mirac_string_view_s mirac_string_view_trim_right(
 	const char_t char_to_trim,
 	uint64_t* const trimmed_length)
 {
-	mirac_debug_assert(string_view.data != NULL);
+	mirac_debug_assert(string_view.data != mirac_null);
 
 	if (string_view.length <= 0)
 	{
@@ -114,7 +114,7 @@ mirac_string_view_s mirac_string_view_trim_right(
 		++index;
 	}
 
-	if (trimmed_length != NULL)
+	if (trimmed_length != mirac_null)
 	{
 		*trimmed_length = index;
 	}
@@ -126,9 +126,9 @@ mirac_string_view_s mirac_string_view_trim(
 	const mirac_string_view_s string_view,
 	const char_t char_to_trim)
 {
-	mirac_debug_assert(string_view.data != NULL);
+	mirac_debug_assert(string_view.data != mirac_null);
 	return mirac_string_view_trim_left(
-		mirac_string_view_trim_right(string_view, char_to_trim, NULL), char_to_trim, NULL
+		mirac_string_view_trim_right(string_view, char_to_trim, mirac_null), char_to_trim, mirac_null
 	);
 }
 
@@ -136,7 +136,7 @@ mirac_string_view_s mirac_string_view_trim_left_white_space(
 	const mirac_string_view_s string_view,
 	uint64_t* const trimmed_length)
 {
-	mirac_debug_assert(string_view.data != NULL);
+	mirac_debug_assert(string_view.data != mirac_null);
 
 	if (string_view.length <= 0)
 	{
@@ -155,7 +155,7 @@ mirac_string_view_s mirac_string_view_trim_left_white_space(
 		++index;
 	}
 
-	if (trimmed_length != NULL)
+	if (trimmed_length != mirac_null)
 	{
 		*trimmed_length = index;
 	}
@@ -167,8 +167,8 @@ mirac_string_view_s mirac_string_view_split_left(
 	mirac_string_view_s* const string_view,
 	const char_t char_to_split_at)
 {
-	mirac_debug_assert(string_view != NULL);
-	mirac_debug_assert(string_view->data != NULL);
+	mirac_debug_assert(string_view != mirac_null);
+	mirac_debug_assert(string_view->data != mirac_null);
 
 	if (string_view->length <= 0)
 	{
@@ -198,8 +198,8 @@ mirac_string_view_s mirac_string_view_split_left_white_space(
 	mirac_string_view_s* const string_view,
 	uint64_t* const white_space_length)
 {
-	mirac_debug_assert(string_view != NULL);
-	mirac_debug_assert(string_view->data != NULL);
+	mirac_debug_assert(string_view != mirac_null);
+	mirac_debug_assert(string_view->data != mirac_null);
 
 	if (string_view->length <= 0)
 	{

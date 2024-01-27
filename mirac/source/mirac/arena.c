@@ -21,7 +21,7 @@ mirac_node_s* mirac_node_from_size(
 	mirac_debug_assert(size > 0);
 	mirac_node_s* const node = (mirac_node_s* const)mirac_c_malloc(sizeof(mirac_node_s));
 
-	if (NULL == node)
+	if (mirac_null == node)
 	{
 		mirac_logger_error("internal failure -- failed to allocate memory node.");
 		mirac_c_exit(-1);
@@ -29,21 +29,21 @@ mirac_node_s* mirac_node_from_size(
 
 	node->pointer = (void*)mirac_c_malloc(size);
 
-	if (NULL == node->pointer)
+	if (mirac_null == node->pointer)
 	{
 		mirac_logger_error("internal failure -- failed to allocate memory node's pointer.");
 		mirac_c_exit(-1);
 	}
 
 	node->size = size;
-	node->next = NULL;
+	node->next = mirac_null;
 	return node;
 }
 
 void mirac_node_destroy(
 	mirac_node_s* const node)
 {
-	mirac_debug_assert(node != NULL);
+	mirac_debug_assert(node != mirac_null);
 	mirac_c_free(node->pointer);
 	mirac_c_free(node);
 }
@@ -58,7 +58,7 @@ mirac_arena_s mirac_arena_from_parts(
 void mirac_arena_destroy(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 
 	if (!arena->is_used)
 	{
@@ -66,7 +66,7 @@ void mirac_arena_destroy(
 	}
 
 	const mirac_node_s* node_iterator = arena->begin;
-	mirac_debug_assert(node_iterator != NULL);
+	mirac_debug_assert(node_iterator != mirac_null);
 
 	while (node_iterator)
 	{
@@ -75,38 +75,38 @@ void mirac_arena_destroy(
 		mirac_node_destroy((mirac_node_s* const)node);
 	}
 
-	arena->begin = NULL;
-	arena->end = NULL;
+	arena->begin = mirac_null;
+	arena->end = mirac_null;
 }
 
 void* mirac_arena_malloc(
 	mirac_arena_s* const arena,
 	const uint64_t size)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_debug_assert(size > 0);
 	arena->is_used = true;
 
-	if (NULL == arena->end)
+	if (mirac_null == arena->end)
 	{
-		mirac_debug_assert(NULL == arena->begin);
+		mirac_debug_assert(mirac_null == arena->begin);
 		arena->end = mirac_node_from_size(size);
-		mirac_debug_assert(arena->end != NULL);
+		mirac_debug_assert(arena->end != mirac_null);
 		arena->begin = arena->end;
 	}
 	else
 	{
-		while (arena->end->next != NULL)
+		while (arena->end->next != mirac_null)
 		{
 			arena->end = arena->end->next;
 		}
 
 		arena->end->next = mirac_node_from_size(size);
-		mirac_debug_assert(arena->end->next != NULL);
+		mirac_debug_assert(arena->end->next != mirac_null);
 		arena->end = arena->end->next;
 	}
 
 	void* const result = arena->end->pointer;
-	mirac_debug_assert(result != NULL);
+	mirac_debug_assert(result != mirac_null);
 	return result;
 }

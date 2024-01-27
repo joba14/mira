@@ -1,0 +1,28 @@
+
+#ifndef __main_mira__
+#define __main_mira__
+
+#include "std/posix.mira"
+#include "std/string.mira"
+#include "std/io.mira"
+
+sec .text func _start {
+	49 call putc 32 call putc
+	50 call putc 32 call putc
+	51 call putc 32 call putc
+	10 call putc
+
+	49 call putu 32 call putc
+	50 call putu 32 call putc
+	51 call putu 32 call putc
+	10 call putc
+
+	-1 call puti 32 call putc
+	00 call puti 32 call putc
+	10 call puti 32 call putc
+	10 call putc
+
+	0 call exit
+}
+
+#endif

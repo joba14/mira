@@ -114,6 +114,16 @@ static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_res
 	} while (0)
 
 /**
+ * @brief Check if provided char is any quote (', ", or `).
+ * 
+ * @param ch char to check
+ * 
+ * @return bool_t
+ */
+static bool_t is_char_any_quote(
+	const char_t ch);
+
+/**
  * @brief Get the next token as text from the lexer's buffer.
  * 
  * @param lexer lexer instance
@@ -223,7 +233,7 @@ mirac_token_s mirac_token_from_type(
 void mirac_token_destroy(
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token != mirac_null);
 	*token = (mirac_token_s) {0};
 	token->type = mirac_token_type_none;
 }
@@ -231,7 +241,7 @@ void mirac_token_destroy(
 mirac_string_view_s mirac_token_to_string_view(
 	const mirac_token_s* const token)
 {
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token != mirac_null);
 	#define token_string_buffer_capacity 1024
 	static char_t token_string_buffer[token_string_buffer_capacity + 1];
 
@@ -299,7 +309,7 @@ mirac_string_view_s mirac_token_to_string_view(
 bool_t mirac_token_is_unsigned_numeric_literal(
 	const mirac_token_s* const token)
 {
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token != mirac_null);
 	return (
 		(mirac_token_type_literal_u08 == token->type) ||
 		(mirac_token_type_literal_u16 == token->type) ||
@@ -311,7 +321,7 @@ bool_t mirac_token_is_unsigned_numeric_literal(
 bool_t mirac_token_is_type_token(
 	const mirac_token_s* const token)
 {
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(token != mirac_null);
 	return (
 		(mirac_token_type_reserved_i08 == token->type) ||
 		(mirac_token_type_reserved_i16 == token->type) ||
@@ -331,16 +341,20 @@ mirac_lexer_s mirac_lexer_from_parts(
 	const mirac_string_view_s file_path,
 	FILE* const file)
 {
-	mirac_debug_assert(config != NULL);
-	mirac_debug_assert(arena != NULL);
-	mirac_debug_assert(file != NULL);
+	mirac_debug_assert(config != mirac_null);
+	mirac_debug_assert(arena != mirac_null);
+	mirac_debug_assert(file != mirac_null);
 
 	(void)fseek(file, 0, SEEK_END);
 	const uint64_t length = (uint64_t)ftell(file) + 1;
 	(void)fseek(file, 0, SEEK_SET);
+
 	char_t* const buffer = (char_t* const)mirac_c_malloc((length + 1) * sizeof(char_t));
+	mirac_debug_assert(buffer != mirac_null);
+
 	const size_t read = fread(buffer, 1, length, file);
 	mirac_debug_assert(read == (length - 1));
+
 	buffer[length - 1] = '\n';
 	buffer[length] = '\0';
 
@@ -367,8 +381,8 @@ mirac_token_type_e mirac_lexer_lex_next(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(lexer != mirac_null);
+	mirac_debug_assert(token != mirac_null);
 
 	if (lexer->token.type != mirac_token_type_none)
 	{
@@ -378,6 +392,7 @@ mirac_token_type_e mirac_lexer_lex_next(
 	}
 
 	const mirac_string_view_s text = get_next_token_as_text(lexer);
+
 	if (text.length <= 0)
 	{
 		token->type = mirac_token_type_eof;
@@ -386,7 +401,9 @@ mirac_token_type_e mirac_lexer_lex_next(
 	}
 
 	char_t* const text_copy = (char_t* const)mirac_arena_malloc(lexer->arena, text.length);
+	mirac_debug_assert(text_copy != mirac_null);
 	mirac_c_memcpy(text_copy, text.data, text.length);
+
 	*token = mirac_token_from_parts(mirac_token_type_none,
 		lexer->locations[0], lexer->tokens_count++, mirac_string_view_from_parts(text_copy, text.length)
 	);
@@ -428,15 +445,25 @@ void mirac_lexer_unlex(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(lexer != mirac_null);
+	mirac_debug_assert(token != mirac_null);
 	lexer->token = *token;
+}
+
+static bool_t is_char_any_quote(
+	const char_t ch)
+{
+	return (
+		('\"' == ch) ||
+		('\'' == ch) ||
+		('`'  == ch)
+	);
 }
 
 static mirac_string_view_s get_next_token_as_text(
 	mirac_lexer_s* const lexer)
 {
-	mirac_debug_assert(lexer != NULL);
+	mirac_debug_assert(lexer != mirac_null);
 	lexer->locations[0] = lexer->locations[1];
 
 fetch_line:
@@ -465,7 +492,7 @@ fetch_line:
 		mirac_string_view_equal_range(lexer->line, mirac_string_view_from_parts("//", 2), 2))
 	{
 		(void)mirac_string_view_split_left(&lexer->line, '\n');
-		lexer->line.length = 0; // note: Hack to force the line to be empty for successful refetch.
+		lexer->line.length = 0; // note: hack to force the line to be empty for successful refetch.
 		goto fetch_line;
 	}
 
@@ -483,11 +510,11 @@ search_for_quote_1:
 
 		if ((left.length > 0) && ('\\' == left.data[left.length - 1]))
 		{
-			text.length += 1;
+			++(text.length);
 			goto search_for_quote_1;
 		}
 
-		text.length++;
+		++(text.length);
 		white_space_length = 0;
 		left = mirac_string_view_split_left_white_space(&right, &white_space_length);
 		text.length += left.length;
@@ -500,7 +527,7 @@ search_for_quote_1:
 	}
 
 	lexer->locations[1] = lexer->locations[0];
-	lexer->locations[1].column += text.length + white_space_length;
+	lexer->locations[1].column += (text.length + white_space_length);
 	return text;
 }
 
@@ -508,10 +535,10 @@ static mirac_token_type_e parse_string_literal_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(lexer->config != NULL);
-	mirac_debug_assert(lexer->arena != NULL);
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(lexer != mirac_null);
+	mirac_debug_assert(lexer->config != mirac_null);
+	mirac_debug_assert(lexer->arena != mirac_null);
+	mirac_debug_assert(token != mirac_null);
 	mirac_debug_assert(token->text.length > 0);
 
 	if (token->text.data[0] != '\"') // note: At this point lexer does not perform the length check as it can vary depending on the string literal type.
@@ -529,11 +556,9 @@ search_for_quote_2:
 
 	if ((left.length > 0) && ('\\' == left.data[left.length - 1]))
 	{
-		result.length += 1;
+		++(result.length);
 		goto search_for_quote_2;
 	}
-
-	// result.length++;
 
 	if (right.length > 0)
 	{
@@ -552,8 +577,9 @@ search_for_quote_2:
 		);
 	}
 
-	uint64_t string_literal_length = 0;
 	char_t* const string_literal = (char_t* const)mirac_arena_malloc(lexer->arena, result.length);
+	mirac_debug_assert(string_literal != mirac_null);
+	uint64_t string_literal_length = 0;
 
 	for (uint64_t index = 0; index < result.length; ++index)
 	{
@@ -563,7 +589,7 @@ search_for_quote_2:
 		{
 			case '\\':
 			{
-				if (index >= result.length - 1)
+				if (index >= (result.length - 1))
 				{
 					log_lexer_error_and_exit(token->location,
 						"encountered an incomplete escape character sequence '%c' in string '" mirac_sv_fmt "'.",
@@ -615,15 +641,15 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(lexer->config != NULL);
-	mirac_debug_assert(lexer->arena != NULL);
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(lexer != mirac_null);
+	mirac_debug_assert(lexer->config != mirac_null);
+	mirac_debug_assert(lexer->arena != mirac_null);
+	mirac_debug_assert(token != mirac_null);
 	mirac_debug_assert(token->text.length > 0);
 
 	if ((token->text.data[0] != '-') &&
 		(token->text.data[0] != '+') &&
-		!isdigit(token->text.data[0])) // note: At this point lexer does not perform the length check as it can vary depending on the numeric literal type.
+		!isdigit(token->text.data[0])) // note: at this point lexer does not perform the length check as it can vary depending on the numeric literal type.
 	{
 		return mirac_token_type_none;
 	}
@@ -635,7 +661,7 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 		return mirac_token_type_none;
 	}
 
-	for (uint64_t index = (uint8_t)has_sign; index < token->text.length; ++index)
+	for (uint64_t index = (uint64_t)(has_sign ? 1 : 0); index < token->text.length; ++index)
 	{
 		const char_t curr_char = token->text.data[index];
 
@@ -648,9 +674,8 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 		}
 	}
 
-	// note: Defaulting to the unsigned integer (and in else block in line 722):
 	token->type = mirac_token_type_literal_u64; errno = 0;
-	token->as.uval = strtoul(token->text.data, NULL, 10);
+	token->as.uval = strtoul(token->text.data, mirac_null, 10);
 
 	if (errno != 0)
 	{
@@ -666,13 +691,13 @@ static mirac_token_type_e parse_reserved_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(lexer->config != NULL);
-	mirac_debug_assert(lexer->arena != NULL);
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(lexer != mirac_null);
+	mirac_debug_assert(lexer->config != mirac_null);
+	mirac_debug_assert(lexer->arena != mirac_null);
+	mirac_debug_assert(token != mirac_null);
 	mirac_debug_assert(token->text.length > 0);
 
-	for (uint64_t reserved_token_index = 0; reserved_token_index < mirac_token_type_reserved_count + 1; ++reserved_token_index)
+	for (uint64_t reserved_token_index = 0; reserved_token_index < (mirac_token_type_reserved_count + 1); ++reserved_token_index)
 	{
 		if (mirac_string_view_equal(token->text, g_reserved_token_types_map[reserved_token_index]))
 		{
@@ -688,31 +713,27 @@ static mirac_token_type_e parse_identifier_token_from_text(
 	mirac_lexer_s* const lexer,
 	mirac_token_s* const token)
 {
-	mirac_debug_assert(lexer != NULL);
-	mirac_debug_assert(lexer->config != NULL);
-	mirac_debug_assert(lexer->arena != NULL);
-	mirac_debug_assert(token != NULL);
+	mirac_debug_assert(lexer != mirac_null);
+	mirac_debug_assert(lexer->config != mirac_null);
+	mirac_debug_assert(lexer->arena != mirac_null);
+	mirac_debug_assert(token != mirac_null);
 	mirac_debug_assert(token->text.length > 0);
 
-	if (isdigit(token->text.data[0])  ||
-		('\"' == token->text.data[0]) ||
-		('\'' == token->text.data[0]) ||
-		('`'  == token->text.data[0]))
+	if (isdigit(token->text.data[0]) || is_char_any_quote(token->text.data[0]))
 	{
 		return mirac_token_type_none;
 	}
 
 	for (uint64_t index = 1; index < token->text.length; ++index)
 	{
-		if (('\"' == token->text.data[index]) ||
-			('\'' == token->text.data[index]) ||
-			('`'  == token->text.data[index]))
+		if (is_char_any_quote(token->text.data[index]))
 		{
 			return mirac_token_type_none;
 		}
 	}
 
 	char_t* const ident_string = (char_t* const)mirac_arena_malloc(lexer->arena, token->text.length);
+	mirac_debug_assert(ident_string != mirac_null);
 	mirac_c_memcpy(ident_string, token->text.data, token->text.length);
 
 	token->type = mirac_token_type_identifier;

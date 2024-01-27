@@ -19,13 +19,13 @@ utester_define_test(from_parts)
 {
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("test", 4);
-		utester_assert_true(view.data != NULL);
+		utester_assert_true(view.data != mirac_null);
 		utester_assert_true(4 == view.length);
 	}
 
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("", 0);
-		utester_assert_true(view.data != NULL);
+		utester_assert_true(view.data != mirac_null);
 		utester_assert_true(0 == view.length);
 	}
 }
@@ -34,13 +34,13 @@ utester_define_test(from_cstring)
 {
 	{
 		const mirac_string_view_s view = mirac_string_view_from_cstring("test");
-		utester_assert_true(view.data != NULL);
+		utester_assert_true(view.data != mirac_null);
 		utester_assert_true(4 == view.length);
 	}
 
 	{
 		const mirac_string_view_s view = mirac_string_view_from_cstring("");
-		utester_assert_true(view.data != NULL);
+		utester_assert_true(view.data != mirac_null);
 		utester_assert_true(0 == view.length);
 	}
 }
@@ -83,7 +83,7 @@ utester_define_test(trim_left)
 {
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world", 5);
-		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', NULL);
+		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', mirac_null);
 		utester_assert_true(5 == view.length);
 		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(view.data[0] != ' ');
@@ -92,7 +92,7 @@ utester_define_test(trim_left)
 
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("   world", 8);
-		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', NULL);
+		const mirac_string_view_s trimmed_view = mirac_string_view_trim_left(view, ' ', mirac_null);
 		utester_assert_true(8 == view.length);
 		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[0]);
@@ -115,7 +115,7 @@ utester_define_test(trim_right)
 {
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world", 5);
-		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', NULL);
+		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', mirac_null);
 		utester_assert_true(5 == view.length);
 		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(view.data[view.length - 1] != ' ');
@@ -124,7 +124,7 @@ utester_define_test(trim_right)
 
 	{
 		const mirac_string_view_s view = mirac_string_view_from_parts("world   ", 8);
-		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', NULL);
+		const mirac_string_view_s trimmed_view = mirac_string_view_trim_right(view, ' ', mirac_null);
 		utester_assert_true(8 == view.length);
 		utester_assert_true(5 == trimmed_view.length);
 		utester_assert_true(' ' == view.data[view.length - 1]);

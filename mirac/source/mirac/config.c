@@ -52,8 +52,8 @@ mirac_config_s mirac_config_from_cli(
 	uint64_t* const config_end_index)
 {
 	mirac_debug_assert(argc > 0);
-	mirac_debug_assert(argv != NULL);
-	mirac_debug_assert(config_end_index != NULL);
+	mirac_debug_assert(argv != mirac_null);
+	mirac_debug_assert(config_end_index != mirac_null);
 
 	g_program = mirac_string_view_from_cstring(argv[0]);
 
@@ -79,7 +79,7 @@ mirac_config_s mirac_config_from_cli(
 	mirac_config_s config = {0};
 	int32_t opt = -1;
 
-	while ((opt = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:us", options, NULL)) != -1)
+	while ((opt = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:us", options, mirac_null)) != -1)
 	{
 		switch (opt)
 		{

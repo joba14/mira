@@ -78,8 +78,8 @@ int32_t main(
 		const char_t* const source_file_pointer = source_files[source_file_index + 0];
 		const char_t* const output_file_pointer = source_files[source_file_index + 1];
 
-		mirac_debug_assert(source_file_pointer != NULL);
-		mirac_debug_assert(output_file_pointer != NULL);
+		mirac_debug_assert(source_file_pointer != mirac_null);
+		mirac_debug_assert(output_file_pointer != mirac_null);
 
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_file_pointer);
 		const mirac_string_view_s output_file_path = mirac_string_view_from_cstring(output_file_pointer);
@@ -134,7 +134,7 @@ static FILE* validate_and_open_file_for_reading(
 
 	FILE* const file = fopen(file_path.data, "rt");
 
-	if (NULL == file)
+	if (mirac_null == file)
 	{
 		mirac_logger_error("unable to open " mirac_sv_fmt " for reading -- failed to open.", mirac_sv_arg(file_path));
 		mirac_c_exit(-1);
@@ -179,7 +179,7 @@ static FILE* validate_and_open_file_for_writing(
 
 	FILE* const file = fopen(file_path.data, "wt");
 
-	if (NULL == file)
+	if (mirac_null == file)
 	{
 		mirac_logger_error("unable to open " mirac_sv_fmt " for writing -- failed to open.", mirac_sv_arg(file_path));
 		mirac_c_exit(-1);
@@ -193,12 +193,12 @@ static void process_source_file_into_output_file(
 	const mirac_string_view_s output_file_path,
 	mirac_config_s* const config)
 {
-	mirac_debug_assert(config != NULL);
+	mirac_debug_assert(config != mirac_null);
 
 	FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
 	FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
-	mirac_debug_assert(source_file != NULL);
-	mirac_debug_assert(output_file != NULL);
+	mirac_debug_assert(source_file != mirac_null);
+	mirac_debug_assert(output_file != mirac_null);
 
 	mirac_arena_s arena = mirac_arena_from_parts();
 	mirac_lexer_s lexer = mirac_lexer_from_parts(config, &arena, source_file_path, source_file);

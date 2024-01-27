@@ -22,10 +22,10 @@ mirac_compiler_s mirac_compiler_from_parts(
 	mirac_ast_unit_s* const unit,
 	FILE* const file)
 {
-	mirac_debug_assert(config != NULL);
-	mirac_debug_assert(arena != NULL);
-	mirac_debug_assert(unit != NULL);
-	mirac_debug_assert(file != NULL);
+	mirac_debug_assert(config != mirac_null);
+	mirac_debug_assert(arena != mirac_null);
+	mirac_debug_assert(unit != mirac_null);
+	mirac_debug_assert(file != mirac_null);
 	mirac_compiler_s compiler = {0};
 	compiler.config = config;
 	compiler.arena = arena;
@@ -37,11 +37,11 @@ mirac_compiler_s mirac_compiler_from_parts(
 void mirac_compiler_compile_ast_unit(
 	mirac_compiler_s* const compiler)
 {
-	mirac_debug_assert(compiler != NULL);
-	mirac_debug_assert(compiler->config != NULL);
-	mirac_debug_assert(compiler->arena != NULL);
-	mirac_debug_assert(compiler->unit != NULL);
-	mirac_debug_assert(compiler->file != NULL);
+	mirac_debug_assert(compiler != mirac_null);
+	mirac_debug_assert(compiler->config != mirac_null);
+	mirac_debug_assert(compiler->arena != mirac_null);
+	mirac_debug_assert(compiler->unit != mirac_null);
+	mirac_debug_assert(compiler->file != mirac_null);
 
 	switch (compiler->config->arch)
 	{

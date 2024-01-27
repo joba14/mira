@@ -304,7 +304,7 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 mirac_token_s mirac_ast_def_get_identifier_token(
 	const mirac_ast_def_s* const def)
 {
-	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(def != mirac_null);
 
 	switch (def->type)
 	{
@@ -324,7 +324,7 @@ mirac_token_s mirac_ast_def_get_identifier_token(
 mirac_ast_unit_s mirac_ast_unit_from_parts(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_unit_s unit = {0};
 	unit.defs = mirac_ast_def_list_from_parts(arena);
 	return unit;
@@ -334,14 +334,14 @@ void mirac_ast_unit_print(
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent)
 {
-	mirac_debug_assert(unit != NULL);
+	mirac_debug_assert(unit != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Unit[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("defs:\n");
-	for (const mirac_ast_def_list_node_s* defs_iterator = unit->defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
+	for (const mirac_ast_def_list_node_s* defs_iterator = unit->defs.begin; defs_iterator != mirac_null; defs_iterator = defs_iterator->next)
 	{
 		print_ast_def(defs_iterator->data, indent + 2);
 	}
@@ -355,9 +355,9 @@ mirac_parser_s mirac_parser_from_parts(
 	mirac_arena_s* const arena,
 	mirac_lexer_s* const lexer)
 {
-	mirac_debug_assert(config != NULL);
-	mirac_debug_assert(arena != NULL);
-	mirac_debug_assert(lexer != NULL);
+	mirac_debug_assert(config != mirac_null);
+	mirac_debug_assert(arena != mirac_null);
+	mirac_debug_assert(lexer != mirac_null);
 	mirac_parser_s parser = {0};
 	parser.config = config;
 	parser.arena = arena;
@@ -369,20 +369,20 @@ mirac_parser_s mirac_parser_from_parts(
 void mirac_parser_destroy(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
+	mirac_debug_assert(parser != mirac_null);
 	*parser = (mirac_parser_s) {0};
 }
 
 mirac_ast_unit_s mirac_parser_parse_ast_unit(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
-	mirac_ast_def_s* def = NULL;
-	while ((def = parse_ast_def(parser)) != NULL)
+	mirac_ast_def_s* def = mirac_null;
+	while ((def = parse_ast_def(parser)) != mirac_null)
 	{
 		if (mirac_ast_def_type_none == def->type)
 		{
@@ -390,10 +390,10 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 		}
 
 		const mirac_token_s current_def_identifier_token = mirac_ast_def_get_identifier_token(def);
-		for (const mirac_ast_def_list_node_s* defs_iterator = parser->unit.defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
+		for (const mirac_ast_def_list_node_s* defs_iterator = parser->unit.defs.begin; defs_iterator != mirac_null; defs_iterator = defs_iterator->next)
 		{
-			mirac_debug_assert(defs_iterator != NULL);
-			mirac_debug_assert(defs_iterator->data != NULL);
+			mirac_debug_assert(defs_iterator != mirac_null);
+			mirac_debug_assert(defs_iterator->data != mirac_null);
 
 			const mirac_token_s existing_def_identifier_token = mirac_ast_def_get_identifier_token(defs_iterator->data);
 			if (mirac_string_view_equal(current_def_identifier_token.as.ident, existing_def_identifier_token.as.ident))
@@ -414,7 +414,7 @@ mirac_ast_unit_s mirac_parser_parse_ast_unit(
 static mirac_ast_block_expr_s create_ast_block_expr(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_expr_s expr_block = {0};
 	return expr_block;
 }
@@ -422,7 +422,7 @@ static mirac_ast_block_expr_s create_ast_block_expr(
 static mirac_ast_block_ident_s create_ast_block_ident(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_ident_s ident_block = {0};
 	return ident_block;
 }
@@ -430,7 +430,7 @@ static mirac_ast_block_ident_s create_ast_block_ident(
 static mirac_ast_block_call_s create_ast_block_call(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_call_s call_block = {0};
 	return call_block;
 }
@@ -438,7 +438,7 @@ static mirac_ast_block_call_s create_ast_block_call(
 static mirac_ast_block_as_s create_ast_block_as(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_as_s as_block = {0};
 	as_block.type_tokens = mirac_token_list_from_parts(arena);
 	return as_block;
@@ -447,7 +447,7 @@ static mirac_ast_block_as_s create_ast_block_as(
 static mirac_ast_block_scope_s create_ast_block_scope(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_scope_s scope_block = {0};
 	scope_block.blocks = mirac_ast_block_list_from_parts(arena);
 	return scope_block;
@@ -456,7 +456,7 @@ static mirac_ast_block_scope_s create_ast_block_scope(
 static mirac_ast_block_if_s create_ast_block_if(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_if_s if_block = {0};
 	return if_block;
 }
@@ -464,7 +464,7 @@ static mirac_ast_block_if_s create_ast_block_if(
 static mirac_ast_block_else_s create_ast_block_else(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_else_s else_block = {0};
 	return else_block;
 }
@@ -472,7 +472,7 @@ static mirac_ast_block_else_s create_ast_block_else(
 static mirac_ast_block_loop_s create_ast_block_loop(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_loop_s loop_block = {0};
 	return loop_block;
 }
@@ -480,7 +480,7 @@ static mirac_ast_block_loop_s create_ast_block_loop(
 static mirac_ast_block_s* create_ast_block(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_block_s* const block = mirac_arena_malloc(arena, sizeof(mirac_ast_block_s));
 	*block = (mirac_ast_block_s) {0};
 	return block;
@@ -489,7 +489,7 @@ static mirac_ast_block_s* create_ast_block(
 static mirac_ast_def_func_s create_ast_def_func(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_def_func_s func_def = {0};
 	func_def.req_tokens = mirac_token_list_from_parts(arena);
 	func_def.ret_tokens = mirac_token_list_from_parts(arena);
@@ -499,7 +499,7 @@ static mirac_ast_def_func_s create_ast_def_func(
 static mirac_ast_def_mem_s create_ast_def_mem(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_def_mem_s mem_def = {0};
 	return mem_def;
 }
@@ -507,7 +507,7 @@ static mirac_ast_def_mem_s create_ast_def_mem(
 static mirac_ast_def_str_s create_ast_def_str(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_def_str_s str_def = {0};
 	return str_def;
 }
@@ -515,7 +515,7 @@ static mirac_ast_def_str_s create_ast_def_str(
 static mirac_ast_def_s* create_ast_def(
 	mirac_arena_s* const arena)
 {
-	mirac_debug_assert(arena != NULL);
+	mirac_debug_assert(arena != mirac_null);
 	mirac_ast_def_s* const def = mirac_arena_malloc(arena, sizeof(mirac_ast_def_s));
 	*def = (mirac_ast_def_s) {0};
 	return def;
@@ -559,10 +559,10 @@ static bool_t is_token_valid_expr_block_token_by_type(
 static mirac_ast_block_expr_s parse_ast_block_expr(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_expr_s expr_block = create_ast_block_expr(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -583,10 +583,10 @@ static mirac_ast_block_expr_s parse_ast_block_expr(
 static mirac_ast_block_ident_s parse_ast_block_ident(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_ident_s ident_block = create_ast_block_ident(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -594,10 +594,10 @@ static mirac_ast_block_ident_s parse_ast_block_ident(
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_identifier == token.type);
 
-	for (const mirac_ast_def_list_node_s* defs_iterator = parser->unit.defs.begin; defs_iterator != NULL; defs_iterator = defs_iterator->next)
+	for (const mirac_ast_def_list_node_s* defs_iterator = parser->unit.defs.begin; defs_iterator != mirac_null; defs_iterator = defs_iterator->next)
 	{
-		mirac_debug_assert(defs_iterator != NULL);
-		mirac_debug_assert(defs_iterator->data != NULL);
+		mirac_debug_assert(defs_iterator != mirac_null);
+		mirac_debug_assert(defs_iterator->data != mirac_null);
 
 		const mirac_token_s existing_def_identifier_token = mirac_ast_def_get_identifier_token(defs_iterator->data);
 		if (mirac_string_view_equal(token.as.ident, existing_def_identifier_token.as.ident))
@@ -621,21 +621,21 @@ found_matching_idendtifier:
 static mirac_ast_block_call_s parse_ast_block_call(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_call_s call_block = create_ast_block_call(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	mirac_ast_block_s* block = NULL;
+	mirac_ast_block_s* block = mirac_null;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_reserved_call == token.type);
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_ident)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'ident' block after 'call' block, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -643,7 +643,7 @@ static mirac_ast_block_call_s parse_ast_block_call(
 	}
 
 	const mirac_ast_block_ident_s* const ident_block = &block->as.ident_block;
-	mirac_debug_assert(ident_block != NULL);
+	mirac_debug_assert(ident_block != mirac_null);
 
 	if (ident_block->def->type != mirac_ast_def_type_func)
 	{
@@ -660,10 +660,10 @@ static mirac_ast_block_call_s parse_ast_block_call(
 static mirac_ast_block_as_s parse_ast_block_as(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_as_s as_block = create_ast_block_as(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -695,14 +695,14 @@ static mirac_ast_block_as_s parse_ast_block_as(
 static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_scope_s scope_block = create_ast_block_scope(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	mirac_ast_block_s* block = NULL;
+	mirac_ast_block_s* block = mirac_null;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert((mirac_token_type_reserved_left_parenthesis == token.type) ||
@@ -746,7 +746,7 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 		mirac_lexer_unlex(parser->lexer, &token);
 
 		block = parse_ast_block(parser);
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 
 		if ((mirac_ast_block_type_eou  == block->type) ||
 			(mirac_ast_block_type_none == block->type))
@@ -761,21 +761,21 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 		mirac_ast_block_list_push(&scope_block.blocks, block);
 	}
 
-	mirac_ast_block_s* block_ref = NULL;
-	mirac_ast_block_s* prev_block_ref = NULL;
+	mirac_ast_block_s* block_ref = mirac_null;
+	mirac_ast_block_s* prev_block_ref = mirac_null;
 
-	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block.blocks.begin; blocks_iterator != NULL; blocks_iterator = blocks_iterator->next)
+	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block.blocks.begin; blocks_iterator != mirac_null; blocks_iterator = blocks_iterator->next)
 	{
-		mirac_debug_assert(blocks_iterator != NULL);
-		mirac_debug_assert(blocks_iterator->data != NULL);
+		mirac_debug_assert(blocks_iterator != mirac_null);
+		mirac_debug_assert(blocks_iterator->data != mirac_null);
 
 		prev_block_ref = block_ref;
 		block_ref = blocks_iterator->data;
-		mirac_debug_assert(block_ref != NULL);
+		mirac_debug_assert(block_ref != mirac_null);
 
 		if (mirac_ast_block_type_else == block_ref->type)
 		{
-			if (NULL == prev_block_ref)
+			if (mirac_null == prev_block_ref)
 			{
 				log_parser_error_and_exit(block_ref->location,
 					"missing 'if' block prior to '" mirac_sv_fmt "' block.",
@@ -795,7 +795,7 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 			}
 		}
 
-		if ((prev_block_ref != NULL) && (block_ref != NULL))
+		if ((prev_block_ref != mirac_null) && (block_ref != mirac_null))
 		{
 			if ((mirac_ast_block_type_if == prev_block_ref->type) &&
 				(mirac_ast_block_type_else == block_ref->type))
@@ -811,21 +811,21 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 static mirac_ast_block_if_s parse_ast_block_if(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_if_s if_block = create_ast_block_if(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	mirac_ast_block_s* block = NULL;
+	mirac_ast_block_s* block = mirac_null;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_reserved_if == token.type);
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'if' block's condition, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -836,7 +836,7 @@ static mirac_ast_block_if_s parse_ast_block_if(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'if' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -852,21 +852,21 @@ static mirac_ast_block_if_s parse_ast_block_if(
 static mirac_ast_block_else_s parse_ast_block_else(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_else_s else_block = create_ast_block_else(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	mirac_ast_block_s* block = NULL;
+	mirac_ast_block_s* block = mirac_null;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_reserved_else == token.type);
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'else' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -882,21 +882,21 @@ static mirac_ast_block_else_s parse_ast_block_else(
 static mirac_ast_block_loop_s parse_ast_block_loop(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_loop_s loop_block = create_ast_block_loop(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
-	mirac_ast_block_s* block = NULL;
+	mirac_ast_block_s* block = mirac_null;
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 	mirac_debug_assert(mirac_token_type_reserved_loop == token.type);
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'loop' block's condition, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -907,7 +907,7 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'loop' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -923,10 +923,10 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 static mirac_ast_block_s* parse_ast_block(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_block_s* const block = create_ast_block(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -1008,10 +1008,10 @@ static mirac_ast_block_s* parse_ast_block(
 static mirac_ast_def_func_s parse_ast_def_func(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_def_func_s func_def = create_ast_def_func(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -1070,11 +1070,11 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	}
 
 	mirac_lexer_unlex(parser->lexer, &token);
-	mirac_ast_block_s* block = NULL;
+	mirac_ast_block_s* block = mirac_null;
 
 	if ((block = parse_ast_block(parser))->type != mirac_ast_block_type_scope)
 	{
-		mirac_debug_assert(block != NULL);
+		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
 			"expected 'scope' block as 'func' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
@@ -1089,10 +1089,10 @@ static mirac_ast_def_func_s parse_ast_def_func(
 static mirac_ast_def_mem_s parse_ast_def_mem(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_def_mem_s mem_def = create_ast_def_mem(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -1132,10 +1132,10 @@ static mirac_ast_def_mem_s parse_ast_def_mem(
 static mirac_ast_def_str_s parse_ast_def_str(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_def_str_s str_def = create_ast_def_str(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -1166,10 +1166,10 @@ static mirac_ast_def_str_s parse_ast_def_str(
 static mirac_ast_def_s* parse_ast_def(
 	mirac_parser_s* const parser)
 {
-	mirac_debug_assert(parser != NULL);
-	mirac_debug_assert(parser->config != NULL);
-	mirac_debug_assert(parser->arena != NULL);
-	mirac_debug_assert(parser->lexer != NULL);
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
 
 	mirac_ast_def_s* const def = create_ast_def(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
@@ -1251,11 +1251,11 @@ static void print_ast_block_expr(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_expr == block->type);
 
 	const mirac_ast_block_expr_s* const expr_block = &block->as.expr_block;
-	mirac_debug_assert(expr_block != NULL);
+	mirac_debug_assert(expr_block != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("ExprBlock[\n");
@@ -1273,12 +1273,12 @@ static void print_ast_block_ident(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_ident == block->type);
 
 	const mirac_ast_block_ident_s* const ident_block = &block->as.ident_block;
-	mirac_debug_assert(ident_block != NULL);
-	mirac_debug_assert(ident_block->def != NULL);
+	mirac_debug_assert(ident_block != mirac_null);
+	mirac_debug_assert(ident_block->def != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("IdentBlock[\n");
@@ -1301,15 +1301,15 @@ static void print_ast_block_call(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_call == block->type);
 
 	const mirac_ast_block_call_s* const call_block = &block->as.call_block;
-	mirac_debug_assert(call_block != NULL);
+	mirac_debug_assert(call_block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_ident == call_block->ident->type);
 
 	const mirac_ast_block_s* const ident_block = call_block->ident;
-	mirac_debug_assert(ident_block != NULL);
+	mirac_debug_assert(ident_block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_ident == ident_block->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
@@ -1325,18 +1325,18 @@ static void print_ast_block_as(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_as == block->type);
 
 	const mirac_ast_block_as_s* const as_block = &block->as.as_block;
-	mirac_debug_assert(as_block != NULL);
+	mirac_debug_assert(as_block != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("AsBlock[\n");
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("types:\n");
-	for (mirac_token_list_node_s* types_iterator = as_block->type_tokens.begin; types_iterator != NULL; types_iterator = types_iterator->next)
+	for (mirac_token_list_node_s* types_iterator = as_block->type_tokens.begin; types_iterator != mirac_null; types_iterator = types_iterator->next)
 	{
 		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&types_iterator->data)));
@@ -1350,11 +1350,11 @@ static void print_ast_block_scope(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == block->type);
 
 	const mirac_ast_block_scope_s* const scope_block = &block->as.scope_block;
-	mirac_debug_assert(scope_block != NULL);
+	mirac_debug_assert(scope_block != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("ScopeBlock[\n");
@@ -1366,10 +1366,10 @@ static void print_ast_block_scope(
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("blocks:\n");
-	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block->blocks.begin; blocks_iterator != NULL; blocks_iterator = blocks_iterator->next)
+	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block->blocks.begin; blocks_iterator != mirac_null; blocks_iterator = blocks_iterator->next)
 	{
-		mirac_debug_assert(blocks_iterator != NULL);
-		mirac_debug_assert(blocks_iterator->data != NULL);
+		mirac_debug_assert(blocks_iterator != mirac_null);
+		mirac_debug_assert(blocks_iterator->data != mirac_null);
 		print_ast_block(blocks_iterator->data, indent + 2);
 	}
 
@@ -1381,13 +1381,13 @@ static void print_ast_block_if(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_if == block->type);
 
 	const mirac_ast_block_if_s* const if_block = &block->as.if_block;
-	mirac_debug_assert(if_block != NULL);
-	mirac_debug_assert(if_block->cond != NULL);
-	mirac_debug_assert(if_block->body != NULL);
+	mirac_debug_assert(if_block != mirac_null);
+	mirac_debug_assert(if_block->cond != mirac_null);
+	mirac_debug_assert(if_block->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->cond->type);
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->body->type);
 
@@ -1410,12 +1410,12 @@ static void print_ast_block_else(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_else == block->type);
 
 	const mirac_ast_block_else_s* const else_block = &block->as.else_block;
-	mirac_debug_assert(else_block != NULL);
-	mirac_debug_assert(else_block->body != NULL);
+	mirac_debug_assert(else_block != mirac_null);
+	mirac_debug_assert(else_block->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == else_block->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
@@ -1433,13 +1433,13 @@ static void print_ast_block_loop(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_loop == block->type);
 
 	const mirac_ast_block_loop_s* const loop_block = &block->as.loop_block;
-	mirac_debug_assert(loop_block != NULL);
-	mirac_debug_assert(loop_block->cond != NULL);
-	mirac_debug_assert(loop_block->body != NULL);
+	mirac_debug_assert(loop_block != mirac_null);
+	mirac_debug_assert(loop_block->cond != mirac_null);
+	mirac_debug_assert(loop_block->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->cond->type);
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->body->type);
 
@@ -1462,7 +1462,7 @@ static void print_ast_block(
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
-	mirac_debug_assert(block != NULL);
+	mirac_debug_assert(block != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Block[\n");
@@ -1499,12 +1499,12 @@ static void print_ast_def_func(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
-	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_func == def->type);
 
 	const mirac_ast_def_func_s* const func_def = &def->as.func_def;
-	mirac_debug_assert(func_def != NULL);
-	mirac_debug_assert(func_def->body != NULL);
+	mirac_debug_assert(func_def != mirac_null);
+	mirac_debug_assert(func_def->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == func_def->body->type);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
@@ -1517,7 +1517,7 @@ static void print_ast_def_func(
 
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("req_tokens:\n");
-	for (const mirac_token_list_node_s* reqs_iterator = func_def->req_tokens.begin; reqs_iterator != NULL; reqs_iterator = reqs_iterator->next)
+	for (const mirac_token_list_node_s* reqs_iterator = func_def->req_tokens.begin; reqs_iterator != mirac_null; reqs_iterator = reqs_iterator->next)
 	{
 		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&reqs_iterator->data)));
@@ -1525,7 +1525,7 @@ static void print_ast_def_func(
 	
 	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
 	printf("ret_tokens:\n");
-	for (const mirac_token_list_node_s* rets_iterator = func_def->ret_tokens.begin; rets_iterator != NULL; rets_iterator = rets_iterator->next)
+	for (const mirac_token_list_node_s* rets_iterator = func_def->ret_tokens.begin; rets_iterator != mirac_null; rets_iterator = rets_iterator->next)
 	{
 		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
 		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&rets_iterator->data)));
@@ -1546,11 +1546,11 @@ static void print_ast_def_mem(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
-	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_mem == def->type);
 
 	const mirac_ast_def_mem_s* const mem_def = &def->as.mem_def;
-	mirac_debug_assert(mem_def != NULL);
+	mirac_debug_assert(mem_def != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("MemDef[\n");
@@ -1573,11 +1573,11 @@ static void print_ast_def_str(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
-	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_str == def->type);
 
 	const mirac_ast_def_str_s* const str_def = &def->as.str_def;
-	mirac_debug_assert(str_def != NULL);
+	mirac_debug_assert(str_def != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("StrDef[\n");
@@ -1600,7 +1600,7 @@ static void print_ast_def(
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
-	mirac_debug_assert(def != NULL);
+	mirac_debug_assert(def != mirac_null);
 
 	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
 	printf("Def[\n");

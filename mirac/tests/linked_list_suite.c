@@ -23,8 +23,8 @@ utester_define_test(from_parts)
 	mirac_arena_s arena = mirac_arena_from_parts();
 	int32_list_s ints_list = int32_list_from_parts(&arena);
 
-	utester_assert_true(NULL == ints_list.begin);
-	utester_assert_true(NULL == ints_list.end);
+	utester_assert_true(mirac_null == ints_list.begin);
+	utester_assert_true(mirac_null == ints_list.end);
 	utester_assert_true(0 == ints_list.count);
 
 	mirac_arena_destroy(&arena);

@@ -39,9 +39,9 @@ void mirac_logger_log(
 	const char_t* const format,
 	...)
 {
-	mirac_debug_assert(format != NULL);
+	mirac_debug_assert(format != mirac_null);
 	va_list args; va_start(args, format);
-	log_with_tag(stdout, NULL, format, args);
+	log_with_tag(stdout, mirac_null, format, args);
 	va_end(args);
 }
 
@@ -50,7 +50,7 @@ void mirac_logger_debug(
 	const char_t* const format,
 	...)
 {
-	mirac_debug_assert(format != NULL);
+	mirac_debug_assert(format != mirac_null);
 	va_list args; va_start(args, format);
 	log_with_tag(stdout, ansi_brown tag_debug ansi_reset, format, args);
 	va_end(args);
@@ -61,7 +61,7 @@ void mirac_logger_info(
 	const char_t* const format,
 	...)
 {
-	mirac_debug_assert(format != NULL);
+	mirac_debug_assert(format != mirac_null);
 	va_list args; va_start(args, format);
 	log_with_tag(stdout, ansi_green tag_info ansi_reset, format, args);
 	va_end(args);
@@ -71,7 +71,7 @@ void mirac_logger_warn(
 	const char_t* const format,
 	...)
 {
-	mirac_debug_assert(format != NULL);
+	mirac_debug_assert(format != mirac_null);
 	va_list args; va_start(args, format);
 	log_with_tag(stderr, ansi_yellow tag_warn ansi_reset, format, args);
 	va_end(args);
@@ -81,7 +81,7 @@ void mirac_logger_error(
 	const char_t* const format,
 	...)
 {
-	mirac_debug_assert(format != NULL);
+	mirac_debug_assert(format != mirac_null);
 	va_list args; va_start(args, format);
 	log_with_tag(stderr, ansi_red tag_error ansi_reset, format, args);
 	va_end(args);
@@ -93,10 +93,10 @@ static void log_with_tag(
 	const char_t* const format,
 	va_list args)
 {
-	mirac_debug_assert(stream != NULL);
-	mirac_debug_assert(format != NULL);
+	mirac_debug_assert(stream != mirac_null);
+	mirac_debug_assert(format != mirac_null);
 
-	if (tag != NULL)
+	if (tag != mirac_null)
 	{
 		(void)fprintf(stream, "%s: ", tag);
 	}

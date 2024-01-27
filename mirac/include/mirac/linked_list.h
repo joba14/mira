@@ -59,33 +59,33 @@
 		_type_name ## _s* const linked_list,                                   \
 		_element_type data)                                                    \
 	{                                                                          \
-		mirac_debug_assert(linked_list != NULL);                               \
+		mirac_debug_assert(linked_list != mirac_null);                         \
 		                                                                       \
 		_type_name ## _node_s* node = (_type_name ## _node_s*)mirac_c_malloc(  \
 			sizeof(_type_name ## _node_s)                                      \
 		);                                                                     \
 		                                                                       \
 		node->data = data;                                                     \
-		node->next = NULL;                                                     \
-		node->prev = NULL;                                                     \
+		node->next = mirac_null;                                               \
+		node->prev = mirac_null;                                               \
 		                                                                       \
-		if (NULL == linked_list->end)                                          \
+		if (mirac_null == linked_list->end)                                    \
 		{                                                                      \
-			mirac_debug_assert(NULL == linked_list->begin);                    \
+			mirac_debug_assert(mirac_null == linked_list->begin);              \
 			linked_list->end = node;                                           \
-			mirac_debug_assert(linked_list->end != NULL);                      \
+			mirac_debug_assert(linked_list->end != mirac_null);                \
 			linked_list->begin = linked_list->end;                             \
 		}                                                                      \
 		else                                                                   \
 		{                                                                      \
-			while (linked_list->end->next != NULL)                             \
+			while (linked_list->end->next != mirac_null)                       \
 			{                                                                  \
 				linked_list->end = linked_list->end->next;                     \
 			}                                                                  \
 			                                                                   \
 			node->prev = linked_list->end;                                     \
 			linked_list->end->next = node;                                     \
-			mirac_debug_assert(linked_list->end->next != NULL);                \
+			mirac_debug_assert(linked_list->end->next != mirac_null);          \
 			linked_list->end = linked_list->end->next;                         \
 		}                                                                      \
 		                                                                       \

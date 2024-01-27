@@ -20,6 +20,7 @@
 
 typedef bool bool_t;
 typedef char char_t;
+#define mirac_null NULL
 
 // todo: write unit tests!
 /**
@@ -53,7 +54,7 @@ void* mirac_c_realloc(
 /**
  * @brief Wrapper for c's stdlib free function.
  * 
- * @note After freeing the memory, the pointer will be set to NULL.
+ * @note After freeing the memory, the pointer will be set to mirac_null.
  * 
  * @param pointer pointer to the memory region to free
  */

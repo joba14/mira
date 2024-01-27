@@ -32,9 +32,9 @@ typedef char char_t;
 #define utester_logger_log(_stream, _tag, _format, ...)                        \
 	do                                                                         \
 	{                                                                          \
-		assert(_format != NULL);                                               \
+		assert(_format != mirac_null);                                               \
 		                                                                       \
-		if ((_tag) != NULL)                                                    \
+		if ((_tag) != mirac_null)                                                    \
 		{                                                                      \
 			(void)fprintf(_stream, "%s: ", _tag);                              \
 		}                                                                      \
@@ -121,7 +121,7 @@ struct utester_test_s
 		if (!test->status)                                                     \
 		{                                                                      \
 			utester_logger_error("|   assert '%s' failed at %s:%lu",           \
-				#_expression, (const char_t*)__FILE__, (uint64_t)__LINE__        \
+				#_expression, (const char_t*)__FILE__, (uint64_t)__LINE__      \
 			);                                                                 \
 			return;                                                            \
 		}                                                                      \
@@ -160,7 +160,7 @@ struct utester_test_s
 	                                                                           \
 	int32_t main(void)                                                         \
 	{                                                                          \
-		const char_t* const name = #_suite_name;                                 \
+		const char_t* const name = #_suite_name;                               \
 		utester_test_s* const * tests =                                        \
 			(utester_test_s* const *)_va_tests_to_array(__VA_ARGS__);          \
 		uint64_t tests_count = _va_tests_get_length(__VA_ARGS__);              \
@@ -172,7 +172,7 @@ struct utester_test_s
 		for (uint64_t index = 0; index < tests_count; ++index)                 \
 		{                                                                      \
 			utester_test_s* const test = tests[index];                         \
-			assert(test != NULL);                                              \
+			assert(test != mirac_null);                                        \
 			                                                                   \
 			utester_logger_info("| Running test '%s':", test->name);           \
 			test->function(test);                                              \

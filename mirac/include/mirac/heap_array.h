@@ -68,7 +68,7 @@
 		_type_name ## _s* const heap_array,                                    \
 		_element_type element)                                                 \
 	{                                                                          \
-		mirac_debug_assert(heap_array != NULL);                                \
+		mirac_debug_assert(heap_array != mirac_null);                          \
 		                                                                       \
 		if (heap_array->count + 1 >= heap_array->capacity)                     \
 		{                                                                      \
@@ -99,7 +99,7 @@
 		_type_name ## _s* const heap_array,                                    \
 		_element_type* const element)                                          \
 	{                                                                          \
-		mirac_debug_assert(heap_array != NULL);                                \
+		mirac_debug_assert(heap_array != mirac_null);                          \
 		                                                                       \
 		if (heap_array->count <= 0)                                            \
 		{                                                                      \
@@ -114,7 +114,7 @@
 		_type_name ## _s* const heap_array,                                    \
 		const uint64_t index)                                                  \
 	{                                                                          \
-		mirac_debug_assert(heap_array != NULL);                                \
+		mirac_debug_assert(heap_array != mirac_null);                          \
 		mirac_debug_assert(index < heap_array->count);                         \
 		return &heap_array->data[index];                                       \
 	}                                                                          \
