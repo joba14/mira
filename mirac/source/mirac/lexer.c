@@ -352,7 +352,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_debug_assert(buffer != mirac_null);
 
 	const size_t read = fread(buffer, 1, length, file);
-	mirac_debug_assert(read == (length - 1));
+	mirac_debug_assert((length - 1) == read);
 
 	buffer[length - 1] = '\n';
 	buffer[length] = '\0';

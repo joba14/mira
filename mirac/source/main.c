@@ -54,6 +54,9 @@ int32_t main(
 	const int32_t argc,
 	const char_t** const argv)
 {
+	mirac_debug_assert(argc > 0);
+	mirac_debug_assert(argv != NULL);
+
 	uint64_t options_index = 0;
 	mirac_config_s config = mirac_config_from_cli(argc, argv, &options_index);
 	const char_t** const source_files = argv + options_index;
