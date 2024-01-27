@@ -690,7 +690,7 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	if (errno != 0)
 	{
 		log_lexer_error_and_exit(token->location,
-			"numeric literal '" mirac_sv_fmt "' overflow.",
+			"encountered a numeric literal overflow at '" mirac_sv_fmt "' value.",
 			mirac_sv_arg(token->text)
 		);
 	}

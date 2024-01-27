@@ -55,11 +55,13 @@ int32_t main(
 	const char_t** const argv)
 {
 	mirac_debug_assert(argc > 0);
-	mirac_debug_assert(argv != NULL);
+	mirac_debug_assert(argv != mirac_null);
 
 	uint64_t options_index = 0;
 	mirac_config_s config = mirac_config_from_cli(argc, argv, &options_index);
+
 	const char_t** const source_files = argv + options_index;
+	mirac_debug_assert(source_files != mirac_null);
 	const uint64_t source_files_count = (uint64_t)argc - options_index;
 
 	if (source_files_count <= 0)
