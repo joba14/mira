@@ -73,7 +73,7 @@ To get help and learn more about the compiler, use the following:
 > ./mirac --help
 ```
 
-Once built successfully, you can run mira programs by providing the source code file as an argument to the compiler:
+Once built successfully, you can run mira programs by providing the source code file as an argument to the compiler (or use makefile template from the example projects):
 ```sh
 > cd mira/mirac/build
 > ./mirac -a nasm_x86_64_linux <path-to-mira-source-file> <path-to-output-asm-file>
@@ -86,9 +86,10 @@ Once built successfully, you can run mira programs by providing the source code 
 
 
 ## Contributing
-At this time, I am not actively seeking contributions to the Mira Project. I appreciate your interest and enthusiasm for contributing to the project.
+At this time, I am not actively seeking contributions to the Mira project. I appreciate your interest and enthusiasm for contributing to the project.
 
 The reason for not actively seeking contributions is that I currently do not have well-defined ground rules and guidelines in place for contributors. I want to ensure that the contribution process is clear, fair, and productive for everyone involved.
+
 However, I am always open to feedback, bug reports, and feature requests. If you encounter issues with the project or have ideas for improvements, please feel free to report in this project's repo issues page.
 
 I value your interest in the project, and I may consider establishing contribution guidelines in the future. Until then, thank you for your understanding and support.
