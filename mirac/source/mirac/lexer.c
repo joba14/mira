@@ -646,43 +646,56 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	mirac_debug_assert(token != mirac_null);
 	mirac_debug_assert(token->text.length > 0);
 
-	if ((token->text.data[0] != '-') &&
-		(token->text.data[0] != '+') &&
-		!isdigit(token->text.data[0])) // note: at this point lexer does not perform the length check as it can vary depending on the numeric literal type.
+	if (mirac_string_view_equal_range(token->text, mirac_string_view_from_parts("0b", 2), 2))
 	{
-		return mirac_token_type_none;
-	}
+		char_t* endptr = mirac_null; errno = 0;
+		token->as.uval = strtoul(token->text.data + 2, &endptr, 2);
 
-	const bool_t has_sign = ('-' == token->text.data[0]) || ('+' == token->text.data[0]);
-
-	if (has_sign && (token->text.length <= 1))
-	{
-		return mirac_token_type_none;
-	}
-
-	for (uint64_t index = (uint64_t)(has_sign ? 1 : 0); index < token->text.length; ++index)
-	{
-		const char_t curr_char = token->text.data[index];
-
-		if (!isdigit(curr_char))
+		if (*endptr != '\0')
 		{
-			log_lexer_error_and_exit(token->location,
-				"encountered invalid symbol '%c' in numeric literal.",
-				curr_char
-			);
+			return mirac_token_type_none;
 		}
 	}
+	else if (mirac_string_view_equal_range(token->text, mirac_string_view_from_parts("0o", 2), 2))
+	{
+		char_t* endptr = mirac_null; errno = 0;
+		token->as.uval = strtoul(token->text.data + 2, &endptr, 8);
 
-	token->type = mirac_token_type_literal_u64; errno = 0;
-	token->as.uval = strtoul(token->text.data, mirac_null, 10);
+		if (*endptr != '\0')
+		{
+			return mirac_token_type_none;
+		}
+	}
+	else if (mirac_string_view_equal_range(token->text, mirac_string_view_from_parts("0x", 2), 2))
+	{
+		char_t* endptr = mirac_null; errno = 0;
+		token->as.uval = strtoul(token->text.data + 2, &endptr, 16);
+
+		if (*endptr != '\0')
+		{
+			return mirac_token_type_none;
+		}
+	}
+	else
+	{
+		char_t* endptr = mirac_null; errno = 0;
+		token->as.uval = strtoul(token->text.data, &endptr, 10);
+
+		if (*endptr != '\0')
+		{
+			return mirac_token_type_none;
+		}
+	}
 
 	if (errno != 0)
 	{
 		log_lexer_error_and_exit(token->location,
-			"numeric literal overflow."
+			"numeric literal '" mirac_sv_fmt "' overflow.",
+			mirac_sv_arg(token->text)
 		);
 	}
 
+	token->type = mirac_token_type_literal_u64;
 	return token->type;
 }
 
