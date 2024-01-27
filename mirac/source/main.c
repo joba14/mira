@@ -76,9 +76,9 @@ int32_t main(
 	for (uint64_t source_file_index = 0; source_file_index < source_files_count; source_file_index += 2)
 	{
 		const char_t* const source_file_pointer = source_files[source_file_index + 0];
-		const char_t* const output_file_pointer = source_files[source_file_index + 1];
-
 		mirac_debug_assert(source_file_pointer != mirac_null);
+
+		const char_t* const output_file_pointer = source_files[source_file_index + 1];
 		mirac_debug_assert(output_file_pointer != mirac_null);
 
 		const mirac_string_view_s source_file_path = mirac_string_view_from_cstring(source_file_pointer);
@@ -196,8 +196,9 @@ static void process_source_file_into_output_file(
 	mirac_debug_assert(config != mirac_null);
 
 	FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
-	FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
 	mirac_debug_assert(source_file != mirac_null);
+
+	FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
 	mirac_debug_assert(output_file != mirac_null);
 
 	mirac_arena_s arena = mirac_arena_from_parts();
@@ -205,8 +206,27 @@ static void process_source_file_into_output_file(
 	mirac_parser_s parser = mirac_parser_from_parts(config, &arena, &lexer);
 	mirac_ast_unit_s unit = mirac_parser_parse_ast_unit(&parser);
 
-	// todo: remove:
-	// mirac_ast_unit_print(&unit, 0);
+	if (config->dump_ast)
+	{
+		// todo: rework this to be safe:
+		// [
+		char_t ast_dump_file_path[256] = {0};
+		uint64_t ast_dump_file_path_length = 0;
+
+		mirac_c_memcpy(ast_dump_file_path + ast_dump_file_path_length, output_file_path.data, output_file_path.length);
+		ast_dump_file_path_length += output_file_path.length;
+
+		mirac_c_memcpy(ast_dump_file_path + ast_dump_file_path_length, ".ast.txt", 8);
+		ast_dump_file_path_length += 8;
+
+		FILE* const ast_dump_file = validate_and_open_file_for_writing(
+			mirac_string_view_from_parts(ast_dump_file_path, ast_dump_file_path_length));
+		mirac_debug_assert(ast_dump_file != mirac_null);
+
+		mirac_ast_unit_print(ast_dump_file, &unit, 0);
+		(void)fclose(ast_dump_file);
+		// ]
+	}
 
 	if (!config->unsafe)
 	{

@@ -19,6 +19,8 @@
 #include <mirac/arena.h>
 #include <mirac/lexer.h>
 
+#include <stdio.h>
+
 typedef struct mirac_ast_block_s mirac_ast_block_s;
 typedef struct mirac_ast_def_s mirac_ast_def_s;
 
@@ -225,10 +227,12 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 /**
  * @brief Print ast unit.
  * 
+ * @param file   file to print unit to
  * @param unit   ast unit to print
  * @param indent indent from left side (in tabs)
  */
 void mirac_ast_unit_print(
+	FILE* const file,
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent);
 

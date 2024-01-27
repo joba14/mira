@@ -11,7 +11,7 @@ BUILD_DIR = ./build
 
 # source file and output name
 SOURCE_FILE = main.mira
-OUTPUT_NAME = factorial
+OUTPUT_NAME = experiment
 
 # output files
 OUTPUT_MIRA = $(BUILD_DIR)/$(OUTPUT_NAME).mira
@@ -21,7 +21,7 @@ OUTPUT_EXE_PATH = $(BUILD_DIR)/$(OUTPUT_NAME).out
 
 # flags
 CPP_FLAGS = -I./../../../examples
-MIRAC_FLAGS = -u -e _start -a nasm_x86_64_linux
+MIRAC_FLAGS = -d -u -e _start -a nasm_x86_64_linux
 
 # targets
 all: setup build

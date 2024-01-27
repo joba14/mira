@@ -33,6 +33,7 @@ static const char_t* const g_usage_banner =
 	"    -v, --version              print version and exit\n"
 	"    -a, --arch <target>        set the architecture for the output\n"
 	"    -e, --entry <symbol>       set the entry symbol\n"
+	"    -d, --dump_ast             dump generated ast into text file near output file\n"
 	"    -u, --unsafe               disable checker\n"
 	"    -s, --strip                strip unused code in the output\n"
 	"\n"
@@ -71,6 +72,7 @@ mirac_config_s mirac_config_from_cli(
 		{ "version",    no_argument,       0, 'v' },
 		{ "arch",       required_argument, 0, 'a' },
 		{ "entry",      required_argument, 0, 'e' },
+		{ "dump_ast",   no_argument,       0, 'd' },
 		{ "unsafe",     no_argument,       0, 'u' },
 		{ "strip",      no_argument,       0, 's' },
 		{ 0, 0, 0, 0 }
@@ -79,7 +81,7 @@ mirac_config_s mirac_config_from_cli(
 	mirac_config_s config = {0};
 	int32_t opt = -1;
 
-	while ((opt = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:us", options, mirac_null)) != -1)
+	while ((opt = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:dus", options, mirac_null)) != -1)
 	{
 		switch (opt)
 		{
@@ -113,6 +115,11 @@ mirac_config_s mirac_config_from_cli(
 			case 'e':
 			{
 				config.entry = mirac_string_view_from_cstring((const char_t*)optarg);
+			} break;
+
+			case 'd':
+			{
+				config.dump_ast = true;
 			} break;
 
 			case 'u':

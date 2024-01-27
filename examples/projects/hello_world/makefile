@@ -21,7 +21,7 @@ OUTPUT_EXE_PATH = $(BUILD_DIR)/$(OUTPUT_NAME).out
 
 # flags
 CPP_FLAGS = -I./../../
-MIRAC_FLAGS = -u -e _start -a nasm_x86_64_linux
+MIRAC_FLAGS = -d -u -e _start -a nasm_x86_64_linux
 
 # targets
 all: setup build

@@ -166,78 +166,91 @@ static mirac_ast_def_s* parse_ast_def(
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_expr(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_ident(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_call(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_as(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_scope(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_if(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_else(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_loop(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def_func(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def_mem(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def_str(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
@@ -246,9 +259,9 @@ mirac_string_view_s mirac_ast_block_scope_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_ast_block_scope_type_parentheses: { return mirac_string_view_from_cstring("parentheses"); } break;
-		case mirac_ast_block_scope_type_brackets:    { return mirac_string_view_from_cstring("brackets");    } break;
-		case mirac_ast_block_scope_type_braces:      { return mirac_string_view_from_cstring("braces");      } break;
+		case mirac_ast_block_scope_type_parentheses: { return mirac_string_view_from_parts("parentheses", 11); } break;
+		case mirac_ast_block_scope_type_brackets:    { return mirac_string_view_from_parts("brackets", 8);     } break;
+		case mirac_ast_block_scope_type_braces:      { return mirac_string_view_from_parts("braces", 6);       } break;
 
 		default:
 		{
@@ -264,15 +277,15 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_ast_block_type_expr:  { return mirac_string_view_from_cstring("expr");  } break;
-		case mirac_ast_block_type_ident: { return mirac_string_view_from_cstring("ident"); } break;
-		case mirac_ast_block_type_call:  { return mirac_string_view_from_cstring("call");  } break;
-		case mirac_ast_block_type_as:    { return mirac_string_view_from_cstring("as");    } break;
-		case mirac_ast_block_type_scope: { return mirac_string_view_from_cstring("scope"); } break;
-		case mirac_ast_block_type_if:    { return mirac_string_view_from_cstring("if");    } break;
-		case mirac_ast_block_type_else:  { return mirac_string_view_from_cstring("else");  } break;
-		case mirac_ast_block_type_loop:  { return mirac_string_view_from_cstring("loop");  } break;
-		case mirac_ast_block_type_eou:   { return mirac_string_view_from_cstring("eou");   } break;
+		case mirac_ast_block_type_expr:  { return mirac_string_view_from_parts("expr", 4);  } break;
+		case mirac_ast_block_type_ident: { return mirac_string_view_from_parts("ident", 5); } break;
+		case mirac_ast_block_type_call:  { return mirac_string_view_from_parts("call", 4);  } break;
+		case mirac_ast_block_type_as:    { return mirac_string_view_from_parts("as", 2);    } break;
+		case mirac_ast_block_type_scope: { return mirac_string_view_from_parts("scope", 5); } break;
+		case mirac_ast_block_type_if:    { return mirac_string_view_from_parts("if", 2);    } break;
+		case mirac_ast_block_type_else:  { return mirac_string_view_from_parts("else", 4);  } break;
+		case mirac_ast_block_type_loop:  { return mirac_string_view_from_parts("loop", 4);  } break;
+		case mirac_ast_block_type_eou:   { return mirac_string_view_from_parts("eou", 3);   } break;
 
 		default:
 		{
@@ -288,9 +301,9 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_ast_def_type_func: { return mirac_string_view_from_cstring("func"); } break;
-		case mirac_ast_def_type_mem:  { return mirac_string_view_from_cstring("mem");  } break;
-		case mirac_ast_def_type_str:  { return mirac_string_view_from_cstring("str");  } break;
+		case mirac_ast_def_type_func: { return mirac_string_view_from_parts("func", 4); } break;
+		case mirac_ast_def_type_mem:  { return mirac_string_view_from_parts("mem", 3);  } break;
+		case mirac_ast_def_type_str:  { return mirac_string_view_from_parts("str", 4);  } break;
 
 		default:
 		{
@@ -331,23 +344,25 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 }
 
 void mirac_ast_unit_print(
+	FILE* const file,
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(unit != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("Unit[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "Unit[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("defs:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "defs:\n");
 	for (const mirac_ast_def_list_node_s* defs_iterator = unit->defs.begin; defs_iterator != mirac_null; defs_iterator = defs_iterator->next)
 	{
-		print_ast_def(defs_iterator->data, indent + 2);
+		print_ast_def(file, defs_iterator->data, indent + 2);
 	}
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 mirac_parser_s mirac_parser_from_parts(
@@ -1245,34 +1260,38 @@ parse_def_by_token:
 	return def;
 }
 
-// todo(#002): update and standardize the priting of AST unit and all its components!
+// todo(#002): update and standardize the printing of AST unit and all its components!
 
 static void print_ast_block_expr(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_expr == block->type);
 
 	const mirac_ast_block_expr_s* const expr_block = &block->as.expr_block;
 	mirac_debug_assert(expr_block != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("ExprBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "ExprBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("token:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "token:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&expr_block->token)));
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_ident(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_ident == block->type);
 
@@ -1280,27 +1299,29 @@ static void print_ast_block_ident(
 	mirac_debug_assert(ident_block != mirac_null);
 	mirac_debug_assert(ident_block->def != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("IdentBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "IdentBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("token:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&ident_block->token)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "token:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&ident_block->token)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("def:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_ast_def_get_identifier_token(ident_block->def).text));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "def:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_ast_def_get_identifier_token(ident_block->def).text));
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_call(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_call == block->type);
 
@@ -1312,75 +1333,81 @@ static void print_ast_block_call(
 	mirac_debug_assert(ident_block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_ident == ident_block->type);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("CallBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "CallBlock[\n");
 
-	print_ast_block_ident(ident_block, indent + 1);
+	print_ast_block_ident(file, ident_block, indent + 1);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_as(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_as == block->type);
 
 	const mirac_ast_block_as_s* const as_block = &block->as.as_block;
 	mirac_debug_assert(as_block != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("AsBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "AsBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("types:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "types:\n");
 	for (mirac_token_list_node_s* types_iterator = as_block->type_tokens.begin; types_iterator != mirac_null; types_iterator = types_iterator->next)
 	{
-		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&types_iterator->data)));
+		for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+		(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&types_iterator->data)));
 	}
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_scope(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == block->type);
 
 	const mirac_ast_block_scope_s* const scope_block = &block->as.scope_block;
 	mirac_debug_assert(scope_block != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("ScopeBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "ScopeBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("type:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_ast_block_scope_type_to_string_view(scope_block->type)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "type:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_ast_block_scope_type_to_string_view(scope_block->type)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("blocks:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "blocks:\n");
 	for (mirac_ast_block_list_node_s* blocks_iterator = scope_block->blocks.begin; blocks_iterator != mirac_null; blocks_iterator = blocks_iterator->next)
 	{
 		mirac_debug_assert(blocks_iterator != mirac_null);
 		mirac_debug_assert(blocks_iterator->data != mirac_null);
-		print_ast_block(blocks_iterator->data, indent + 2);
+		print_ast_block(file, blocks_iterator->data, indent + 2);
 	}
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_if(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_if == block->type);
 
@@ -1391,25 +1418,27 @@ static void print_ast_block_if(
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->cond->type);
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->body->type);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("IfBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "IfBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("cond:\n");
-	print_ast_block(if_block->cond, indent + 2);
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "cond:\n");
+	print_ast_block(file, if_block->cond, indent + 2);
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("body:\n");
-	print_ast_block(if_block->body, indent + 2);
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "body:\n");
+	print_ast_block(file, if_block->body, indent + 2);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_else(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_else == block->type);
 
@@ -1418,21 +1447,23 @@ static void print_ast_block_else(
 	mirac_debug_assert(else_block->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == else_block->body->type);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("ElseBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "ElseBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("body:\n");
-	print_ast_block(else_block->body, indent + 2);
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "body:\n");
+	print_ast_block(file, else_block->body, indent + 2);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block_loop(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_loop == block->type);
 
@@ -1443,46 +1474,48 @@ static void print_ast_block_loop(
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->cond->type);
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->body->type);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("LoopBlock[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "LoopBlock[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("cond:\n");
-	print_ast_block(loop_block->cond, indent + 2);
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "cond:\n");
+	print_ast_block(file, loop_block->cond, indent + 2);
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("body:\n");
-	print_ast_block(loop_block->body, indent + 2);
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "body:\n");
+	print_ast_block(file, loop_block->body, indent + 2);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_block(
+	FILE* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(block != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("Block[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "Block[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("type: '" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "type: '" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("location: '" mirac_location_fmt "'\n", mirac_location_arg(block->location));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "location: '" mirac_location_fmt "'\n", mirac_location_arg(block->location));
 
 	switch (block->type)
 	{
-		case mirac_ast_block_type_expr:  { print_ast_block_expr(block, indent + 1);  } break;
-		case mirac_ast_block_type_ident: { print_ast_block_ident(block, indent + 1); } break;
-		case mirac_ast_block_type_call:  { print_ast_block_call(block, indent + 1);  } break;
-		case mirac_ast_block_type_as:    { print_ast_block_as(block, indent + 1);    } break;
-		case mirac_ast_block_type_scope: { print_ast_block_scope(block, indent + 1); } break;
-		case mirac_ast_block_type_if:    { print_ast_block_if(block, indent + 1);    } break;
-		case mirac_ast_block_type_else:  { print_ast_block_else(block, indent + 1);  } break;
-		case mirac_ast_block_type_loop:  { print_ast_block_loop(block, indent + 1);  } break;
+		case mirac_ast_block_type_expr:  { print_ast_block_expr(file, block, indent + 1);  } break;
+		case mirac_ast_block_type_ident: { print_ast_block_ident(file, block, indent + 1); } break;
+		case mirac_ast_block_type_call:  { print_ast_block_call(file, block, indent + 1);  } break;
+		case mirac_ast_block_type_as:    { print_ast_block_as(file, block, indent + 1);    } break;
+		case mirac_ast_block_type_scope: { print_ast_block_scope(file, block, indent + 1); } break;
+		case mirac_ast_block_type_if:    { print_ast_block_if(file, block, indent + 1);    } break;
+		case mirac_ast_block_type_else:  { print_ast_block_else(file, block, indent + 1);  } break;
+		case mirac_ast_block_type_loop:  { print_ast_block_loop(file, block, indent + 1);  } break;
 
 		default:
 		{
@@ -1491,14 +1524,16 @@ static void print_ast_block(
 		} break;
 	}
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_def_func(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_func == def->type);
 
@@ -1507,126 +1542,132 @@ static void print_ast_def_func(
 	mirac_debug_assert(func_def->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == func_def->body->type);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("FuncDef[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "FuncDef[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("identifier:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_def->identifier)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "identifier:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_def->identifier)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("req_tokens:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "req_tokens:\n");
 	for (const mirac_token_list_node_s* reqs_iterator = func_def->req_tokens.begin; reqs_iterator != mirac_null; reqs_iterator = reqs_iterator->next)
 	{
-		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&reqs_iterator->data)));
+		for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+		(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&reqs_iterator->data)));
 	}
 	
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("ret_tokens:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "ret_tokens:\n");
 	for (const mirac_token_list_node_s* rets_iterator = func_def->ret_tokens.begin; rets_iterator != mirac_null; rets_iterator = rets_iterator->next)
 	{
-		for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-		printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&rets_iterator->data)));
+		for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+		(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&rets_iterator->data)));
 	}
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("body:\n");
-	print_ast_block(func_def->body, indent + 2);
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "body:\n");
+	print_ast_block(file, func_def->body, indent + 2);
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("is_entry: %s\n", func_def->is_entry ? "yes" : "no");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "is_entry: %s\n", func_def->is_entry ? "yes" : "no");
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_def_mem(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_mem == def->type);
 
 	const mirac_ast_def_mem_s* const mem_def = &def->as.mem_def;
 	mirac_debug_assert(mem_def != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("MemDef[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "MemDef[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("identifier:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_def->identifier)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "identifier:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_def->identifier)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("capacity:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_def->capacity)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "capacity:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&mem_def->capacity)));
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_def_str(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_str == def->type);
 
 	const mirac_ast_def_str_s* const str_def = &def->as.str_def;
 	mirac_debug_assert(str_def != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("StrDef[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "StrDef[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("identifier:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_def->identifier)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "identifier:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_def->identifier)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("literal:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_def->literal)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "literal:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&str_def->literal)));
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }
 
 static void print_ast_def(
+	FILE* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
+	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(def != mirac_null);
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("Def[\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "Def[\n");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("location: '" mirac_location_fmt "'\n", mirac_location_arg(def->location));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "location: '" mirac_location_fmt "'\n", mirac_location_arg(def->location));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("section:\n");
-	for (uint8_t indent_index = 0; indent_index < (indent + 2); ++indent_index) printf("\t");
-	printf(mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&def->section)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "section:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&def->section)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("type: '" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_def_type_to_string_view(def->type)));
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "type: '" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_def_type_to_string_view(def->type)));
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("is_global: %s\n", def->is_global ? "yes" : "no");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "is_global: %s\n", def->is_global ? "yes" : "no");
 
-	for (uint8_t indent_index = 0; indent_index < (indent + 1); ++indent_index) printf("\t");
-	printf("is_used: %s\n", def->is_used ? "yes" : "no");
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "is_used: %s\n", def->is_used ? "yes" : "no");
 
 	switch (def->type)
 	{
-		case mirac_ast_def_type_func: { print_ast_def_func(def, indent + 1); } break;
-		case mirac_ast_def_type_mem:  { print_ast_def_mem(def, indent + 1);  } break;
-		case mirac_ast_def_type_str:  { print_ast_def_str(def, indent + 1);  } break;
+		case mirac_ast_def_type_func: { print_ast_def_func(file, def, indent + 1); } break;
+		case mirac_ast_def_type_mem:  { print_ast_def_mem(file, def, indent + 1);  } break;
+		case mirac_ast_def_type_str:  { print_ast_def_str(file, def, indent + 1);  } break;
 
 		default:
 		{
@@ -1635,6 +1676,6 @@ static void print_ast_def(
 		} break;
 	}
 
-	for (uint8_t indent_index = 0; indent_index < indent; ++indent_index) printf("\t");
-	printf("]\n");
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "]\n");
 }

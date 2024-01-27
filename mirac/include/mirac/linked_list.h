@@ -62,8 +62,8 @@
 		mirac_debug_assert(linked_list != mirac_null);                         \
 		                                                                       \
 		_type_name ## _node_s* node = (_type_name ## _node_s*)mirac_c_malloc(  \
-			sizeof(_type_name ## _node_s)                                      \
-		);                                                                     \
+			sizeof(_type_name ## _node_s));                                    \
+		mirac_debug_assert(node != mirac_null);                                \
 		                                                                       \
 		node->data = data;                                                     \
 		node->next = mirac_null;                                               \

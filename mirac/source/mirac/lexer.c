@@ -18,7 +18,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
-#include <stdio.h>
 
 static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_reserved_count + 1] =
 {
@@ -186,19 +185,19 @@ mirac_string_view_s mirac_token_type_to_string_view(
 {
 	switch (token_type)
 	{
-		case mirac_token_type_literal_i08: { return mirac_string_view_from_cstring("literal_i08"); } break;
-		case mirac_token_type_literal_i16: { return mirac_string_view_from_cstring("literal_i16"); } break;
-		case mirac_token_type_literal_i32: { return mirac_string_view_from_cstring("literal_i32"); } break;
-		case mirac_token_type_literal_i64: { return mirac_string_view_from_cstring("literal_i64"); } break;
-		case mirac_token_type_literal_u08: { return mirac_string_view_from_cstring("literal_u08"); } break;
-		case mirac_token_type_literal_u16: { return mirac_string_view_from_cstring("literal_u16"); } break;
-		case mirac_token_type_literal_u32: { return mirac_string_view_from_cstring("literal_u32"); } break;
-		case mirac_token_type_literal_u64: { return mirac_string_view_from_cstring("literal_u64"); } break;
-		case mirac_token_type_literal_ptr: { return mirac_string_view_from_cstring("literal_ptr"); } break;
-		case mirac_token_type_literal_str: { return mirac_string_view_from_cstring("literal_str"); } break;
-		case mirac_token_type_identifier:  { return mirac_string_view_from_cstring("identifier");  } break;
-		case mirac_token_type_eof:         { return mirac_string_view_from_cstring("eof");         } break;
-		case mirac_token_type_none:        { return mirac_string_view_from_cstring("none");        } break;
+		case mirac_token_type_literal_i08: { return mirac_string_view_from_parts("literal_i08", 11); } break;
+		case mirac_token_type_literal_i16: { return mirac_string_view_from_parts("literal_i16", 11); } break;
+		case mirac_token_type_literal_i32: { return mirac_string_view_from_parts("literal_i32", 11); } break;
+		case mirac_token_type_literal_i64: { return mirac_string_view_from_parts("literal_i64", 11); } break;
+		case mirac_token_type_literal_u08: { return mirac_string_view_from_parts("literal_u08", 11); } break;
+		case mirac_token_type_literal_u16: { return mirac_string_view_from_parts("literal_u16", 11); } break;
+		case mirac_token_type_literal_u32: { return mirac_string_view_from_parts("literal_u32", 11); } break;
+		case mirac_token_type_literal_u64: { return mirac_string_view_from_parts("literal_u64", 11); } break;
+		case mirac_token_type_literal_ptr: { return mirac_string_view_from_parts("literal_ptr", 11); } break;
+		case mirac_token_type_literal_str: { return mirac_string_view_from_parts("literal_str", 11); } break;
+		case mirac_token_type_identifier:  { return mirac_string_view_from_parts("identifier", 10);  } break;
+		case mirac_token_type_eof:         { return mirac_string_view_from_parts("eof", 3);          } break;
+		case mirac_token_type_none:        { return mirac_string_view_from_parts("none", 4);         } break;
 
 		default:
 		{

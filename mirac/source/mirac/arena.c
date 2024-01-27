@@ -20,6 +20,7 @@ mirac_node_s* mirac_node_from_size(
 {
 	mirac_debug_assert(size > 0);
 	mirac_node_s* const node = (mirac_node_s* const)mirac_c_malloc(sizeof(mirac_node_s));
+	mirac_debug_assert(node != mirac_null);
 
 	if (mirac_null == node)
 	{
@@ -28,6 +29,7 @@ mirac_node_s* mirac_node_from_size(
 	}
 
 	node->pointer = (void*)mirac_c_malloc(size);
+	mirac_debug_assert(node->pointer != mirac_null);
 
 	if (mirac_null == node->pointer)
 	{
