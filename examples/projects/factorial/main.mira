@@ -7,7 +7,7 @@
 
 sec .text func factorial req u64 ret u64 {
 	if [ dup 0 <= ] {
-		0
+		drop 0
 	}
 	else {
 		1 swap loop [ dup 0 > ] {
