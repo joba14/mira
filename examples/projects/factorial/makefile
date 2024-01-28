@@ -1,27 +1,41 @@
 
+# config
+INCLUDE_PATHS := \
+	-I./../.. \
+	-I.
+
+BUILD_FLAGS := \
+	-d \
+	-u \
+	-e _start \
+	-a nasm_x86_64_linux
+
+SOURCE_FILE = main.mira
+OUTPUT_NAME = factorial
+
+# -------------------------------------------------- #
+# do not change anything below this line (unless you
+# know what you are doing).
+
 # commands
 CPP = cpp
 MIRAC = ./../../../mirac/build/mirac
 NASM = nasm
 LD = ld
 
+# flags
+CPP_FLAGS = -P $(INCLUDE_PATHS)
+MIRAC_FLAGS += $(BUILD_FLAGS)
+
 # directories
 SOURCE_DIR = ./
 BUILD_DIR = ./build
-
-# source file and output name
-SOURCE_FILE = main.mira
-OUTPUT_NAME = factorial
 
 # output files
 OUTPUT_MIRA = $(BUILD_DIR)/$(OUTPUT_NAME).mira
 OUTPUT_ASM = $(BUILD_DIR)/$(OUTPUT_NAME).asm
 OUTPUT_OBJ = $(BUILD_DIR)/$(OUTPUT_NAME).o
 OUTPUT_EXE_PATH = $(BUILD_DIR)/$(OUTPUT_NAME).out
-
-# flags
-CPP_FLAGS = -I./../../
-MIRAC_FLAGS = -d -u -e _start -a nasm_x86_64_linux
 
 # targets
 all: setup build
@@ -42,7 +56,7 @@ $(OUTPUT_ASM): $(OUTPUT_MIRA)
 	$(MIRAC) $(MIRAC_FLAGS) $(OUTPUT_MIRA) $(OUTPUT_ASM)
 
 $(OUTPUT_MIRA): $(SOURCE_DIR)/$(SOURCE_FILE)
-	$(CPP) $(CPP_FLAGS) -P -o $@ $<
+	$(CPP) $(CPP_FLAGS) -o $@ $<
 
 run: $(OUTPUT_EXE_PATH)
 	$<
@@ -52,3 +66,5 @@ clean:
 
 .PHONY:
 	all setup build run clean
+
+# -------------------------------------------------- #
