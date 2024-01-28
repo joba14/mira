@@ -55,7 +55,7 @@ case $BUILD_CONFIGURATION in
 		;;
 	"release")
 		FLAGS="$FLAGS -O3"
-		DEFINES="$DEFINES -DNDEBUG"
+		DEFINES="$DEFINES -DNDEBUG -Dmirac_ndebug"
 		PROJECT_NAME_SUFFIX="_release"
 		;;
 	*)

@@ -26,7 +26,7 @@ void mirac_logger_log(
 	const char_t* const format,
 	...) __attribute__ ((format (printf, 1, 2)));
 
-#ifndef NDEBUG
+#ifndef mirac_ndebug
 /**
  * @brief Log debug level formattable messages.
  * 

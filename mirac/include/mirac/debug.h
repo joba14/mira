@@ -13,7 +13,7 @@
 #ifndef __mirac__include__mirac__debug_h__
 #define __mirac__include__mirac__debug_h__
 
-#ifndef NDEBUG
+#ifndef mirac_ndebug
 #	include <mirac/c_common.h>
 
 /**

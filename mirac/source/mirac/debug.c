@@ -12,7 +12,7 @@
 
 #include <mirac/debug.h>
 
-#ifndef NDEBUG
+#ifndef mirac_ndebug
 #	include <stdio.h>
 
 void mirac_debug_assert_impl(
