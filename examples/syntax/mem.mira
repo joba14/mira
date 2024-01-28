@@ -1,4 +1,2 @@
 
-mem mem1 10
-
 sec .bss mem mem2 10

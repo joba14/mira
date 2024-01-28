@@ -1,32 +1,32 @@
 
 func func1 {
-	0 putu
+	; ...
 }
 
 func func2 req i64 {
-	0 putu
+	; ...
 }
 
 func func3 ret i64 {
-	0 putu
+	; ...
 }
 
 func func4 req i64 ret i64 {
-	0 putu
+	; ...
 }
 
 sec .text func func9 {
-	0 putu
+	; ...
 }
 
 sec .text func func10 req i64 {
-	0 putu
+	; ...
 }
 
 sec .text func func11 ret i64 {
-	0 putu
+	; ...
 }
 
 sec .text func func12 req i64 ret i64 {
-	0 putu
+	; ...
 }
