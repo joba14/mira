@@ -116,11 +116,3 @@ int32_t mirac_c_strncmp(
 	mirac_debug_assert(right != mirac_null);
 	return strncmp((const char_t*)left, (const char_t*)right, (size_t)length);
 }
-
-char_t* mirac_c_strchr(
-	const char_t* const string,
-	const int32_t c)
-{
-	mirac_debug_assert(string != mirac_null);
-	return strchr((const char_t*)string, c);
-}

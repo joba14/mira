@@ -15,7 +15,6 @@
 #include <mirac/debug.h>
 
 #include <stdarg.h>
-#include <stdio.h>
 
 #define ansi_gray   "\033[90m"
 #define ansi_red    "\033[91m"
@@ -30,7 +29,7 @@
 #define tag_error "error"
 
 static void log_with_tag(
-	FILE* const stream,
+	mirac_file_t* const stream,
 	const char_t* const tag,
 	const char_t* const format,
 	va_list args);
@@ -88,7 +87,7 @@ void mirac_logger_error(
 }
 
 static void log_with_tag(
-	FILE* const stream,
+	mirac_file_t* const stream,
 	const char_t* const tag,
 	const char_t* const format,
 	va_list args)

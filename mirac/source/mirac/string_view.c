@@ -45,7 +45,7 @@ bool_t mirac_string_view_equal_range(
 	mirac_debug_assert(left.data != mirac_null);
 	mirac_debug_assert(right.data != mirac_null);
 
-	if (left.length < length || right.length < length)
+	if ((left.length < length) || (right.length < length))
 	{
 		return false;
 	}
@@ -184,7 +184,7 @@ mirac_string_view_s mirac_string_view_split_left(
 
 	int64_t string_view_length = (int64_t)string_view->length - index - 1;
 
-	if (string_view_length < 0 || index >= (int64_t)string_view->length)
+	if ((string_view_length < 0) || (index >= (int64_t)string_view->length))
 	{
 		return mirac_string_view_from_parts("", 0);
 	}
@@ -209,10 +209,10 @@ mirac_string_view_s mirac_string_view_split_left_white_space(
 	uint64_t index = 0;
 
 	while ((index < string_view->length) && (
-			string_view->data[index] != ' '  &&
-			string_view->data[index] != '\t' &&
-			string_view->data[index] != '\n' &&
-			string_view->data[index] != '\r'
+			(string_view->data[index] !=  ' ') &&
+			(string_view->data[index] != '\t') &&
+			(string_view->data[index] != '\n') &&
+			(string_view->data[index] != '\r')
 		))
 	{
 		++index;

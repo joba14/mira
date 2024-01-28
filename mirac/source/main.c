@@ -12,6 +12,7 @@
 
 #include <main.h>
 
+#include <mirac/c_common.h>
 #include <mirac/logger.h>
 #include <mirac/config.h>
 #include <mirac/arena.h>
@@ -21,16 +22,15 @@
 
 #include <sys/stat.h>
 #include <errno.h>
-#include <stdio.h>
 
 /**
  * @brief Validate file path and open file for reading.
  * 
  * @param file_path path of the file to be opened
  * 
- * @return FILE*
+ * @return mirac_file_t*
  */
-static FILE* validate_and_open_file_for_reading(
+static mirac_file_t* validate_and_open_file_for_reading(
 	const mirac_string_view_s file_path);
 
 /**
@@ -38,9 +38,9 @@ static FILE* validate_and_open_file_for_reading(
  * 
  * @param file_path path of the file to be opened
  * 
- * @return FILE*
+ * @return mirac_file_t*
  */
-static FILE* validate_and_open_file_for_writing(
+static mirac_file_t* validate_and_open_file_for_writing(
 	const mirac_string_view_s file_path);
 
 // todo: document!
@@ -95,7 +95,7 @@ int32_t main(
 	return 0;
 }
 
-static FILE* validate_and_open_file_for_reading(
+static mirac_file_t* validate_and_open_file_for_reading(
 	const mirac_string_view_s file_path)
 {
 	typedef struct stat file_stats_s;
@@ -137,7 +137,7 @@ static FILE* validate_and_open_file_for_reading(
 		mirac_c_exit(-1);
 	}
 
-	FILE* const file = fopen(file_path.data, "rt");
+	mirac_file_t* const file = fopen(file_path.data, "rt");
 
 	if (mirac_null == file)
 	{
@@ -148,7 +148,7 @@ static FILE* validate_and_open_file_for_reading(
 	return file;
 }
 
-static FILE* validate_and_open_file_for_writing(
+static mirac_file_t* validate_and_open_file_for_writing(
 	const mirac_string_view_s file_path)
 {
 	typedef struct stat file_stats_s;
@@ -182,7 +182,7 @@ static FILE* validate_and_open_file_for_writing(
 		mirac_c_exit(-1);
 	}
 
-	FILE* const file = fopen(file_path.data, "wt");
+	mirac_file_t* const file = fopen(file_path.data, "wt");
 
 	if (mirac_null == file)
 	{
@@ -200,10 +200,10 @@ static void process_source_file_into_output_file(
 {
 	mirac_debug_assert(config != mirac_null);
 
-	FILE* const source_file = validate_and_open_file_for_reading(source_file_path);
+	mirac_file_t* const source_file = validate_and_open_file_for_reading(source_file_path);
 	mirac_debug_assert(source_file != mirac_null);
 
-	FILE* const output_file = validate_and_open_file_for_writing(output_file_path);
+	mirac_file_t* const output_file = validate_and_open_file_for_writing(output_file_path);
 	mirac_debug_assert(output_file != mirac_null);
 
 	mirac_arena_s arena = mirac_arena_from_parts();
@@ -224,7 +224,7 @@ static void process_source_file_into_output_file(
 		mirac_c_memcpy(ast_dump_file_path + ast_dump_file_path_length, ".ast.txt", 8);
 		ast_dump_file_path_length += 8;
 
-		FILE* const ast_dump_file = validate_and_open_file_for_writing(
+		mirac_file_t* const ast_dump_file = validate_and_open_file_for_writing(
 			mirac_string_view_from_parts(ast_dump_file_path, ast_dump_file_path_length));
 		mirac_debug_assert(ast_dump_file != mirac_null);
 

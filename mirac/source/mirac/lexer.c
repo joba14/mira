@@ -338,7 +338,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	const mirac_string_view_s file_path,
-	FILE* const file)
+	mirac_file_t* const file)
 {
 	mirac_debug_assert(config != mirac_null);
 	mirac_debug_assert(arena != mirac_null);

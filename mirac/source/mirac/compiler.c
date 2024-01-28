@@ -20,7 +20,7 @@ mirac_compiler_s mirac_compiler_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	mirac_ast_unit_s* const unit,
-	FILE* const file)
+	mirac_file_t* const file)
 {
 	mirac_debug_assert(config != mirac_null);
 	mirac_debug_assert(arena != mirac_null);

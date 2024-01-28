@@ -166,91 +166,91 @@ static mirac_ast_def_s* parse_ast_def(
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_expr(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_ident(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_call(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_as(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_scope(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_if(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_else(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block_loop(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_block(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def_func(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def_mem(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def_str(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
 // todo: write unit tests!
 // todo: document!
 static void print_ast_def(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
 
@@ -344,7 +344,7 @@ mirac_ast_unit_s mirac_ast_unit_from_parts(
 }
 
 void mirac_ast_unit_print(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_unit_s* const unit,
 	const uint64_t indent)
 {
@@ -1263,7 +1263,7 @@ parse_def_by_token:
 // todo(#002): update and standardize the printing of AST unit and all its components!
 
 static void print_ast_block_expr(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1287,7 +1287,7 @@ static void print_ast_block_expr(
 }
 
 static void print_ast_block_ident(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1317,7 +1317,7 @@ static void print_ast_block_ident(
 }
 
 static void print_ast_block_call(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1343,7 +1343,7 @@ static void print_ast_block_call(
 }
 
 static void print_ast_block_as(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1370,7 +1370,7 @@ static void print_ast_block_as(
 }
 
 static void print_ast_block_scope(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1403,7 +1403,7 @@ static void print_ast_block_scope(
 }
 
 static void print_ast_block_if(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1434,7 +1434,7 @@ static void print_ast_block_if(
 }
 
 static void print_ast_block_else(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1459,7 +1459,7 @@ static void print_ast_block_else(
 }
 
 static void print_ast_block_loop(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1490,7 +1490,7 @@ static void print_ast_block_loop(
 }
 
 static void print_ast_block(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
 	const uint64_t indent)
 {
@@ -1529,7 +1529,7 @@ static void print_ast_block(
 }
 
 static void print_ast_def_func(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
@@ -1578,7 +1578,7 @@ static void print_ast_def_func(
 }
 
 static void print_ast_def_mem(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
@@ -1607,7 +1607,7 @@ static void print_ast_def_mem(
 }
 
 static void print_ast_def_str(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {
@@ -1636,7 +1636,7 @@ static void print_ast_def_str(
 }
 
 static void print_ast_def(
-	FILE* const file,
+	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
 {

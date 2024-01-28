@@ -17,10 +17,13 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <limits.h>
+#include <stdio.h>
+
+#define mirac_null NULL
 
 typedef bool bool_t;
 typedef char char_t;
-#define mirac_null NULL
+typedef FILE mirac_file_t;
 
 // todo: write unit tests!
 /**
@@ -149,18 +152,5 @@ int32_t mirac_c_strncmp(
 	const char_t* const left,
 	const char_t* const right,
 	const uint64_t length);
-
-// todo: write unit tests!
-/**
- * @brief Wrapper for c's stdlib strchr function.
- * 
- * @param string string to search in
- * @param c      char to search
- * 
- * @return char_t*
- */
-char_t* mirac_c_strchr(
-	const char_t* const string,
-	const int32_t c);
 
 #endif

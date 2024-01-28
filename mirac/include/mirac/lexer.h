@@ -18,8 +18,6 @@
 #include <mirac/config.h>
 #include <mirac/arena.h>
 
-#include <stdio.h>
-
 typedef struct
 {
 	mirac_string_view_s file;
@@ -277,7 +275,7 @@ mirac_lexer_s mirac_lexer_from_parts(
 	mirac_config_s* const config,
 	mirac_arena_s* const arena,
 	const mirac_string_view_s file_path,
-	FILE* const file);
+	mirac_file_t* const file);
 
 // todo: write unit tests!
 /**

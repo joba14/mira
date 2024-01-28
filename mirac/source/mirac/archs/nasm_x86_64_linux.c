@@ -15,8 +15,6 @@
 #include <mirac/debug.h>
 #include <mirac/logger.h>
 
-#include <stdio.h>
-
 // todo: write unit tests!
 // todo: document!
 static void nasm_x86_64_linux_compile_ast_block_expr(
