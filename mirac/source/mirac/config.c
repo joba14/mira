@@ -78,12 +78,22 @@ mirac_config_s mirac_config_from_cli(
 		{ 0, 0, 0, 0 }
 	};
 
-	mirac_config_s config = {0};
-	int32_t opt = -1;
-
-	while ((opt = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:dus", options, mirac_null)) != -1)
+	mirac_config_s config =
 	{
-		switch (opt)
+		.arch     = mirac_config_arch_type_none,
+		.entry    = mirac_string_view_from_parts("main", 4),
+		.dump_ast = false,
+		.unsafe   = false,
+		.strip    = false
+	};
+
+	mirac_string_view_s parsed_arch = mirac_string_view_from_parts("", 0);
+	mirac_string_view_s parsed_entry = mirac_string_view_from_parts("", 0);
+	int32_t parsed_option = -1;
+
+	while ((parsed_option = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:dus", options, mirac_null)) != -1)
+	{
+		switch (parsed_option)
 		{
 			case 'h':
 			{
@@ -99,22 +109,12 @@ mirac_config_s mirac_config_from_cli(
 
 			case 'a':
 			{
-				config.arch = mirac_config_arch_type_none;
-				mirac_string_view_s arch_as_string = mirac_string_view_from_cstring((const char_t*)optarg);
-
-				for (uint64_t arch_index = 0; arch_index < mirac_config_arch_types_count; ++arch_index)
-				{
-					if (mirac_string_view_equal(arch_as_string, g_supported_architectures[arch_index]))
-					{
-						config.arch = arch_index;
-						break;
-					}
-				}
+				parsed_arch = mirac_string_view_from_cstring((const char_t*)optarg);
 			} break;
 
 			case 'e':
 			{
-				config.entry = mirac_string_view_from_cstring((const char_t*)optarg);
+				parsed_entry = mirac_string_view_from_cstring((const char_t*)optarg);
 			} break;
 
 			case 'd':
@@ -141,17 +141,36 @@ mirac_config_s mirac_config_from_cli(
 		}
 	}
 
-	if (mirac_config_arch_type_none == config.arch)
 	{
-		mirac_logger_error("invalid architecture was provided.");
-		mirac_config_usage();
-		mirac_c_exit(-1);
+		if (parsed_arch.length <= 0)
+		{
+			mirac_logger_error("no architecture was provided.");
+			mirac_config_usage();
+			mirac_c_exit(-1);
+		}
+
+		for (uint64_t arch_index = 0; arch_index < mirac_config_arch_types_count; ++arch_index)
+		{
+			if (mirac_string_view_equal(parsed_arch, g_supported_architectures[arch_index]))
+			{
+				config.arch = arch_index;
+				break;
+			}
+		}
+
+		if (mirac_config_arch_type_none == config.arch)
+		{
+			mirac_logger_error("invalid architecture '" mirac_sv_fmt "' was provided.", mirac_sv_arg(parsed_arch));
+			mirac_config_usage();
+			mirac_c_exit(-1);
+		}
 	}
 
-	// note: if entry symbol is not provided, default to 'main'.
-	if (config.entry.length <= 0)
+	if (config.entry = parsed_entry, config.entry.length <= 0)
 	{
-		config.entry = mirac_string_view_from_cstring("main");
+		mirac_logger_info("defaulting to entry=\'main\'.");
+		// note: if entry symbol is not provided, default to 'main'.
+		config.entry = mirac_string_view_from_parts("main", 4);
 	}
 
 	*config_end_index = (uint64_t)optind;

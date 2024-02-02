@@ -29,7 +29,6 @@ mirac_string_view_s mirac_config_arch_type_to_string_view(
 
 typedef struct
 {
-	mirac_string_view_s program;
 	mirac_config_arch_type_e arch;
 	mirac_string_view_s entry;
 	bool_t dump_ast;

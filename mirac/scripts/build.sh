@@ -80,6 +80,7 @@ gcc -Wall \
 	-Wconversion \
 	-Wsign-conversion \
 	-Wunreachable-code \
+	-std=gnu11 \
 	$INCLUDES \
 	$FLAGS \
 	$DEFINES \

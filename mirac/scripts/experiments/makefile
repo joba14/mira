@@ -25,7 +25,7 @@ LD = ld
 
 # flags
 CPP_FLAGS = -P $(INCLUDE_PATHS)
-MIRAC_FLAGS += $(BUILD_FLAGS)
+MIRAC_FLAGS = $(BUILD_FLAGS)
 
 # directories
 SOURCE_DIR = ./
