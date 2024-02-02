@@ -168,9 +168,9 @@ mirac_config_s mirac_config_from_cli(
 
 	if (config.entry = parsed_entry, config.entry.length <= 0)
 	{
-		mirac_logger_info("defaulting to entry=\'main\'.");
-		// note: if entry symbol is not provided, default to 'main'.
-		config.entry = mirac_string_view_from_parts("main", 4);
+		mirac_logger_error("no entry symbol was provided.");
+		mirac_config_usage();
+		mirac_c_exit(-1);
 	}
 
 	*config_end_index = (uint64_t)optind;
