@@ -725,8 +725,8 @@ static mirac_ast_block_scope_s parse_ast_block_scope(
 	mirac_debug_assert((mirac_token_type_reserved_left_parenthesis == token.type) ||
 					   (mirac_token_type_reserved_left_bracket     == token.type) ||
 					   (mirac_token_type_reserved_left_brace       == token.type));
-
 	mirac_token_type_e scope_end_token_type = mirac_token_type_none;
+
 	switch (token.type)
 	{
 		case mirac_token_type_reserved_left_parenthesis:
@@ -1228,7 +1228,7 @@ parse_def_by_token:
 		{
 			def->type = mirac_ast_def_type_func;
 			def->as.func_def = parse_ast_def_func(parser);
-			// note: If the func is an entry, it is marked as used to prevent error in the cross referencing:
+			// note: if the func is an entry, it is marked as used to prevent error in the cross referencing:
 			if (def->as.func_def.is_entry) { def->is_used = true; }
 		} break;
 
