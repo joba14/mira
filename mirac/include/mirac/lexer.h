@@ -176,15 +176,15 @@ struct mirac_token_s
  * 
  * @note All the rest of the fields will be initialized to 0.
  * 
- * @param token_type token type to assign to the new token
- * @param location   location to set to the token
- * @param index      global index of the token
- * @param text       text representation from the file
+ * @param type     token type to assign to the new token
+ * @param location location to set to the token
+ * @param index    global index of the token
+ * @param text     text representation from the file
  * 
  * @return mirac_token_s
  */
 mirac_token_s mirac_token_from_parts(
-	const mirac_token_type_e token_type,
+	const mirac_token_type_e type,
 	const mirac_location_s location,
 	const uint64_t index,
 	const mirac_string_view_s text);

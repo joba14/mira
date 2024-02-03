@@ -26,12 +26,14 @@ mirac_compiler_s mirac_compiler_from_parts(
 	mirac_debug_assert(arena != mirac_null);
 	mirac_debug_assert(unit != mirac_null);
 	mirac_debug_assert(file != mirac_null);
-	mirac_compiler_s compiler = {0};
-	compiler.config = config;
-	compiler.arena = arena;
-	compiler.unit = unit;
-	compiler.file = file;
-	return compiler;
+
+	return (mirac_compiler_s)
+	{
+		.config = config,
+		.arena  = arena,
+		.unit   = unit,
+		.file   = file
+	};
 }
 
 void mirac_compiler_compile_ast_unit(

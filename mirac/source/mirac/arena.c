@@ -46,6 +46,7 @@ void mirac_node_destroy(
 	mirac_node_s* const node)
 {
 	mirac_debug_assert(node != mirac_null);
+	mirac_debug_assert(node->pointer != mirac_null);
 	mirac_c_free(node->pointer);
 	mirac_c_free(node);
 }
@@ -53,8 +54,7 @@ void mirac_node_destroy(
 mirac_arena_s mirac_arena_from_parts(
 	void)
 {
-	mirac_arena_s arena = {0};
-	return arena;
+	return (mirac_arena_s) {0};
 }
 
 void mirac_arena_destroy(
@@ -73,6 +73,7 @@ void mirac_arena_destroy(
 	while (node_iterator)
 	{
 		const mirac_node_s* const node = node_iterator;
+		mirac_debug_assert(node != mirac_null);
 		node_iterator = node_iterator->next;
 		mirac_node_destroy((mirac_node_s* const)node);
 	}

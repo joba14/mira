@@ -78,7 +78,7 @@ mirac_config_s mirac_config_from_cli(
 		{ 0, 0, 0, 0 }
 	};
 
-	mirac_config_s config =
+	mirac_config_s config = (mirac_config_s)
 	{
 		.arch     = mirac_config_arch_type_none,
 		.entry    = mirac_string_view_from_parts("main", 4),

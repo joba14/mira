@@ -208,25 +208,27 @@ mirac_string_view_s mirac_token_type_to_string_view(
 }
 
 mirac_token_s mirac_token_from_parts(
-	const mirac_token_type_e token_type,
+	const mirac_token_type_e type,
 	const mirac_location_s location,
 	const uint64_t index,
 	const mirac_string_view_s text)
 {
-	mirac_token_s token = {0};
-	token.type = token_type;
-	token.location = location;
-	token.index = index;
-	token.text = text;
-	return token;
+	return (mirac_token_s)
+	{
+		.type     = type,
+		.location = location,
+		.index    = index,
+		.text     = text
+	};
 }
 
 mirac_token_s mirac_token_from_type(
 	const mirac_token_type_e type)
 {
-	mirac_token_s token = {0};
-	token.type = type;
-	return token;
+	return (mirac_token_s)
+	{
+		.type = type
+	};
 }
 
 void mirac_token_destroy(
@@ -357,17 +359,23 @@ mirac_lexer_s mirac_lexer_from_parts(
 	buffer[length - 1] = '\n';
 	buffer[length] = '\0';
 
-	mirac_lexer_s lexer = {0};
-	lexer.config = config;
-	lexer.arena = arena;
+	const mirac_location_s location = (const mirac_location_s)
+	{
+		.file   = file_path,
+		.line   = 1,
+		.column = 1
+	};
 
-	lexer.locations[0].file = file_path;
-	lexer.locations[1] = lexer.locations[0];
-	lexer.token = mirac_token_from_type(mirac_token_type_none);
-
-	lexer.buffer = mirac_string_view_from_parts(buffer, length);
-	lexer.line = (mirac_string_view_s) {0};
-	return lexer;
+	return (mirac_lexer_s)
+	{
+		.config = config,
+		.arena = arena,
+		.locations[0] = location,
+		.locations[1] = location,
+		.token = mirac_token_from_type(mirac_token_type_none),
+		.buffer = mirac_string_view_from_parts(buffer, length),
+		.line = (mirac_string_view_s) {0}
+	};
 }
 
 void mirac_lexer_destroy(
@@ -646,9 +654,11 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	mirac_debug_assert(token != mirac_null);
 	mirac_debug_assert(token->text.length > 0);
 
+	char_t* endptr = mirac_null;
+	errno = 0;
+
 	if (mirac_string_view_equal_range(token->text, mirac_string_view_from_parts("0b", 2), 2))
 	{
-		char_t* endptr = mirac_null; errno = 0;
 		token->as.uval = strtoul(token->text.data + 2, &endptr, 2);
 
 		if (*endptr != '\0')
@@ -658,7 +668,6 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	}
 	else if (mirac_string_view_equal_range(token->text, mirac_string_view_from_parts("0o", 2), 2))
 	{
-		char_t* endptr = mirac_null; errno = 0;
 		token->as.uval = strtoul(token->text.data + 2, &endptr, 8);
 
 		if (*endptr != '\0')
@@ -668,7 +677,6 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	}
 	else if (mirac_string_view_equal_range(token->text, mirac_string_view_from_parts("0x", 2), 2))
 	{
-		char_t* endptr = mirac_null; errno = 0;
 		token->as.uval = strtoul(token->text.data + 2, &endptr, 16);
 
 		if (*endptr != '\0')
@@ -678,7 +686,6 @@ static mirac_token_type_e parse_numeric_literal_token_from_text(
 	}
 	else
 	{
-		char_t* endptr = mirac_null; errno = 0;
 		token->as.uval = strtoul(token->text.data, &endptr, 10);
 
 		if (*endptr != '\0')

@@ -22,6 +22,7 @@ mirac_string_view_s mirac_string_view_from_parts(
 	const uint64_t length)
 {
 	mirac_debug_assert(data != mirac_null);
+
 	return (mirac_string_view_s)
 	{
 		.data = data,
@@ -33,7 +34,7 @@ mirac_string_view_s mirac_string_view_from_cstring(
 	const char_t* const cstring)
 {
 	mirac_debug_assert(cstring != mirac_null);
-	const uint64_t length = (uint64_t)strlen(cstring);
+	const uint64_t length = mirac_c_strlen(cstring);
 	return mirac_string_view_from_parts(cstring, length);
 }
 
