@@ -520,6 +520,18 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 			(void)fprintf(compiler->file, "\tpush rax\n");
 		} break;
 
+		case mirac_token_type_reserved_true:
+		{
+			(void)fprintf(compiler->file, "\tmov rax, 1\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
+		case mirac_token_type_reserved_false:
+		{
+			(void)fprintf(compiler->file, "\tmov rax, 0\n");
+			(void)fprintf(compiler->file, "\tpush rax\n");
+		} break;
+
 		case mirac_token_type_literal_i08:
 		{
 			(void)fprintf(compiler->file, "\tmov rax, %li\n", expr_block->token.as.ival);

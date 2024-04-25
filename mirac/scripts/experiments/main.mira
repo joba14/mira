@@ -32,6 +32,10 @@ sec .text func _start {
 	else     { 68 call putu }
 	10 call putc
 
+	false call putu 32 call putc
+	true call putu 32 call putc
+	10 call putc
+
 	0 call exit
 }
 

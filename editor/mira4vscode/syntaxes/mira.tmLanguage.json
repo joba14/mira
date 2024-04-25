@@ -39,7 +39,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.tag",
-					"match": "\\b(sec|str|mem|func|req|ret|call|as|drop|dup|over|rot|swap|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys1|sys2|sys3|sys4|sys5|sys6)\\b"
+					"match": "\\b(sec|str|mem|func|req|ret|call|as|drop|dup|over|rot|swap|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys1|sys2|sys3|sys4|sys5|sys6|true|false)\\b"
 				}
 			]
 		},

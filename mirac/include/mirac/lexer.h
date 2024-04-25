@@ -88,6 +88,9 @@ typedef enum
 	mirac_token_type_reserved_sys5,
 	mirac_token_type_reserved_sys6,
 
+	mirac_token_type_reserved_true,
+	mirac_token_type_reserved_false,
+
 	mirac_token_type_reserved_i08,
 	mirac_token_type_reserved_i16,
 	mirac_token_type_reserved_i32,

@@ -71,6 +71,9 @@ static const mirac_string_view_s g_reserved_token_types_map[mirac_token_type_res
 	[mirac_token_type_reserved_sys5] = mirac_string_view_static("sys5"),
 	[mirac_token_type_reserved_sys6] = mirac_string_view_static("sys6"),
 
+	[mirac_token_type_reserved_true]  = mirac_string_view_static("true"),
+	[mirac_token_type_reserved_false] = mirac_string_view_static("false"),
+
 	[mirac_token_type_reserved_i08] = mirac_string_view_static("i08"),
 	[mirac_token_type_reserved_i16] = mirac_string_view_static("i16"),
 	[mirac_token_type_reserved_i32] = mirac_string_view_static("i32"),
