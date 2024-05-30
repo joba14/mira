@@ -39,6 +39,7 @@ This language already supports many (and too often taken for-granted) features c
 Here is the list of the main features the language has:
 - sections, functions, memories, and strings
 - if-else and loops blocks
+- inline native assembly
 - comments :)
 - arithmetic, bitwise, and logical operations
 - comparison operators
