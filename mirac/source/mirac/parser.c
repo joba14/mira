@@ -80,7 +80,7 @@ static mirac_ast_block_s* create_ast_block(
 
 // todo: write unit tests!
 // todo: document!
-static mirac_ast_def_fun_s create_ast_def_func(
+static mirac_ast_def_fun_s create_ast_def_fun(
 	mirac_arena_s* const arena);
 
 // todo: write unit tests!
@@ -155,7 +155,7 @@ static mirac_ast_block_s* parse_ast_block(
 
 // todo: write unit tests!
 // todo: document!
-static mirac_ast_def_fun_s parse_ast_def_func(
+static mirac_ast_def_fun_s parse_ast_def_fun(
 	mirac_parser_s* const parser);
 
 // todo: write unit tests!
@@ -245,7 +245,7 @@ static void print_ast_block(
 
 // todo: write unit tests!
 // todo: document!
-static void print_ast_def_func(
+static void print_ast_def_fun(
 	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent);
@@ -528,7 +528,7 @@ static mirac_ast_block_s* create_ast_block(
 	return block;
 }
 
-static mirac_ast_def_fun_s create_ast_def_func(
+static mirac_ast_def_fun_s create_ast_def_fun(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != mirac_null);
@@ -579,7 +579,7 @@ static bool_t is_token_valid_expr_block_token_by_type(
 		(mirac_token_type_reserved_sec               != type) &&
 		(mirac_token_type_reserved_str               != type) &&
 		(mirac_token_type_reserved_mem               != type) &&
-		(mirac_token_type_reserved_func              != type) &&
+		(mirac_token_type_reserved_fun              != type) &&
 		(mirac_token_type_reserved_if                != type) &&
 		(mirac_token_type_reserved_else              != type) &&
 		(mirac_token_type_reserved_loop              != type) &&
@@ -1081,7 +1081,7 @@ static mirac_ast_block_s* parse_ast_block(
 	return block;
 }
 
-static mirac_ast_def_fun_s parse_ast_def_func(
+static mirac_ast_def_fun_s parse_ast_def_fun(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != mirac_null);
@@ -1089,7 +1089,7 @@ static mirac_ast_def_fun_s parse_ast_def_func(
 	mirac_debug_assert(parser->arena != mirac_null);
 	mirac_debug_assert(parser->lexer != mirac_null);
 
-	mirac_ast_def_fun_s fun_def = create_ast_def_func(parser->arena);
+	mirac_ast_def_fun_s fun_def = create_ast_def_fun(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 
 	if (mirac_lexer_lex_next(parser->lexer, &token) != mirac_token_type_identifier)
@@ -1158,7 +1158,7 @@ static mirac_ast_def_fun_s parse_ast_def_func(
 	}
 
 	fun_def.body = block;
-	fun_def.index = parser->stats.func_count++;
+	fun_def.index = parser->stats.fun_count++;
 	return fun_def;
 }
 
@@ -1283,10 +1283,10 @@ static mirac_ast_def_s* parse_ast_def(
 parse_def_by_token:
 	switch (token.type)
 	{
-		case mirac_token_type_reserved_func:
+		case mirac_token_type_reserved_fun:
 		{
 			def->type = mirac_ast_def_type_fun;
-			def->as.fun_def = parse_ast_def_func(parser);
+			def->as.fun_def = parse_ast_def_fun(parser);
 			// note: if the fun is an entry, it is marked as used to prevent error in the cross referencing:
 			if (def->as.fun_def.is_entry) { def->is_used = true; }
 		} break;
@@ -1614,7 +1614,7 @@ static void print_ast_block(
 	(void)fprintf(file, "]\n");
 }
 
-static void print_ast_def_func(
+static void print_ast_def_fun(
 	mirac_file_t* const file,
 	const mirac_ast_def_s* const def,
 	const uint64_t indent)
@@ -1629,7 +1629,7 @@ static void print_ast_def_func(
 	mirac_debug_assert(mirac_ast_block_type_scope == fun_def->body->type);
 
 	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
-	(void)fprintf(file, "FuncDef[\n");
+	(void)fprintf(file, "FunDef[\n");
 
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "identifier:\n");
@@ -1748,9 +1748,9 @@ static void print_ast_def(
 
 	switch (def->type)
 	{
-		case mirac_ast_def_type_fun: { print_ast_def_func(file, def, indent + 1); } break;
-		case mirac_ast_def_type_mem:  { print_ast_def_mem(file, def, indent + 1);  } break;
-		case mirac_ast_def_type_str:  { print_ast_def_str(file, def, indent + 1);  } break;
+		case mirac_ast_def_type_fun: { print_ast_def_fun(file, def, indent + 1); } break;
+		case mirac_ast_def_type_mem: { print_ast_def_mem(file, def, indent + 1); } break;
+		case mirac_ast_def_type_str: { print_ast_def_str(file, def, indent + 1); } break;
 
 		default:
 		{

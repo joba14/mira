@@ -104,7 +104,7 @@ typedef enum
 	mirac_token_type_reserved_sec,
 	mirac_token_type_reserved_str,
 	mirac_token_type_reserved_mem,
-	mirac_token_type_reserved_func,
+	mirac_token_type_reserved_fun,
 	mirac_token_type_reserved_if,
 	mirac_token_type_reserved_else,
 	mirac_token_type_reserved_loop,

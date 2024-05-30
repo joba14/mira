@@ -246,7 +246,7 @@ typedef struct
 	uint64_t elif_count;
 	uint64_t else_count;
 	uint64_t loop_count;
-	uint64_t func_count;
+	uint64_t fun_count;
 	uint64_t mem_count;
 	uint64_t str_count;
 } mirac_ast_statistics_s;
