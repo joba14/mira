@@ -31,8 +31,8 @@ sec .bss mem client_buffer _client_buf_cap
 sec .text fun _start {
 	; creating a socket
 	0 sock_stream af_inet call socket dup if [ 0 < ] {
-		socket_failure call eput-cstr 1 call exit
-	} socket_success call put-cstr
+		socket_failure call eput_cstr 1 call exit
+	} socket_success call put_cstr
 
 	; setting the server address
 	0 loop [ dup _sockaddr_size < ] { server_addr over + 0 swap st08 ++ } drop
@@ -42,13 +42,13 @@ sec .text fun _start {
 
 	; binding the socket
 	dup _sockaddr_size server_addr rot call bind if [ 0 < ] {
-		bind_failure call eput-cstr 1 call exit
-	} bind_success call put-cstr
+		bind_failure call eput_cstr 1 call exit
+	} bind_success call put_cstr
 
 	; listening with the socket
 	dup 1 swap call listen if [ 0 < ] {
-		listen_failure call eput-cstr 1 call exit
-	} listen_success call put-cstr
+		listen_failure call eput_cstr 1 call exit
+	} listen_success call put_cstr
 
 	; accepting new connections
 	loop [ 1 ] {

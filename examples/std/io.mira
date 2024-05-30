@@ -101,14 +101,14 @@ sec .text fun eputs req u64 ptr { stderr call fputs }
 ; ---
 ; :brief: print cstring into the stdout.
 ; ---
-sec .text fun put-cstr req ptr {
+sec .text fun put_cstr req ptr {
 	dup call cstrlen swap call puts
 }
 
 ; ---
 ; :brief: print cstring into the stderr.
 ; ---
-sec .text fun eput-cstr req ptr {
+sec .text fun eput_cstr req ptr {
 	dup call cstrlen swap stderr call fputs
 }
 

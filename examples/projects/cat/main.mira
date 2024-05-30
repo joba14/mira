@@ -15,6 +15,10 @@ sec .rodata str usage           "usage: cat <filepath>\n\0"
 #endif
 sec .bss mem buffer buffer_cap
 
+fun test {
+	; ... 
+}
+
 sec .text fun cat_file req i32 {
 	; fd
 	loop [ 1 ] {
@@ -26,7 +30,7 @@ sec .text fun cat_file req i32 {
 		; res fd
 		if [ dup 0 < ] {
 			10 call putc
-			file_read_error call eput-cstr
+			file_read_error call eput_cstr
 			drop call close drop
 			1 call exit
 		}
@@ -60,8 +64,8 @@ sec .text fun cat_file req i32 {
 sec .text fun _start {
 	; argc argv...
 	if [ dup 2 != ] {
-		args_error call eput-cstr
-		usage call put-cstr
+		args_error call eput_cstr
+		usage call put_cstr
 		1 call exit
 	}
 
@@ -71,7 +75,7 @@ sec .text fun _start {
 	call open
 	; fd
 	if [ dup -1 == ] {
-		file_open_error call eput-cstr
+		file_open_error call eput_cstr
 		1 call exit
 	}
 

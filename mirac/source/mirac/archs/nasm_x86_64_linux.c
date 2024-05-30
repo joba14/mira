@@ -71,7 +71,7 @@ static void nasm_x86_64_linux_compile_ast_block(
 
 // todo: write unit tests!
 // todo: document!
-static void nasm_x86_64_linux_compile_ast_def_func(
+static void nasm_x86_64_linux_compile_ast_def_fun(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def);
 
@@ -117,10 +117,10 @@ void nasm_x86_64_linux_compile_ast_unit(
 	//             In other words - it should NOT be pre-hard-coded!
 	(void)fprintf(compiler->file, "\n");
 	(void)fprintf(compiler->file, "section .bss\n");
-	(void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
-	(void)fprintf(compiler->file, "\tret_stack_rsp: resq 1\n");
-	(void)fprintf(compiler->file, "\tret_stack: resb 4096\n");
-	(void)fprintf(compiler->file, "\tret_stack_end:\n");
+	// (void)fprintf(compiler->file, "\targs_ptr: resq 1\n");
+	(void)fprintf(compiler->file, "\t__ret_stack_rsp: resq 1\n");
+	(void)fprintf(compiler->file, "\t__ret_stack: resb 4096\n");
+	(void)fprintf(compiler->file, "\t__ret_stack_end:\n");
 	(void)fprintf(compiler->file, "\n");
 }
 
@@ -140,9 +140,8 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 	const mirac_ast_block_expr_s* const expr_block = &block->as.expr_block;
 	mirac_debug_assert(expr_block != mirac_null);
 
-	(void)fprintf(compiler->file, "\t;; --- " mirac_sv_fmt " (id: %lu) --- \n",
-		mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type)),
-		expr_block->token.index
+	(void)fprintf(compiler->file, "\t;; --- " mirac_sv_fmt " --- \n",
+		mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type))
 	);
 
 	switch (expr_block->token.type)
@@ -612,25 +611,23 @@ static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_debug_assert(ident_block != mirac_null);
 	mirac_debug_assert(ident_block->def != mirac_null);
 
-	(void)fprintf(compiler->file, "\t;; --- ident (id: %lu) --- \n",
-		ident_block->token.index
-	);
+	(void)fprintf(compiler->file, "\t;; --- ident --- \n");
 
 	switch (ident_block->def->type)
 	{
-		case mirac_ast_def_type_func:
+		case mirac_ast_def_type_fun:
 		{
-			(void)fprintf(compiler->file, "\tpush func_%lu\n", ident_block->def->as.func_def.index);
+			(void)fprintf(compiler->file, "\tpush "mirac_sv_fmt"\n", mirac_sv_arg(ident_block->def->as.fun_def.identifier.as.ident));
 		} break;
 
 		case mirac_ast_def_type_mem:
 		{
-			(void)fprintf(compiler->file, "\tpush mem_%lu\n", ident_block->def->as.mem_def.index);
+			(void)fprintf(compiler->file, "\tpush "mirac_sv_fmt"\n", mirac_sv_arg(ident_block->def->as.mem_def.identifier.as.ident));
 		} break;
 
 		case mirac_ast_def_type_str:
 		{
-			(void)fprintf(compiler->file, "\tpush str_%lu\n", ident_block->def->as.str_def.index);
+			(void)fprintf(compiler->file, "\tpush "mirac_sv_fmt"\n", mirac_sv_arg(ident_block->def->as.str_def.identifier.as.ident));
 		} break;
 
 		default:
@@ -661,19 +658,19 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 	const mirac_ast_block_ident_s* const ident_block = &call_block->ident->as.ident_block;
 	mirac_debug_assert(ident_block != mirac_null);
 	mirac_debug_assert(ident_block->def != mirac_null);
-	mirac_debug_assert(mirac_ast_def_type_func == ident_block->def->type);
+	mirac_debug_assert(mirac_ast_def_type_fun == ident_block->def->type);
 
-	(void)fprintf(compiler->file, "\t;; --- call (id: %lu) --- \n", ident_block->token.index);
+	(void)fprintf(compiler->file, "\t;; --- call --- \n");
 
 	switch (ident_block->def->type)
 	{
-		case mirac_ast_def_type_func:
+		case mirac_ast_def_type_fun:
 		{
 			// todo(#001): this should be reworked as well, since it is part of #001 todo.
 			(void)fprintf(compiler->file, "\tmov rax, rsp\n");
-			(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
-			(void)fprintf(compiler->file, "\tcall func_%lu\n", ident_block->def->as.func_def.index);
-			(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
+			(void)fprintf(compiler->file, "\tmov rsp, [__ret_stack_rsp]\n");
+			(void)fprintf(compiler->file, "\tcall "mirac_sv_fmt"\n", mirac_sv_arg(ident_block->def->as.fun_def.identifier.as.ident));
+			(void)fprintf(compiler->file, "\tmov [__ret_stack_rsp], rsp\n");
 			(void)fprintf(compiler->file, "\tmov rsp, rax\n");
 		} break;
 
@@ -868,7 +865,7 @@ static void nasm_x86_64_linux_compile_ast_block(
 	}
 }
 
-static void nasm_x86_64_linux_compile_ast_def_func(
+static void nasm_x86_64_linux_compile_ast_def_fun(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_def_s* const def)
 {
@@ -879,38 +876,38 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	mirac_debug_assert(compiler->file != mirac_null);
 
 	mirac_debug_assert(def != mirac_null);
-	mirac_debug_assert(mirac_ast_def_type_func == def->type);
+	mirac_debug_assert(mirac_ast_def_type_fun == def->type);
 
-	const mirac_ast_def_func_s* const func_def = &def->as.func_def;
-	mirac_debug_assert(func_def != mirac_null);
-	mirac_debug_assert(func_def->body != mirac_null);
-	mirac_debug_assert(mirac_ast_block_type_scope == func_def->body->type);
+	const mirac_ast_def_func_s* const fun_def = &def->as.fun_def;
+	mirac_debug_assert(fun_def != mirac_null);
+	mirac_debug_assert(fun_def->body != mirac_null);
+	mirac_debug_assert(mirac_ast_block_type_scope == fun_def->body->type);
 
-	if (func_def->is_entry)
+	if (fun_def->is_entry)
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- entry --- \n");
-		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(func_def->identifier.as.ident));
-		(void)fprintf(compiler->file, "\tmov rax, ret_stack_end\n");
-		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rax\n");
+		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(fun_def->identifier.as.ident));
+		(void)fprintf(compiler->file, "\tmov rax, __ret_stack_end\n");
+		(void)fprintf(compiler->file, "\tmov [__ret_stack_rsp], rax\n");
 	}
 	else
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, ";; --- fun --- \n");
-		(void)fprintf(compiler->file, "func_%lu:\n", func_def->index);
-		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
+		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(fun_def->identifier.as.ident));
+		(void)fprintf(compiler->file, "\tmov [__ret_stack_rsp], rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, rax\n");
 	}
 
-	nasm_x86_64_linux_compile_ast_block(compiler, func_def->body);
+	nasm_x86_64_linux_compile_ast_block(compiler, fun_def->body);
 
-	if (!func_def->is_entry)
+	if (!fun_def->is_entry)
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
 		(void)fprintf(compiler->file, "\t;; --- fun-ret --- \n");
 		(void)fprintf(compiler->file, "\tmov rax, rsp\n");
-		(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
+		(void)fprintf(compiler->file, "\tmov rsp, [__ret_stack_rsp]\n");
 		(void)fprintf(compiler->file, "\tret\n");
 	}
 }
@@ -931,7 +928,7 @@ static void nasm_x86_64_linux_compile_ast_def_mem(
 	const mirac_ast_def_mem_s* const mem_def = &def->as.mem_def;
 	mirac_debug_assert(mem_def != mirac_null);
 
-	(void)fprintf(compiler->file, "\tmem_%lu resb %lu\n", mem_def->index, mem_def->capacity.as.uval);
+	(void)fprintf(compiler->file, "\t"mirac_sv_fmt" resb %lu\n", mirac_sv_arg(mem_def->identifier.as.ident), mem_def->capacity.as.uval);
 }
 
 static void nasm_x86_64_linux_compile_ast_def_str(
@@ -950,7 +947,7 @@ static void nasm_x86_64_linux_compile_ast_def_str(
 	const mirac_ast_def_str_s* const str_def = &def->as.str_def;
 	mirac_debug_assert(str_def != mirac_null);
 
-	(void)fprintf(compiler->file, "\tstr_%lu db ", str_def->index);
+	(void)fprintf(compiler->file, "\t"mirac_sv_fmt" db ", mirac_sv_arg(str_def->identifier.as.ident));
 
 	for (uint64_t char_index = 0; char_index < str_def->literal.as.str.length; ++char_index)
 	{
@@ -982,9 +979,9 @@ static void nasm_x86_64_linux_compile_ast_def(
 
 	switch (def->type)
 	{
-		case mirac_ast_def_type_func: { nasm_x86_64_linux_compile_ast_def_func(compiler, def); } break;
-		case mirac_ast_def_type_mem:  { nasm_x86_64_linux_compile_ast_def_mem(compiler, def);  } break;
-		case mirac_ast_def_type_str:  { nasm_x86_64_linux_compile_ast_def_str(compiler, def);  } break;
+		case mirac_ast_def_type_fun: { nasm_x86_64_linux_compile_ast_def_fun(compiler, def); } break;
+		case mirac_ast_def_type_mem: { nasm_x86_64_linux_compile_ast_def_mem(compiler, def); } break;
+		case mirac_ast_def_type_str: { nasm_x86_64_linux_compile_ast_def_str(compiler, def); } break;
 
 		default:
 		{

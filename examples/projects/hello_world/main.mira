@@ -8,7 +8,7 @@
 sec .data str msg "hello, world!\n"
 
 sec .text fun _start {
-	msg call put-cstr
+	msg call put_cstr
 	0 call exit
 }
 

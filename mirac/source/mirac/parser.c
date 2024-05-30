@@ -301,7 +301,7 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_ast_def_type_func: { return mirac_string_view_from_parts("fun", 3); } break;
+		case mirac_ast_def_type_fun: { return mirac_string_view_from_parts("fun", 3); } break;
 		case mirac_ast_def_type_mem:  { return mirac_string_view_from_parts("mem", 3); } break;
 		case mirac_ast_def_type_str:  { return mirac_string_view_from_parts("str", 3); } break;
 
@@ -321,7 +321,7 @@ mirac_token_s mirac_ast_def_get_identifier_token(
 
 	switch (def->type)
 	{
-		case mirac_ast_def_type_func: { return def->as.func_def.identifier; } break;
+		case mirac_ast_def_type_fun: { return def->as.fun_def.identifier; } break;
 		case mirac_ast_def_type_mem:  { return def->as.mem_def.identifier;  } break;
 		case mirac_ast_def_type_str:  { return def->as.str_def.identifier;  } break;
 
@@ -662,7 +662,7 @@ static mirac_ast_block_call_s parse_ast_block_call(
 	const mirac_ast_block_ident_s* const ident_block = &block->as.ident_block;
 	mirac_debug_assert(ident_block != mirac_null);
 
-	if (ident_block->def->type != mirac_ast_def_type_func)
+	if (ident_block->def->type != mirac_ast_def_type_fun)
 	{
 		log_parser_error_and_exit(block->location,
 			"expected 'fun' def identifier after 'call' block, but found '" mirac_sv_fmt "' def identifier.",
@@ -1030,7 +1030,7 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	mirac_debug_assert(parser->arena != mirac_null);
 	mirac_debug_assert(parser->lexer != mirac_null);
 
-	mirac_ast_def_func_s func_def = create_ast_def_func(parser->arena);
+	mirac_ast_def_func_s fun_def = create_ast_def_func(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 
 	if (mirac_lexer_lex_next(parser->lexer, &token) != mirac_token_type_identifier)
@@ -1041,8 +1041,8 @@ static mirac_ast_def_func_s parse_ast_def_func(
 		);
 	}
 
-	func_def.identifier = token;
-	func_def.is_entry = mirac_string_view_equal(func_def.identifier.as.ident, parser->config->entry);
+	fun_def.identifier = token;
+	fun_def.is_entry = mirac_string_view_equal(fun_def.identifier.as.ident, parser->config->entry);
 
 	(void)mirac_lexer_lex_next(parser->lexer, &token);
 
@@ -1055,10 +1055,10 @@ static mirac_ast_def_func_s parse_ast_def_func(
 				break;
 			}
 
-			mirac_token_list_push(&func_def.req_tokens, token);
+			mirac_token_list_push(&fun_def.req_tokens, token);
 		}
 
-		if (func_def.req_tokens.count <= 0)
+		if (fun_def.req_tokens.count <= 0)
 		{
 			log_parser_error_and_exit(token.location,
 				"no type specifiers were provided after 'req' token."
@@ -1075,10 +1075,10 @@ static mirac_ast_def_func_s parse_ast_def_func(
 				break;
 			}
 
-			mirac_token_list_push(&func_def.ret_tokens, token);
+			mirac_token_list_push(&fun_def.ret_tokens, token);
 		}
 
-		if (func_def.ret_tokens.count <= 0)
+		if (fun_def.ret_tokens.count <= 0)
 		{
 			log_parser_error_and_exit(token.location,
 				"no type specifiers were provided after 'ret' token."
@@ -1098,9 +1098,9 @@ static mirac_ast_def_func_s parse_ast_def_func(
 		);
 	}
 
-	func_def.body = block;
-	func_def.index = parser->stats.func_count++;
-	return func_def;
+	fun_def.body = block;
+	fun_def.index = parser->stats.func_count++;
+	return fun_def;
 }
 
 static mirac_ast_def_mem_s parse_ast_def_mem(
@@ -1226,10 +1226,10 @@ parse_def_by_token:
 	{
 		case mirac_token_type_reserved_func:
 		{
-			def->type = mirac_ast_def_type_func;
-			def->as.func_def = parse_ast_def_func(parser);
+			def->type = mirac_ast_def_type_fun;
+			def->as.fun_def = parse_ast_def_func(parser);
 			// note: if the fun is an entry, it is marked as used to prevent error in the cross referencing:
-			if (def->as.func_def.is_entry) { def->is_used = true; }
+			if (def->as.fun_def.is_entry) { def->is_used = true; }
 		} break;
 
 		case mirac_token_type_reserved_mem:
@@ -1537,12 +1537,12 @@ static void print_ast_def_func(
 {
 	mirac_debug_assert(file != mirac_null);
 	mirac_debug_assert(def != mirac_null);
-	mirac_debug_assert(mirac_ast_def_type_func == def->type);
+	mirac_debug_assert(mirac_ast_def_type_fun == def->type);
 
-	const mirac_ast_def_func_s* const func_def = &def->as.func_def;
-	mirac_debug_assert(func_def != mirac_null);
-	mirac_debug_assert(func_def->body != mirac_null);
-	mirac_debug_assert(mirac_ast_block_type_scope == func_def->body->type);
+	const mirac_ast_def_func_s* const fun_def = &def->as.fun_def;
+	mirac_debug_assert(fun_def != mirac_null);
+	mirac_debug_assert(fun_def->body != mirac_null);
+	mirac_debug_assert(mirac_ast_block_type_scope == fun_def->body->type);
 
 	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "FuncDef[\n");
@@ -1550,11 +1550,11 @@ static void print_ast_def_func(
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "identifier:\n");
 	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
-	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&func_def->identifier)));
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&fun_def->identifier)));
 
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "req_tokens:\n");
-	for (const mirac_token_list_node_s* reqs_iterator = func_def->req_tokens.begin; reqs_iterator != mirac_null; reqs_iterator = reqs_iterator->next)
+	for (const mirac_token_list_node_s* reqs_iterator = fun_def->req_tokens.begin; reqs_iterator != mirac_null; reqs_iterator = reqs_iterator->next)
 	{
 		for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
 		(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&reqs_iterator->data)));
@@ -1562,7 +1562,7 @@ static void print_ast_def_func(
 	
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "ret_tokens:\n");
-	for (const mirac_token_list_node_s* rets_iterator = func_def->ret_tokens.begin; rets_iterator != mirac_null; rets_iterator = rets_iterator->next)
+	for (const mirac_token_list_node_s* rets_iterator = fun_def->ret_tokens.begin; rets_iterator != mirac_null; rets_iterator = rets_iterator->next)
 	{
 		for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
 		(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&rets_iterator->data)));
@@ -1570,10 +1570,10 @@ static void print_ast_def_func(
 
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "body:\n");
-	print_ast_block(file, func_def->body, indent + 2);
+	print_ast_block(file, fun_def->body, indent + 2);
 
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
-	(void)fprintf(file, "is_entry: %s\n", func_def->is_entry ? "yes" : "no");
+	(void)fprintf(file, "is_entry: %s\n", fun_def->is_entry ? "yes" : "no");
 
 	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "]\n");
@@ -1667,7 +1667,7 @@ static void print_ast_def(
 
 	switch (def->type)
 	{
-		case mirac_ast_def_type_func: { print_ast_def_func(file, def, indent + 1); } break;
+		case mirac_ast_def_type_fun: { print_ast_def_func(file, def, indent + 1); } break;
 		case mirac_ast_def_type_mem:  { print_ast_def_mem(file, def, indent + 1);  } break;
 		case mirac_ast_def_type_str:  { print_ast_def_str(file, def, indent + 1);  } break;
 

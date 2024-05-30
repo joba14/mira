@@ -1,20 +1,4 @@
 
-fun func1 {
-	; ...
-}
-
-fun func2 req i64 {
-	; ...
-}
-
-fun func3 ret i64 {
-	; ...
-}
-
-fun func4 req i64 ret i64 {
-	; ...
-}
-
 sec .text fun func9 {
 	; ...
 }

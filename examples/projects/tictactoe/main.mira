@@ -20,17 +20,17 @@ sec .text fun input_logical_grid {
 	10 call putc input_buffer ld08
 
 	if [ dup 49 < ] {
-		invalid_input1 call eput-cstr
+		invalid_input1 call eput_cstr
 		1 call exit
 	}
 
 	if [ dup 57 > ] {
-		invalid_input1 call eput-cstr
+		invalid_input1 call eput_cstr
 		1 call exit
 	}
 
 	dup 49 - logical_grid + ld08 dup if [ 88 == swap 79 == || ] {
-		invalid_input2 call eput-cstr
+		invalid_input2 call eput_cstr
 		1 call exit
 	}
 
@@ -57,7 +57,7 @@ sec .text fun check_for_win {
 		logical_grid 2 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -67,7 +67,7 @@ sec .text fun check_for_win {
 		logical_grid 5 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -77,7 +77,7 @@ sec .text fun check_for_win {
 		logical_grid 8 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -87,7 +87,7 @@ sec .text fun check_for_win {
 		logical_grid 6 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -97,7 +97,7 @@ sec .text fun check_for_win {
 		logical_grid 7 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -107,7 +107,7 @@ sec .text fun check_for_win {
 		logical_grid 8 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -117,7 +117,7 @@ sec .text fun check_for_win {
 		logical_grid 8 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 
@@ -127,7 +127,7 @@ sec .text fun check_for_win {
 		logical_grid 6 + ld08
 		== rot rot == &&
 	] {
-		curr_player ld08 call putc win_message call put-cstr
+		curr_player ld08 call putc win_message call put_cstr
 		0 call exit
 	}
 }
@@ -165,7 +165,7 @@ sec .text fun _start {
 		++
 	} drop
 
-	stale_mate_message call put-cstr
+	stale_mate_message call put_cstr
 	0 call exit
 }
 

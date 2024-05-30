@@ -162,7 +162,7 @@ typedef struct
 
 typedef enum
 {
-	mirac_ast_def_type_func = 0,
+	mirac_ast_def_type_fun = 0,
 	mirac_ast_def_type_mem,
 	mirac_ast_def_type_str,
 	mirac_ast_def_type_none
@@ -189,7 +189,7 @@ struct mirac_ast_def_s
 
 	union
 	{
-		mirac_ast_def_func_s func_def;
+		mirac_ast_def_func_s fun_def;
 		mirac_ast_def_mem_s mem_def;
 		mirac_ast_def_str_s str_def;
 	} as;
