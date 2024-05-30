@@ -70,12 +70,17 @@ static mirac_ast_block_loop_s create_ast_block_loop(
 
 // todo: write unit tests!
 // todo: document!
+static mirac_ast_block_asm_s create_ast_block_asm(
+	mirac_arena_s* const arena);
+
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_s* create_ast_block(
 	mirac_arena_s* const arena);
 
 // todo: write unit tests!
 // todo: document!
-static mirac_ast_def_func_s create_ast_def_func(
+static mirac_ast_def_fun_s create_ast_def_func(
 	mirac_arena_s* const arena);
 
 // todo: write unit tests!
@@ -140,12 +145,17 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 
 // todo: write unit tests!
 // todo: document!
+static mirac_ast_block_asm_s parse_ast_block_asm(
+	mirac_parser_s* const parser);
+
+// todo: write unit tests!
+// todo: document!
 static mirac_ast_block_s* parse_ast_block(
 	mirac_parser_s* const parser);
 
 // todo: write unit tests!
 // todo: document!
-static mirac_ast_def_func_s parse_ast_def_func(
+static mirac_ast_def_fun_s parse_ast_def_func(
 	mirac_parser_s* const parser);
 
 // todo: write unit tests!
@@ -221,6 +231,13 @@ static void print_ast_block_loop(
 
 // todo: write unit tests!
 // todo: document!
+static void print_ast_block_asm(
+	mirac_file_t* const file,
+	const mirac_ast_block_s* const block,
+	const uint64_t indent);
+
+// todo: write unit tests!
+// todo: document!
 static void print_ast_block(
 	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
@@ -285,6 +302,7 @@ mirac_string_view_s mirac_ast_block_type_to_string_view(
 		case mirac_ast_block_type_if:    { return mirac_string_view_from_parts("if", 2);    } break;
 		case mirac_ast_block_type_else:  { return mirac_string_view_from_parts("else", 4);  } break;
 		case mirac_ast_block_type_loop:  { return mirac_string_view_from_parts("loop", 4);  } break;
+		case mirac_ast_block_type_asm:   { return mirac_string_view_from_parts("asm", 3);   } break;
 		case mirac_ast_block_type_eou:   { return mirac_string_view_from_parts("eou", 3);   } break;
 
 		default:
@@ -458,7 +476,7 @@ static mirac_ast_block_as_s create_ast_block_as(
 
 	return (mirac_ast_block_as_s)
 	{
-		.type_tokens = mirac_token_list_from_parts(arena)
+		.type_tokens = mirac_token_list_from_parts(arena),
 	};
 }
 
@@ -469,7 +487,7 @@ static mirac_ast_block_scope_s create_ast_block_scope(
 
 	return (mirac_ast_block_scope_s)
 	{
-		.blocks = mirac_ast_block_list_from_parts(arena)
+		.blocks = mirac_ast_block_list_from_parts(arena),
 	};
 }
 
@@ -494,6 +512,13 @@ static mirac_ast_block_loop_s create_ast_block_loop(
 	return (mirac_ast_block_loop_s) {0};
 }
 
+static mirac_ast_block_asm_s create_ast_block_asm(
+	mirac_arena_s* const arena)
+{
+	mirac_debug_assert(arena != mirac_null);
+	return (mirac_ast_block_asm_s) {0};
+}
+
 static mirac_ast_block_s* create_ast_block(
 	mirac_arena_s* const arena)
 {
@@ -503,15 +528,15 @@ static mirac_ast_block_s* create_ast_block(
 	return block;
 }
 
-static mirac_ast_def_func_s create_ast_def_func(
+static mirac_ast_def_fun_s create_ast_def_func(
 	mirac_arena_s* const arena)
 {
 	mirac_debug_assert(arena != mirac_null);
 
-	return (mirac_ast_def_func_s)
+	return (mirac_ast_def_fun_s)
 	{
 		.req_tokens = mirac_token_list_from_parts(arena),
-		.ret_tokens = mirac_token_list_from_parts(arena)
+		.ret_tokens = mirac_token_list_from_parts(arena),
 	};
 }
 
@@ -558,6 +583,7 @@ static bool_t is_token_valid_expr_block_token_by_type(
 		(mirac_token_type_reserved_if                != type) &&
 		(mirac_token_type_reserved_else              != type) &&
 		(mirac_token_type_reserved_loop              != type) &&
+		(mirac_token_type_reserved_asm               != type) &&
 		(mirac_token_type_reserved_req               != type) &&
 		(mirac_token_type_reserved_ret               != type) &&
 		(mirac_token_type_reserved_call              != type) &&
@@ -937,6 +963,33 @@ static mirac_ast_block_loop_s parse_ast_block_loop(
 	return loop_block;
 }
 
+static mirac_ast_block_asm_s parse_ast_block_asm(
+	mirac_parser_s* const parser)
+{
+	mirac_debug_assert(parser != mirac_null);
+	mirac_debug_assert(parser->config != mirac_null);
+	mirac_debug_assert(parser->arena != mirac_null);
+	mirac_debug_assert(parser->lexer != mirac_null);
+
+	mirac_ast_block_asm_s asm_block = create_ast_block_asm(parser->arena);
+	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
+	mirac_ast_block_s* block = mirac_null;
+
+	(void)mirac_lexer_lex_next(parser->lexer, &token);
+	mirac_debug_assert(mirac_token_type_reserved_asm == token.type);
+
+	if (mirac_lexer_lex_next(parser->lexer, &token) != mirac_token_type_literal_str)
+	{
+		log_parser_error_and_exit(block->location,
+			"expected asm instruction as a string literal after 'asm' token, but found '" mirac_sv_fmt "' token.",
+			mirac_sv_arg(mirac_token_type_to_string_view(token.type))
+		);
+	}
+
+	asm_block.inst = token;
+	return asm_block;
+}
+
 static mirac_ast_block_s* parse_ast_block(
 	mirac_parser_s* const parser)
 {
@@ -1002,6 +1055,12 @@ static mirac_ast_block_s* parse_ast_block(
 			block->as.loop_block = parse_ast_block_loop(parser);
 		} break;
 
+		case mirac_token_type_reserved_asm:
+		{
+			block->type = mirac_ast_block_type_asm;
+			block->as.asm_block = parse_ast_block_asm(parser);
+		} break;
+
 		case mirac_token_type_eof:
 		{
 			block->type = mirac_ast_block_type_eou;
@@ -1022,7 +1081,7 @@ static mirac_ast_block_s* parse_ast_block(
 	return block;
 }
 
-static mirac_ast_def_func_s parse_ast_def_func(
+static mirac_ast_def_fun_s parse_ast_def_func(
 	mirac_parser_s* const parser)
 {
 	mirac_debug_assert(parser != mirac_null);
@@ -1030,7 +1089,7 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	mirac_debug_assert(parser->arena != mirac_null);
 	mirac_debug_assert(parser->lexer != mirac_null);
 
-	mirac_ast_def_func_s fun_def = create_ast_def_func(parser->arena);
+	mirac_ast_def_fun_s fun_def = create_ast_def_func(parser->arena);
 	mirac_token_s token = mirac_token_from_type(mirac_token_type_none);
 
 	if (mirac_lexer_lex_next(parser->lexer, &token) != mirac_token_type_identifier)
@@ -1491,6 +1550,30 @@ static void print_ast_block_loop(
 	(void)fprintf(file, "]\n");
 }
 
+static void print_ast_block_asm(
+	mirac_file_t* const file,
+	const mirac_ast_block_s* const block,
+	const uint64_t indent)
+{
+	mirac_debug_assert(file != mirac_null);
+	mirac_debug_assert(block != mirac_null);
+	mirac_debug_assert(mirac_ast_block_type_asm == block->type);
+
+	const mirac_ast_block_asm_s* const asm_block = &block->as.asm_block;
+	mirac_debug_assert(asm_block != mirac_null);
+	mirac_debug_assert(mirac_token_type_literal_str == asm_block->inst.type);
+
+	for (uint64_t indent_index = 0; indent_index < indent; ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "AsmBlock[\n");
+
+	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, "token:\n");
+	for (uint64_t indent_index = 0; indent_index < (indent + 2); ++indent_index) (void)fprintf(file, "\t");
+	(void)fprintf(file, mirac_sv_fmt "\n", mirac_sv_arg(mirac_token_to_string_view(&asm_block->inst)));
+
+	(void)fprintf(file, "]\n");
+}
+
 static void print_ast_block(
 	mirac_file_t* const file,
 	const mirac_ast_block_s* const block,
@@ -1518,6 +1601,7 @@ static void print_ast_block(
 		case mirac_ast_block_type_if:    { print_ast_block_if(file, block, indent + 1);    } break;
 		case mirac_ast_block_type_else:  { print_ast_block_else(file, block, indent + 1);  } break;
 		case mirac_ast_block_type_loop:  { print_ast_block_loop(file, block, indent + 1);  } break;
+		case mirac_ast_block_type_asm:   { print_ast_block_asm(file, block, indent + 1);   } break;
 
 		default:
 		{
@@ -1539,7 +1623,7 @@ static void print_ast_def_func(
 	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_fun == def->type);
 
-	const mirac_ast_def_func_s* const fun_def = &def->as.fun_def;
+	const mirac_ast_def_fun_s* const fun_def = &def->as.fun_def;
 	mirac_debug_assert(fun_def != mirac_null);
 	mirac_debug_assert(fun_def->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == fun_def->body->type);

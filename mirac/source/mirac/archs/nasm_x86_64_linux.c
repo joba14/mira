@@ -65,6 +65,12 @@ static void nasm_x86_64_linux_compile_ast_block_loop(
 
 // todo: write unit tests!
 // todo: document!
+static void nasm_x86_64_linux_compile_ast_block_asm(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_block_s* const block);
+
+// todo: write unit tests!
+// todo: document!
 static void nasm_x86_64_linux_compile_ast_block(
 	mirac_compiler_s* const compiler,
 	const mirac_ast_block_s* const block);
@@ -140,9 +146,12 @@ static void nasm_x86_64_linux_compile_ast_block_expr(
 	const mirac_ast_block_expr_s* const expr_block = &block->as.expr_block;
 	mirac_debug_assert(expr_block != mirac_null);
 
-	(void)fprintf(compiler->file, "\t;; --- " mirac_sv_fmt " --- \n",
-		mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type))
-	);
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- " mirac_sv_fmt " --- \n",
+			mirac_sv_arg(mirac_token_type_to_string_view(expr_block->token.type))
+		);
+	}
 
 	switch (expr_block->token.type)
 	{
@@ -611,7 +620,10 @@ static void nasm_x86_64_linux_compile_ast_block_ident(
 	mirac_debug_assert(ident_block != mirac_null);
 	mirac_debug_assert(ident_block->def != mirac_null);
 
-	(void)fprintf(compiler->file, "\t;; --- ident --- \n");
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- ident --- \n");
+	}
 
 	switch (ident_block->def->type)
 	{
@@ -660,7 +672,10 @@ static void nasm_x86_64_linux_compile_ast_block_call(
 	mirac_debug_assert(ident_block->def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_fun == ident_block->def->type);
 
-	(void)fprintf(compiler->file, "\t;; --- call --- \n");
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- call --- \n");
+	}
 
 	switch (ident_block->def->type)
 	{
@@ -738,8 +753,11 @@ static void nasm_x86_64_linux_compile_ast_block_if(
 	mirac_debug_assert(if_block->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->cond->type);
 	mirac_debug_assert(mirac_ast_block_type_scope == if_block->body->type);
-	
-	(void)fprintf(compiler->file, "\t;; --- if --- \n");
+
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- if --- \n");
+	}
 
 	(void)fprintf(compiler->file, "__prior_if_cond_%lu:\n", if_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, if_block->cond);
@@ -792,7 +810,10 @@ static void nasm_x86_64_linux_compile_ast_block_else(
 	mirac_debug_assert(else_block->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == else_block->body->type);
 
-	(void)fprintf(compiler->file, "\t;; --- else --- \n");
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- else --- \n");
+	}
 
 	(void)fprintf(compiler->file, "__prior_else_body_%lu:\n", else_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, else_block->body);
@@ -819,7 +840,10 @@ static void nasm_x86_64_linux_compile_ast_block_loop(
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->cond->type);
 	mirac_debug_assert(mirac_ast_block_type_scope == loop_block->body->type);
 
-	(void)fprintf(compiler->file, "\t;; --- loop --- \n");
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- loop --- \n");
+	}
 
 	(void)fprintf(compiler->file, "__prior_loop_cond_%lu:\n", loop_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, loop_block->cond);
@@ -833,6 +857,31 @@ static void nasm_x86_64_linux_compile_ast_block_loop(
 	nasm_x86_64_linux_compile_ast_block(compiler, loop_block->body);
 	(void)fprintf(compiler->file, "\tjmp __prior_loop_cond_%lu\n", loop_block->index);
 	(void)fprintf(compiler->file, "__after_loop_body_%lu:\n", loop_block->index);
+}
+
+static void nasm_x86_64_linux_compile_ast_block_asm(
+	mirac_compiler_s* const compiler,
+	const mirac_ast_block_s* const block)
+{
+	mirac_debug_assert(compiler != mirac_null);
+	mirac_debug_assert(compiler->config != mirac_null);
+	mirac_debug_assert(compiler->arena != mirac_null);
+	mirac_debug_assert(compiler->unit != mirac_null);
+	mirac_debug_assert(compiler->file != mirac_null);
+
+	mirac_debug_assert(block != mirac_null);
+	mirac_debug_assert(mirac_ast_block_type_asm == block->type);
+
+	const mirac_ast_block_asm_s* const asm_block = &block->as.asm_block;
+	mirac_debug_assert(asm_block != mirac_null);
+	mirac_debug_assert(mirac_token_type_literal_str == asm_block->inst.type);
+
+	if (!compiler->config->strip)
+	{
+		(void)fprintf(compiler->file, "\t;; --- asm --- \n");
+	}
+
+	(void)fprintf(compiler->file, "\t"mirac_sv_fmt"\n", mirac_sv_arg(asm_block->inst.as.str));
 }
 
 static void nasm_x86_64_linux_compile_ast_block(
@@ -857,6 +906,7 @@ static void nasm_x86_64_linux_compile_ast_block(
 		case mirac_ast_block_type_if:    { nasm_x86_64_linux_compile_ast_block_if(compiler, block);    } break;
 		case mirac_ast_block_type_else:  { nasm_x86_64_linux_compile_ast_block_else(compiler, block);  } break;
 		case mirac_ast_block_type_loop:  { nasm_x86_64_linux_compile_ast_block_loop(compiler, block);  } break;
+		case mirac_ast_block_type_asm:   { nasm_x86_64_linux_compile_ast_block_asm(compiler, block);   } break;
 
 		default:
 		{
@@ -878,7 +928,7 @@ static void nasm_x86_64_linux_compile_ast_def_fun(
 	mirac_debug_assert(def != mirac_null);
 	mirac_debug_assert(mirac_ast_def_type_fun == def->type);
 
-	const mirac_ast_def_func_s* const fun_def = &def->as.fun_def;
+	const mirac_ast_def_fun_s* const fun_def = &def->as.fun_def;
 	mirac_debug_assert(fun_def != mirac_null);
 	mirac_debug_assert(fun_def->body != mirac_null);
 	mirac_debug_assert(mirac_ast_block_type_scope == fun_def->body->type);
@@ -886,7 +936,11 @@ static void nasm_x86_64_linux_compile_ast_def_fun(
 	if (fun_def->is_entry)
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
-		(void)fprintf(compiler->file, ";; --- entry --- \n");
+		if (!compiler->config->strip)
+		{
+			(void)fprintf(compiler->file, ";; --- entry --- \n");
+		}
+
 		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(fun_def->identifier.as.ident));
 		(void)fprintf(compiler->file, "\tmov rax, __ret_stack_end\n");
 		(void)fprintf(compiler->file, "\tmov [__ret_stack_rsp], rax\n");
@@ -894,7 +948,11 @@ static void nasm_x86_64_linux_compile_ast_def_fun(
 	else
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
-		(void)fprintf(compiler->file, ";; --- fun --- \n");
+		if (!compiler->config->strip)
+		{
+			(void)fprintf(compiler->file, ";; --- fun --- \n");
+		}
+
 		(void)fprintf(compiler->file, mirac_sv_fmt ":\n", mirac_sv_arg(fun_def->identifier.as.ident));
 		(void)fprintf(compiler->file, "\tmov [__ret_stack_rsp], rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, rax\n");
@@ -905,7 +963,11 @@ static void nasm_x86_64_linux_compile_ast_def_fun(
 	if (!fun_def->is_entry)
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
-		(void)fprintf(compiler->file, "\t;; --- fun-ret --- \n");
+		if (!compiler->config->strip)
+		{
+			(void)fprintf(compiler->file, "\t;; --- fun-ret --- \n");
+		}
+
 		(void)fprintf(compiler->file, "\tmov rax, rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, [__ret_stack_rsp]\n");
 		(void)fprintf(compiler->file, "\tret\n");

@@ -112,6 +112,7 @@ typedef enum
 	mirac_token_type_reserved_ret,
 	mirac_token_type_reserved_call,
 	mirac_token_type_reserved_as,
+	mirac_token_type_reserved_asm,
 
 	mirac_token_type_reserved_left_parenthesis,
 	mirac_token_type_reserved_right_parenthesis,

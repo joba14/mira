@@ -92,6 +92,11 @@ typedef struct
 	uint64_t index;
 } mirac_ast_block_loop_s;
 
+typedef struct
+{
+	mirac_token_s inst;
+} mirac_ast_block_asm_s;
+
 typedef enum
 {
 	mirac_ast_block_type_expr = 0,
@@ -102,6 +107,7 @@ typedef enum
 	mirac_ast_block_type_if,
 	mirac_ast_block_type_else,
 	mirac_ast_block_type_loop,
+	mirac_ast_block_type_asm,
 
 	mirac_ast_block_type_eou,
 	mirac_ast_block_type_none
@@ -133,6 +139,7 @@ struct mirac_ast_block_s
 		mirac_ast_block_if_s    if_block;
 		mirac_ast_block_else_s  else_block;
 		mirac_ast_block_loop_s  loop_block;
+		mirac_ast_block_asm_s   asm_block;
 	} as;
 };
 
@@ -144,7 +151,7 @@ typedef struct
 	mirac_ast_block_s* body; // note: must be scope block.
 	bool_t is_entry;
 	uint64_t index;
-} mirac_ast_def_func_s;
+} mirac_ast_def_fun_s;
 
 typedef struct
 {
@@ -188,7 +195,7 @@ struct mirac_ast_def_s
 
 	union
 	{
-		mirac_ast_def_func_s fun_def;
+		mirac_ast_def_fun_s fun_def;
 		mirac_ast_def_mem_s mem_def;
 		mirac_ast_def_str_s str_def;
 	} as;

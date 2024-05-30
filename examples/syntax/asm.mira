@@ -1,0 +1,3 @@
+
+asm "nop"
+asm "mov rax, 10"
