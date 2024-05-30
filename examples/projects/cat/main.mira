@@ -15,10 +15,6 @@ sec .rodata str usage           "usage: cat <filepath>\n\0"
 #endif
 sec .bss mem buffer buffer_cap
 
-fun test {
-	; ... 
-}
-
 sec .text fun cat_file req i32 {
 	; fd
 	loop [ 1 ] {
