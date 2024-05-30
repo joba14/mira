@@ -184,7 +184,6 @@ struct mirac_ast_def_s
 	mirac_location_s location;
 	mirac_token_s section;
 	mirac_ast_def_type_e type;
-	bool_t is_global;
 	bool_t is_used;
 
 	union

@@ -741,9 +741,9 @@ static void nasm_x86_64_linux_compile_ast_block_if(
 	
 	(void)fprintf(compiler->file, "\t;; --- if --- \n");
 
-	(void)fprintf(compiler->file, "prior_if_cond_%lu:\n", if_block->index);
+	(void)fprintf(compiler->file, "__prior_if_cond_%lu:\n", if_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, if_block->cond);
-	(void)fprintf(compiler->file, "after_if_cond_%lu:\n", if_block->index);
+	(void)fprintf(compiler->file, "__after_if_cond_%lu:\n", if_block->index);
 
 	(void)fprintf(compiler->file, "\tpop rax\n");
 	(void)fprintf(compiler->file, "\ttest rax, rax\n");
@@ -751,27 +751,27 @@ static void nasm_x86_64_linux_compile_ast_block_if(
 	if (if_block->next != mirac_null)
 	{
 		mirac_debug_assert(mirac_ast_block_type_else == if_block->next->type);
-		(void)fprintf(compiler->file, "\tjz prior_else_body_%lu\n", if_block->next->as.else_block.index);
+		(void)fprintf(compiler->file, "\tjz __prior_else_body_%lu\n", if_block->next->as.else_block.index);
 	}
 	else
 	{
-		(void)fprintf(compiler->file, "\tjz after_if_body_%lu\n", if_block->index);
+		(void)fprintf(compiler->file, "\tjz __after_if_body_%lu\n", if_block->index);
 	}
 
-	(void)fprintf(compiler->file, "prior_if_body_%lu:\n", if_block->index);
+	(void)fprintf(compiler->file, "__prior_if_body_%lu:\n", if_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, if_block->body);
 
 	if (if_block->next != mirac_null)
 	{
 		mirac_debug_assert(mirac_ast_block_type_else == if_block->next->type);
-		(void)fprintf(compiler->file, "\tjmp after_else_body_%lu\n", if_block->next->as.else_block.index);
+		(void)fprintf(compiler->file, "\tjmp __after_else_body_%lu\n", if_block->next->as.else_block.index);
 	}
 	else
 	{
-		(void)fprintf(compiler->file, "\tjmp after_if_body_%lu\n", if_block->index);
+		(void)fprintf(compiler->file, "\tjmp __after_if_body_%lu\n", if_block->index);
 	}
 
-	(void)fprintf(compiler->file, "after_if_body_%lu:\n", if_block->index);
+	(void)fprintf(compiler->file, "__after_if_body_%lu:\n", if_block->index);
 }
 
 static void nasm_x86_64_linux_compile_ast_block_else(
@@ -794,9 +794,9 @@ static void nasm_x86_64_linux_compile_ast_block_else(
 
 	(void)fprintf(compiler->file, "\t;; --- else --- \n");
 
-	(void)fprintf(compiler->file, "prior_else_body_%lu:\n", else_block->index);
+	(void)fprintf(compiler->file, "__prior_else_body_%lu:\n", else_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, else_block->body);
-	(void)fprintf(compiler->file, "after_else_body_%lu:\n", else_block->index);
+	(void)fprintf(compiler->file, "__after_else_body_%lu:\n", else_block->index);
 }
 
 static void nasm_x86_64_linux_compile_ast_block_loop(
@@ -821,18 +821,18 @@ static void nasm_x86_64_linux_compile_ast_block_loop(
 
 	(void)fprintf(compiler->file, "\t;; --- loop --- \n");
 
-	(void)fprintf(compiler->file, "prior_loop_cond_%lu:\n", loop_block->index);
+	(void)fprintf(compiler->file, "__prior_loop_cond_%lu:\n", loop_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, loop_block->cond);
-	(void)fprintf(compiler->file, "after_loop_cond_%lu:\n", loop_block->index);
+	(void)fprintf(compiler->file, "__after_loop_cond_%lu:\n", loop_block->index);
 
 	(void)fprintf(compiler->file, "\tpop rax\n");
 	(void)fprintf(compiler->file, "\ttest rax, rax\n");
-	(void)fprintf(compiler->file, "\tjz after_loop_body_%lu\n", loop_block->index);
+	(void)fprintf(compiler->file, "\tjz __after_loop_body_%lu\n", loop_block->index);
 
-	(void)fprintf(compiler->file, "prior_loop_body_%lu:\n", loop_block->index);
+	(void)fprintf(compiler->file, "__prior_loop_body_%lu:\n", loop_block->index);
 	nasm_x86_64_linux_compile_ast_block(compiler, loop_block->body);
-	(void)fprintf(compiler->file, "\tjmp prior_loop_cond_%lu\n", loop_block->index);
-	(void)fprintf(compiler->file, "after_loop_body_%lu:\n", loop_block->index);
+	(void)fprintf(compiler->file, "\tjmp __prior_loop_cond_%lu\n", loop_block->index);
+	(void)fprintf(compiler->file, "__after_loop_body_%lu:\n", loop_block->index);
 }
 
 static void nasm_x86_64_linux_compile_ast_block(

@@ -1660,9 +1660,6 @@ static void print_ast_def(
 	(void)fprintf(file, "type: '" mirac_sv_fmt "'\n", mirac_sv_arg(mirac_ast_def_type_to_string_view(def->type)));
 
 	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
-	(void)fprintf(file, "is_global: %s\n", def->is_global ? "yes" : "no");
-
-	for (uint64_t indent_index = 0; indent_index < (indent + 1); ++indent_index) (void)fprintf(file, "\t");
 	(void)fprintf(file, "is_used: %s\n", def->is_used ? "yes" : "no");
 
 	switch (def->type)
