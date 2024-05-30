@@ -1,32 +1,32 @@
 
-func func1 {
+fun func1 {
 	; ...
 }
 
-func func2 req i64 {
+fun func2 req i64 {
 	; ...
 }
 
-func func3 ret i64 {
+fun func3 ret i64 {
 	; ...
 }
 
-func func4 req i64 ret i64 {
+fun func4 req i64 ret i64 {
 	; ...
 }
 
-sec .text func func9 {
+sec .text fun func9 {
 	; ...
 }
 
-sec .text func func10 req i64 {
+sec .text fun func10 req i64 {
 	; ...
 }
 
-sec .text func func11 ret i64 {
+sec .text fun func11 ret i64 {
 	; ...
 }
 
-sec .text func func12 req i64 ret i64 {
+sec .text fun func12 req i64 ret i64 {
 	; ...
 }

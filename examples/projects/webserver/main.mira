@@ -28,7 +28,7 @@ sec .bss mem client_buffer _client_buf_cap
 
 #define port 25510
 
-sec .text func _start {
+sec .text fun _start {
 	; creating a socket
 	0 sock_stream af_inet call socket dup if [ 0 < ] {
 		socket_failure call eput-cstr 1 call exit

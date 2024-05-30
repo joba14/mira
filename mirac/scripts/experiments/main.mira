@@ -6,7 +6,7 @@
 #include "std/string.mira"
 #include "std/io.mira"
 
-sec .text func _start {
+sec .text fun _start {
 	0o16 call putu 32 call putc
 	14 call putu 32 call putc
 	0x0E call putu 32 call putc

@@ -13,7 +13,7 @@ sec .bss mem __io_fd 8
 ; :needs:
   sec .bss mem __fputc_buffer 1
 ; ---
-sec .text func fputc req u08 i64 {
+sec .text fun fputc req u08 i64 {
 	__io_fd st64 __fputc_buffer st08
 	1 __fputc_buffer __io_fd ld08 call write drop
 }
@@ -24,7 +24,7 @@ sec .text func fputc req u08 i64 {
 ; :needs:
   sec .bss mem __fputu_buffer 32
 ; ---
-sec .text func fputu req u64 i64 {
+sec .text fun fputu req u64 i64 {
 	__io_fd st64
 
 	if [ dup 0 == ] {
@@ -42,7 +42,7 @@ sec .text func fputu req u64 i64 {
 ; ---
 ; :brief: print a signed integer into the provided file.
 ; ---
-sec .text func fputi req u64 i64 {
+sec .text fun fputi req u64 i64 {
 	if [ over 0 < ] { dup 45 swap call fputc swap ~ 1 + swap }
 	call fputu
 }
@@ -50,7 +50,7 @@ sec .text func fputi req u64 i64 {
 ; ---
 ; :brief: print a string of provided length into the provided file.
 ; ---
-sec .text func fputs req u64 ptr i64 {
+sec .text fun fputs req u64 ptr i64 {
 	call write drop
 }
 
@@ -61,54 +61,54 @@ sec .text func fputs req u64 ptr i64 {
 ; ---
 ; :brief: print a char into the stdout.
 ; ---
-sec .text func putc req u08 { stdout call fputc }
+sec .text fun putc req u08 { stdout call fputc }
 
 ; ---
 ; :brief: print an unsigned integer into the stdout.
 ; ---
-sec .text func putu req u64 { stdout call fputu }
+sec .text fun putu req u64 { stdout call fputu }
 
 ; ---
 ; :brief: print a signed integer into the stdout.
 ; ---
-sec .text func puti req u64 { stdout call fputi }
+sec .text fun puti req u64 { stdout call fputi }
 
 ; ---
 ; :brief: print a string of provided length into the stdout.
 ; ---
-sec .text func puts req u64 ptr { stdout call fputs }
+sec .text fun puts req u64 ptr { stdout call fputs }
 
 ; ---
 ; :brief: print a char into the stderr.
 ; ---
-sec .text func eputc req u08 { stderr call fputc }
+sec .text fun eputc req u08 { stderr call fputc }
 
 ; ---
 ; :brief: print an unsigned integer into the stderr.
 ; ---
-sec .text func eputu req u64 { stderr call fputu }
+sec .text fun eputu req u64 { stderr call fputu }
 
 ; ---
 ; :brief: print a signed integer into the stderr.
 ; ---
-sec .text func eputi req u64 { stderr call fputi }
+sec .text fun eputi req u64 { stderr call fputi }
 
 ; ---
 ; :brief: print a string of provided length into the stderr.
 ; ---
-sec .text func eputs req u64 ptr { stderr call fputs }
+sec .text fun eputs req u64 ptr { stderr call fputs }
 
 ; ---
 ; :brief: print cstring into the stdout.
 ; ---
-sec .text func put-cstr req ptr {
+sec .text fun put-cstr req ptr {
 	dup call cstrlen swap call puts
 }
 
 ; ---
 ; :brief: print cstring into the stderr.
 ; ---
-sec .text func eput-cstr req ptr {
+sec .text fun eput-cstr req ptr {
 	dup call cstrlen swap stderr call fputs
 }
 

@@ -5,7 +5,7 @@
 ; ---
 ; :brief: read syscall wrapper.
 ; ---
-sec .text func read req u64 ptr u32 ret i32 {
+sec .text fun read req u64 ptr u32 ret i32 {
 	#define read_syscall_id 0
 	read_syscall_id sys3 as i32
 }
@@ -13,7 +13,7 @@ sec .text func read req u64 ptr u32 ret i32 {
 ; ---
 ; :brief: write syscall wrapper.
 ; ---
-sec .text func write req u64 ptr u32 ret i32 {
+sec .text fun write req u64 ptr u32 ret i32 {
 	#define write_syscall_id 1
 	write_syscall_id sys3 as i32
 }
@@ -21,7 +21,7 @@ sec .text func write req u64 ptr u32 ret i32 {
 ; ---
 ; :brief: open syscall wrapper.
 ; ---
-sec .text func open req u32 i32 ptr ret i32 {
+sec .text fun open req u32 i32 ptr ret i32 {
 	#define open_syscall_id 2
 	open_syscall_id sys3 as i32
 }
@@ -29,7 +29,7 @@ sec .text func open req u32 i32 ptr ret i32 {
 ; ---
 ; :brief: close syscall wrapper.
 ; ---
-sec .text func close req i32 ret i32 {
+sec .text fun close req i32 ret i32 {
 	#define close_syscall_id 3
 	close_syscall_id sys1 as i32
 }
@@ -37,7 +37,7 @@ sec .text func close req i32 ret i32 {
 ; ---
 ; :brief: socket syscall wrapper.
 ; ---
-sec .text func socket req i32 i32 i32 ret i32 {
+sec .text fun socket req i32 i32 i32 ret i32 {
 	#define socket_syscall_id 41
 	socket_syscall_id sys3 as i32
 }
@@ -45,7 +45,7 @@ sec .text func socket req i32 i32 i32 ret i32 {
 ; ---
 ; :brief: accept syscall wrapper.
 ; ---
-sec .text func accept req ptr ptr i32 ret i32 {
+sec .text fun accept req ptr ptr i32 ret i32 {
 	#define accept_syscall_id 43
 	accept_syscall_id sys3 as i32
 }
@@ -53,7 +53,7 @@ sec .text func accept req ptr ptr i32 ret i32 {
 ; ---
 ; :brief: bind syscall wrapper.
 ; ---
-sec .text func bind req i32 ptr i32 ret i32 {
+sec .text fun bind req i32 ptr i32 ret i32 {
 	#define bind_syscall_id 49
 	bind_syscall_id sys3 as i32
 }
@@ -61,7 +61,7 @@ sec .text func bind req i32 ptr i32 ret i32 {
 ; ---
 ; :brief: listen syscall wrapper.
 ; ---
-sec .text func listen req i32 i32 ret i32 {
+sec .text fun listen req i32 i32 ret i32 {
 	#define listen_syscall_id 50
 	listen_syscall_id sys2 as i32
 }
@@ -69,9 +69,17 @@ sec .text func listen req i32 i32 ret i32 {
 ; ---
 ; :brief: exit syscall wrapper.
 ; ---
-sec .text func exit req i32 {
+sec .text fun exit req i32 {
 	#define exit_syscall_id 60
 	exit_syscall_id sys1 drop
+}
+
+; ---
+; :brief: sendfile syscall wrapper.
+; ---
+sec .text fun sendfile req u64 ptr i32 i32 {
+	#define sendfile_syscall_id 0x47
+	sendfile_syscall_id sys4 drop
 }
 
 ; ---
@@ -79,7 +87,7 @@ sec .text func exit req i32 {
 ; 
 ; :warning: not actually cross-platform/cross-architecture/cross-compiler!
 ; ---
-sec .text func htons req i32 ret i32 {
+sec .text fun htons req i32 ret i32 {
 	dup 255 && 8 << swap 8 >> 255 && ||
 }
 

@@ -20,6 +20,9 @@
 		},
 		{
 			"include": "#strings"
+		},
+		{
+			"include": "#defines"
 		}
 	],
 	"repository": {
@@ -39,7 +42,7 @@
 			"patterns": [
 				{
 					"name": "entity.name.tag",
-					"match": "\\b(sec|str|mem|func|req|ret|call|as|drop|dup|over|rot|swap|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys1|sys2|sys3|sys4|sys5|sys6|true|false)\\b"
+					"match": "\\b(sec|str|mem|fun|req|ret|call|as|drop|dup|over|rot|swap|ld08|ld16|ld32|ld64|st08|st16|st32|st64|sys1|sys2|sys3|sys4|sys5|sys6|true|false)\\b"
 				}
 			]
 		},
@@ -95,6 +98,19 @@
 							"match": "\\\\."
 						}
 					]
+				}
+			]
+		},
+		"defines": {
+			"patterns": [
+				{
+					"name": "meta.preprocessor.mira",
+					"match": "#\\w+",
+					"captures": {
+						"0": {
+							"name": "keyword.preprocessor.mira"
+						}
+					}
 				}
 			]
 		}

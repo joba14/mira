@@ -897,7 +897,7 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	else
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
-		(void)fprintf(compiler->file, ";; --- func --- \n");
+		(void)fprintf(compiler->file, ";; --- fun --- \n");
 		(void)fprintf(compiler->file, "func_%lu:\n", func_def->index);
 		(void)fprintf(compiler->file, "\tmov [ret_stack_rsp], rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, rax\n");
@@ -908,7 +908,7 @@ static void nasm_x86_64_linux_compile_ast_def_func(
 	if (!func_def->is_entry)
 	{
 		// todo(#001): this should be reworked as well, since it is part of #001 todo.
-		(void)fprintf(compiler->file, "\t;; --- func-ret --- \n");
+		(void)fprintf(compiler->file, "\t;; --- fun-ret --- \n");
 		(void)fprintf(compiler->file, "\tmov rax, rsp\n");
 		(void)fprintf(compiler->file, "\tmov rsp, [ret_stack_rsp]\n");
 		(void)fprintf(compiler->file, "\tret\n");

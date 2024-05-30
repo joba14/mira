@@ -5,7 +5,7 @@
 #include "std/posix.mira"
 #include "std/io.mira"
 
-sec .text func _start {
+sec .text fun _start {
 	; 
 	0
 	; index argc argv...

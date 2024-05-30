@@ -42,7 +42,7 @@ sec .bss mem grid N
 ; --- 
 ; print a square on a 10x10 grid.
 ; --- 
-sec .text func print-square {
+sec .text fun print-square {
 	0 loop [ dup height < ] {
 		0 loop [ dup width 1 - < ] {
 			swap over over
@@ -61,7 +61,7 @@ sec .text func print-square {
 ; --- 
 ; print a trianle on a 10x10 grid.
 ; --- 
-sec .text func print-triangle {
+sec .text fun print-triangle {
 	0 loop [ dup height < ] {
 		0 loop [ dup width 1 - < ] {
 			swap over over
@@ -81,7 +81,7 @@ sec .text func print-triangle {
 ; --- 
 ; entry.
 ; --- 
-sec .text func _start {
+sec .text fun _start {
 	call print-square
 	call print-triangle
 	0 call exit

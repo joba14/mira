@@ -15,7 +15,7 @@ sec .data str win_message " has won!\n\0"
 sec .data str stale_mate_message "stale mate!\n\0"
 
 
-sec .text func input_logical_grid {
+sec .text fun input_logical_grid {
 	2 input_buffer stdin call read drop
 	10 call putc input_buffer ld08
 
@@ -37,7 +37,7 @@ sec .text func input_logical_grid {
 	49 - logical_grid + curr_player ld08 swap st08
 }
 
-sec .text func draw_logical_grid {
+sec .text fun draw_logical_grid {
 	0 loop [ dup 3 < ] {
 		0 loop [ dup 3 < ] {
 			over over swap 3 * + logical_grid + ld08
@@ -50,7 +50,7 @@ sec .text func draw_logical_grid {
 	} drop
 }
 
-sec .text func check_for_win {
+sec .text fun check_for_win {
 	if [
 		logical_grid 0 + ld08
 		logical_grid 1 + ld08 dup
@@ -132,7 +132,7 @@ sec .text func check_for_win {
 	}
 }
 
-sec .text func _start {
+sec .text fun _start {
 	49 logical_grid 0 + st08
 	50 logical_grid 1 + st08
 	51 logical_grid 2 + st08

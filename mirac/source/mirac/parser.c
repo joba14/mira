@@ -301,9 +301,9 @@ mirac_string_view_s mirac_ast_def_type_to_string_view(
 {
 	switch (type)
 	{
-		case mirac_ast_def_type_func: { return mirac_string_view_from_parts("func", 4); } break;
-		case mirac_ast_def_type_mem:  { return mirac_string_view_from_parts("mem", 3);  } break;
-		case mirac_ast_def_type_str:  { return mirac_string_view_from_parts("str", 4);  } break;
+		case mirac_ast_def_type_func: { return mirac_string_view_from_parts("fun", 3); } break;
+		case mirac_ast_def_type_mem:  { return mirac_string_view_from_parts("mem", 3); } break;
+		case mirac_ast_def_type_str:  { return mirac_string_view_from_parts("str", 3); } break;
 
 		default:
 		{
@@ -665,7 +665,7 @@ static mirac_ast_block_call_s parse_ast_block_call(
 	if (ident_block->def->type != mirac_ast_def_type_func)
 	{
 		log_parser_error_and_exit(block->location,
-			"expected 'func' def identifier after 'call' block, but found '" mirac_sv_fmt "' def identifier.",
+			"expected 'fun' def identifier after 'call' block, but found '" mirac_sv_fmt "' def identifier.",
 			mirac_sv_arg(mirac_ast_def_type_to_string_view(ident_block->def->type))
 		);
 	}
@@ -1036,7 +1036,7 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	if (mirac_lexer_lex_next(parser->lexer, &token) != mirac_token_type_identifier)
 	{
 		log_parser_error_and_exit(token.location,
-			"expected identifier token after 'func' token, but found '" mirac_sv_fmt "' token.",
+			"expected identifier token after 'fun' token, but found '" mirac_sv_fmt "' token.",
 			mirac_sv_arg(token.text)
 		);
 	}
@@ -1093,7 +1093,7 @@ static mirac_ast_def_func_s parse_ast_def_func(
 	{
 		mirac_debug_assert(block != mirac_null);
 		log_parser_error_and_exit(block->location,
-			"expected 'scope' block as 'func' block's body, but found '" mirac_sv_fmt "' block.",
+			"expected 'scope' block as 'fun' block's body, but found '" mirac_sv_fmt "' block.",
 			mirac_sv_arg(mirac_ast_block_type_to_string_view(block->type))
 		);
 	}
@@ -1228,7 +1228,7 @@ parse_def_by_token:
 		{
 			def->type = mirac_ast_def_type_func;
 			def->as.func_def = parse_ast_def_func(parser);
-			// note: if the func is an entry, it is marked as used to prevent error in the cross referencing:
+			// note: if the fun is an entry, it is marked as used to prevent error in the cross referencing:
 			if (def->as.func_def.is_entry) { def->is_used = true; }
 		} break;
 
@@ -1253,7 +1253,7 @@ parse_def_by_token:
 		default:
 		{
 			log_parser_error_and_exit(token.location,
-				"expected 'func', 'mem', or 'str' token after 'sec' definition, but found '" mirac_sv_fmt "' token",
+				"expected 'fun', 'mem', or 'str' token after 'sec' definition, but found '" mirac_sv_fmt "' token",
 				mirac_sv_arg(token.text)
 			);
 		} break;

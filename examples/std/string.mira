@@ -5,7 +5,7 @@
 ; ---
 ; :brief: get the length of the cstring.
 ; ---
-sec .text func cstrlen req ptr ret i32 {
+sec .text fun cstrlen req ptr ret i32 {
 	dup loop [ dup ld08 0 != ] { ++ } swap -
 }
 
