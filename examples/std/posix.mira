@@ -19,6 +19,14 @@ sec .text func write req u64 ptr u32 ret i32 {
 }
 
 ; ---
+; :brief: open syscall wrapper.
+; ---
+sec .text func open req u32 i32 ptr ret i32 {
+	#define open_syscall_id 2
+	open_syscall_id sys3 as i32
+}
+
+; ---
 ; :brief: close syscall wrapper.
 ; ---
 sec .text func close req i32 ret i32 {

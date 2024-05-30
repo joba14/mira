@@ -1,0 +1,71 @@
+
+#ifndef __main_mira__
+#define __main_mira__
+
+#include "std/posix.mira"
+#include "std/io.mira"
+
+sec .rodata str args_error      "error: invalid amount of cli args were provided!\n\0"
+sec .rodata str file_open_error "error: failed to open provided file for reading!\n\0"
+sec .rodata str file_read_error "error: failed to read from file!\n\0"
+sec .rodata str usage           "usage: cat <filepath>\n\0"
+
+#define buffer_cap 5
+sec .bss mem buffer buffer_cap
+
+sec .text func _start {
+	; argc argv...
+	if [ dup 2 != ] {
+		args_error call eput-cstr
+		usage call put-cstr
+		1 call exit
+	}
+
+	; argc=2 prog fp
+	drop drop 0 0 rot
+	; fp 0 0
+	call open
+	; fd
+	if [ dup -1 == ] {
+		file_open_error call eput-cstr
+		1 call exit
+	}
+
+	; fd
+	loop [ 1 ] {
+		; fd
+		dup buffer swap buffer_cap rot rot
+		; fd buffer buffer_cap fd
+		call read
+
+		; res fd
+		if [ dup 0 < ] {
+			10 call putc
+			file_read_error call eput-cstr
+			1 call exit
+		}
+
+		; res fd
+		if [ dup 0 == ] {
+			10 call putc
+			0 call exit
+		}
+
+		; res fd
+		if [ dup 0 > ] {
+			; res fd
+			buffer call puts
+			; fd
+		}
+		else {
+			; res fd
+			drop
+			; fd
+		}
+		; fd
+	}
+
+	0 call exit
+}
+
+#endif

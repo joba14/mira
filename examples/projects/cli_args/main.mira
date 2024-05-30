@@ -1,0 +1,28 @@
+
+#ifndef __main_mira__
+#define __main_mira__
+
+#include "std/posix.mira"
+#include "std/io.mira"
+
+sec .text func _start {
+	; 
+	0
+	; index argc argv...
+	loop [ over over > ] {
+		; index argc argv...
+		dup call puti 32 call putc
+		; index argc argv...
+		rot
+		; argv1 index argc argv...
+		call put-cstr 10 call putc
+		; index argc argv...
+		1 +
+	}
+	; index argc
+	drop drop
+	; 
+	0 call exit
+}
+
+#endif
