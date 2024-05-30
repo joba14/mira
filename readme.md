@@ -50,6 +50,23 @@ Here is the list of the main features the language has:
 
 
 ## Getting Started
+```c++
+#ifndef __main_mira__
+#define  __main_mira__
+
+#include "std/posix.mira"
+#include "std/io.mira"
+
+sec .rodata str hello "hello, world!\n\0"
+
+sec .text fun _start {
+	hello call put_cstr
+	0 call exit
+}
+
+#endif
+```
+
 To get started with mira, follow these simple steps:
 
 ### Building
