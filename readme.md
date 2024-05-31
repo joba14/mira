@@ -1,6 +1,6 @@
 
 <a href="https://github.com/joba14/mira">
-	<img src="./logo.svg" alt="Logo" width="400">
+	<img src="./logo.svg" alt="Logo" width="100">
 </a>
 
 [![License](https://img.shields.io/badge/license-Mira_GPLv1-brightgreen.svg?style=for-the-badge)](./license.md)
