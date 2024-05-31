@@ -96,7 +96,7 @@ To get help and learn more about the compiler, use the following:
 Once built successfully, you can run mira programs by providing the source code file as an argument to the compiler (or use makefile template from the example projects):
 ```sh
 > cd mira/mirac/build
-> ./mirac -d -u -a nasm_x86_64_linux <path-to-mira-source-file> <path-to-output-asm-file>
+> ./mirac -d -u -a x86_64 -f nasm <path-to-mira-source-file> <path-to-output-asm-file>
 > nasm -f elf64 <path-to-output-asm-file> -o <path-to-output-obj-file>
 > ld <path-to-output-obj-file> -o <path-to-output-elf-file>
 > <path-to-output-elf-file>
