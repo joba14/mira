@@ -11,11 +11,14 @@
 # Mira
 **The Mira Programming Language and Toolchain**<br>[Report a bug](https://github.com/joba14/mira/issues/new) · [Request a feature](https://github.com/joba14/mira/issues/new)
 
-
 ## Table of Contents
  - [Overview](#overview)
- - [Features](#features)
+	 - [Features](#features)
  - [Getting Started](#getting-started)
+	- [Cloning](#cloning)
+	- [Building](#building)
+	- [Running](#running)
+	- [Examples](#examples)
  - [Contributing](#contributing)
  - [License](#license)
 
@@ -69,18 +72,17 @@ sec .text fun _start {
 
 To get started with mira, follow these simple steps:
 
-### Building
-The repo provides various syntax and project examples in the [examples](./examples) directory. The project examples use the makefiles and uses various building steps such as pre-processor, assembler and linker to automate the building process. To build and run the example project, follow the steps below:
+### Cloning
+Clone the mira repository from GitHub as follows:
 ```sh
-> cd <root-of-the-example-project>
-> make && make run
+> git clone https://github.com/joba14/mira.git <path-to-be-cloned-to>
 ```
 
 ### Building
-Clone the mira repository from GitHub. Navigate to the project directory and run the build script or compiler. This will generate the executable for your specific platform:
+Navigate to the project directory and run the build script or compiler. This will generate the executable for your specific platform:
 ```sh
-> git clone https://github.com/joba14/mira.git ./mira
-> cd mira/mirac/scripts
+> cd <path-to-be-cloned-to>/mirac/scripts
+> chmod +x ./*.sh
 > ./build.sh debug
 ```
 
@@ -98,6 +100,13 @@ Once built successfully, you can run mira programs by providing the source code 
 > nasm -f elf64 <path-to-output-asm-file> -o <path-to-output-obj-file>
 > ld <path-to-output-obj-file> -o <path-to-output-elf-file>
 > <path-to-output-elf-file>
+```
+
+### Examples
+The repo provides various syntax and project examples in the [examples](./examples) directory. The project examples use the makefiles and uses various building steps such as pre-processor, assembler and linker to automate the building process. To build and run the example project, follow the steps below:
+```sh
+> cd <root-of-the-example-project>
+> make && make run
 ```
 
 [(to the top)](#mira)
