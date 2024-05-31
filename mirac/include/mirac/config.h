@@ -18,7 +18,7 @@
 
 typedef enum
 {
-	mirac_config_arch_type_nasm_x86_64_linux = 0,
+	mirac_config_arch_type_x86_64 = 0,
 	mirac_config_arch_types_count,
 
 	mirac_config_arch_type_none
@@ -27,9 +27,21 @@ typedef enum
 mirac_string_view_s mirac_config_arch_type_to_string_view(
 	const mirac_config_arch_type_e type);
 
+typedef enum
+{
+	mirac_config_format_type_nasm = 0,
+	mirac_config_format_types_count,
+
+	mirac_config_format_type_none
+} mirac_config_format_type_e;
+
+mirac_string_view_s mirac_config_format_type_to_string_view(
+	const mirac_config_format_type_e type);
+
 typedef struct
 {
 	mirac_config_arch_type_e arch;
+	mirac_config_format_type_e format;
 	mirac_string_view_s entry;
 	bool_t dump_ast;
 	bool_t unsafe;

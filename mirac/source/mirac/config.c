@@ -22,7 +22,11 @@
 static mirac_string_view_s g_program = mirac_string_view_static("");
 static mirac_string_view_s g_supported_architectures[mirac_config_arch_types_count] =
 {
-	[mirac_config_arch_type_nasm_x86_64_linux] = mirac_string_view_static("nasm_x86_64_linux")
+	[mirac_config_arch_type_x86_64] = mirac_string_view_static("x86_64"),
+};
+static mirac_string_view_s g_supported_formats[mirac_config_format_types_count] =
+{
+	[mirac_config_format_type_nasm] = mirac_string_view_static("nasm"),
 };
 
 static const char_t* const g_usage_banner =
@@ -32,6 +36,7 @@ static const char_t* const g_usage_banner =
 	"    -h, --help                 print the help message\n"
 	"    -v, --version              print version and exit\n"
 	"    -a, --arch <target>        set the architecture for the output\n"
+	"    -f, --format <value>       set the assembly format for the output\n"
 	"    -e, --entry <symbol>       set the entry symbol\n"
 	"    -d, --dump_ast             dump generated ast into text file near output file\n"
 	"    -u, --unsafe               disable checker\n"
@@ -45,6 +50,13 @@ mirac_string_view_s mirac_config_arch_type_to_string_view(
 {
 	mirac_debug_assert((type >= 0) && (type < mirac_config_arch_types_count));
 	return g_supported_architectures[type];
+}
+
+mirac_string_view_s mirac_config_format_type_to_string_view(
+	const mirac_config_format_type_e type)
+{
+	mirac_debug_assert((type >= 0) && (type < mirac_config_format_types_count));
+	return g_supported_formats[type];
 }
 
 mirac_config_s mirac_config_from_cli(
@@ -71,6 +83,7 @@ mirac_config_s mirac_config_from_cli(
 		{ "help",       no_argument,       0, 'h' },
 		{ "version",    no_argument,       0, 'v' },
 		{ "arch",       required_argument, 0, 'a' },
+		{ "format",     required_argument, 0, 'f' },
 		{ "entry",      required_argument, 0, 'e' },
 		{ "dump_ast",   no_argument,       0, 'd' },
 		{ "unsafe",     no_argument,       0, 'u' },
@@ -81,6 +94,7 @@ mirac_config_s mirac_config_from_cli(
 	mirac_config_s config = (mirac_config_s)
 	{
 		.arch     = mirac_config_arch_type_none,
+		.format   = mirac_config_format_type_none,
 		.entry    = mirac_string_view_from_parts("main", 4),
 		.dump_ast = false,
 		.unsafe   = false,
@@ -88,10 +102,11 @@ mirac_config_s mirac_config_from_cli(
 	};
 
 	mirac_string_view_s parsed_arch = mirac_string_view_from_parts("", 0);
+	mirac_string_view_s parsed_format = mirac_string_view_from_parts("", 0);
 	mirac_string_view_s parsed_entry = mirac_string_view_from_parts("", 0);
 	int32_t parsed_option = -1;
 
-	while ((parsed_option = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:e:dus", options, mirac_null)) != -1)
+	while ((parsed_option = (int32_t)getopt_long(argc, (char_t* const *)argv, "hva:f:e:dus", options, mirac_null)) != -1)
 	{
 		switch (parsed_option)
 		{
@@ -110,6 +125,11 @@ mirac_config_s mirac_config_from_cli(
 			case 'a':
 			{
 				parsed_arch = mirac_string_view_from_cstring((const char_t*)optarg);
+			} break;
+
+			case 'f':
+			{
+				parsed_format = mirac_string_view_from_cstring((const char_t*)optarg);
 			} break;
 
 			case 'e':
@@ -166,6 +186,31 @@ mirac_config_s mirac_config_from_cli(
 		}
 	}
 
+	{
+		if (parsed_format.length <= 0)
+		{
+			mirac_logger_error("no format was provided.");
+			mirac_config_usage();
+			mirac_c_exit(-1);
+		}
+
+		for (uint64_t format_index = 0; format_index < mirac_config_format_types_count; ++format_index)
+		{
+			if (mirac_string_view_equal(parsed_format, g_supported_formats[format_index]))
+			{
+				config.format = format_index;
+				break;
+			}
+		}
+
+		if (mirac_config_format_type_none == config.format)
+		{
+			mirac_logger_error("invalid format '" mirac_sv_fmt "' was provided.", mirac_sv_arg(parsed_format));
+			mirac_config_usage();
+			mirac_c_exit(-1);
+		}
+	}
+
 	if (config.entry = parsed_entry, config.entry.length <= 0)
 	{
 		mirac_logger_error("no entry symbol was provided.");
@@ -181,12 +226,14 @@ void mirac_config_usage(
 	void)
 {
 	mirac_logger_log(g_usage_banner, mirac_sv_arg(g_program));
+
 	mirac_logger_log("supported architectures:");
-
 	for (uint64_t arch_index = 0; arch_index < mirac_config_arch_types_count; ++arch_index)
-	{
 		mirac_logger_log("    - " mirac_sv_fmt, mirac_sv_arg(g_supported_architectures[arch_index]));
-	}
+	mirac_logger_log(" ");
 
+	mirac_logger_log("supported formats:");
+	for (uint64_t format_index = 0; format_index < mirac_config_format_types_count; ++format_index)
+		mirac_logger_log("    - " mirac_sv_fmt, mirac_sv_arg(g_supported_formats[format_index]));
 	mirac_logger_log(" ");
 }

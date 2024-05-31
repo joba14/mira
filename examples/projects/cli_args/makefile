@@ -8,7 +8,8 @@ BUILD_FLAGS := \
 	-d \
 	-u \
 	-e _start \
-	-a nasm_x86_64_linux
+	-a x86_64 \
+	-f nasm
 
 SOURCE_FILE = main.mira
 OUTPUT_NAME = cli_args

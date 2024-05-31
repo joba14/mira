@@ -13,6 +13,7 @@
 #include <mirac/compiler.h>
 
 #include <mirac/debug.h>
+#include <mirac/logger.h>
 
 #include "./archs/nasm_x86_64_linux.h"
 
@@ -45,13 +46,17 @@ void mirac_compiler_compile_ast_unit(
 	mirac_debug_assert(compiler->unit != mirac_null);
 	mirac_debug_assert(compiler->file != mirac_null);
 
-	switch (compiler->config->arch)
+	// todo: make this architecture and format thing more modular!
+	if ((mirac_config_arch_type_x86_64 == compiler->config->arch) && (mirac_config_format_type_nasm == compiler->config->format))
 	{
-		case mirac_config_arch_type_nasm_x86_64_linux: { nasm_x86_64_linux_compile_ast_unit(compiler); } break;
-
-		default:
-		{
-			mirac_debug_assert(0); // note: should never reach this block.
-		} break;
+		nasm_x86_64_linux_compile_ast_unit(compiler);
+	}
+	else
+	{  // todo: rework this else!
+		mirac_logger_error("unsupported architecture or format was provided: " mirac_sv_fmt ", " mirac_sv_fmt,
+			mirac_sv_arg(mirac_config_arch_type_to_string_view(compiler->config->arch)),
+			mirac_sv_arg(mirac_config_format_type_to_string_view(compiler->config->format))
+		);
+		return;
 	}
 }

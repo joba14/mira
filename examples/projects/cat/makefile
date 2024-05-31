@@ -9,7 +9,8 @@ BUILD_FLAGS := \
 	-u \
 	-e _start \
 	-s \
-	-a nasm_x86_64_linux
+	-a x86_64 \
+	-f nasm
 
 SOURCE_FILE = main.mira
 OUTPUT_NAME = cat
